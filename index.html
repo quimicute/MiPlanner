@@ -45,13 +45,13 @@
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); z-index: 1000; backdrop-filter: blur(2px); }
         .menu-overlay.open { display: block; }
 
-        /* CABECERA DINÁMICA */
+        /* CABECERA DINÁMICA CON BOTONES */
         header { text-align: center; padding: 20px 0 10px 0; display: flex; flex-direction: column; align-items: center; justify-content: center;}
         .header-top-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; flex-wrap: wrap; margin-bottom: 5px;}
         header h1 { font-family: 'Playfair Display', serif; color: var(--text-dark); font-size: 3em; margin: 0; font-weight: 600; letter-spacing: -0.5px;}
         .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 2.2em; margin: 0;}
         
-        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3); }
+        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); }
         .nav-icon-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
 
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -95,15 +95,9 @@
         .priority-group { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 15px;}
         .prio-btn { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark); cursor: pointer; font-size: 0.85em; font-weight: 500; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .prio-btn .prio-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: 0.2s;}
-        .prio-btn .prio-indicator.low { background: #10b981; opacity: 0.4;}
-        .prio-btn .prio-indicator.med { background: #f59e0b; opacity: 0.4;}
-        .prio-btn .prio-indicator.high { background: #ef4444; opacity: 0.4;}
         .prio-btn.active.low { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
-        .prio-btn.active.low .prio-indicator.low { background: #10b981; opacity: 1; box-shadow: 0 0 5px rgba(16,185,129,0.5);}
         .prio-btn.active.med { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #d97706; }
-        .prio-btn.active.med .prio-indicator.med { background: #f59e0b; opacity: 1; box-shadow: 0 0 5px rgba(245,158,11,0.5);}
         .prio-btn.active.high { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
-        .prio-btn.active.high .prio-indicator.high { background: #ef4444; opacity: 1; box-shadow: 0 0 5px rgba(239,68,68,0.5);}
 
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; margin-bottom: 15px;}
         .tag-toggle { background: var(--bg-color); border: 1px solid var(--border-color); color: #888; padding: 6px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;}
@@ -236,11 +230,9 @@
             <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
                 <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M12 3l10 9h-3v9h-14v-9h-3z"/></svg>
             </button>
-            
             <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
                 <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            
             <h1 id="main-header-title">Life Planner</h1>
         </div>
         <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
@@ -286,7 +278,6 @@
     </div>
 
     <div id="dashboard" class="view-section active">
-        
         <div class="top-gallery">
             <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('personal')">📷 Editar</button>
@@ -432,21 +423,18 @@
                     </div>
                     
                     <div id="sp-dynamic-content-area"></div>
-                    
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. FIREBASE CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = []; let currentModalPriority = 'medium';
 
-        // --- 2. ESTADO INICIAL ---
         let defaultCategories = { 
             personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Asuntos Sociales'] }, 
             escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'] }, 
@@ -477,10 +465,8 @@
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits };
         let taskIdCounter = 2; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
 
-        // HELPER FUNCTIONS (ANTI-BERRINCHES DE JS)
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
         function getCatLabel(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
-
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
         function checkDarkMode() { let hour = new Date().getHours(); if(hour >= 19 || hour <= 6) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
 
@@ -516,24 +502,26 @@
             let btnBack = document.getElementById('btn-back');
             let subtitle = document.getElementById('main-header-subtitle');
 
+            let baseTitle = `<span style="font-size: 1em; font-weight: 600; color: var(--text-dark);">Life Planner</span>`;
+
             if (view === 'dashboard') {
-                titleEl.innerText = 'Life Planner';
+                titleEl.innerHTML = baseTitle;
                 btnHome.style.display = 'none';
                 btnBack.style.display = 'none';
                 subtitle.style.display = 'block';
             } else if (view === 'category') {
-                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${catLabel}`;
+                titleEl.innerHTML = `${baseTitle} <span style="color:#ccc; font-weight:300; margin:0 10px; font-size:0.8em;">|</span> <span style="font-size: 0.8em; font-weight: 500; color: #888;">${catLabel}</span>`;
                 btnHome.style.display = 'flex';
                 btnBack.style.display = 'none';
                 subtitle.style.display = 'none';
             } else if (view === 'subpage') {
-                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${catLabel} <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${subcatLabel}`;
+                titleEl.innerHTML = `${baseTitle} <span style="color:#ccc; font-weight:300; margin:0 10px; font-size:0.8em;">|</span> <span style="font-size: 0.8em; font-weight: 500; color: #888;">${catLabel}</span> <span style="color:#eee; font-weight:300; margin:0 10px; font-size:0.65em;">|</span> <span style="font-size: 0.65em; font-weight: 400; color: #aaa;">${subcatLabel}</span>`;
                 btnHome.style.display = 'flex';
                 btnBack.style.display = 'flex';
                 subtitle.style.display = 'none';
             } else {
                 let viewNames = { 'kanban-general': 'Kanban Global', 'full-calendar-view': 'Calendario Maestro', 'master-view': 'Buscador Maestro' };
-                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${viewNames[view] || ''}`;
+                titleEl.innerHTML = `${baseTitle} <span style="color:#ccc; font-weight:300; margin:0 10px; font-size:0.8em;">|</span> <span style="font-size: 0.8em; font-weight: 500; color: #888;">${viewNames[view] || ''}</span>`;
                 btnHome.style.display = 'flex';
                 btnBack.style.display = 'none';
                 subtitle.style.display = 'none';
@@ -541,7 +529,6 @@
         }
 
         function toggleMenu() { let nav = document.getElementById('main-nav'); let overlay = document.getElementById('menu-overlay'); if(nav && overlay) { nav.classList.toggle('open'); overlay.classList.toggle('open'); } }
-
         function changeCatCover(cat) { let c = prompt(`URL de portada para ${cat}:`, appState.categories[cat].cover); if(c) { appState.categories[cat].cover = c; saveToMemory(); let el = document.getElementById('tg-'+cat); if(el) el.style.backgroundImage = `url('${c}')`; let hp = document.getElementById('cover-'+cat+'-page'); if(hp) hp.src=c; } }
         
         function renderDashboardLinks() { const list = document.getElementById('dash-links-list'); if(!list) return; list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
@@ -653,7 +640,8 @@
             if(btn) { document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
 
-            // Actualizar Cabecera
+            if(viewId === 'subpage-view') return; // Se encarga openSubpage
+            
             if(viewId === 'dashboard') updateHeader('dashboard');
             else if(viewId === 'mod-personal') updateHeader('category', getCatLabel('personal'));
             else if(viewId === 'mod-escolar') updateHeader('category', getCatLabel('escolar'));
@@ -664,17 +652,27 @@
         function openSubpage(catKey, subcatName) { 
             currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
             let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
+            
             updateHeader('subpage', getCatLabel(catKey), subcatName);
             
-            document.getElementById('sp-title').innerText = subcatName; document.getElementById('sp-subtitle').innerText = getCatLabel(catKey); document.getElementById('sp-icon').innerText = pageInfo.icon; document.getElementById('sp-cover').src = pageInfo.cover; 
+            let tEl = document.getElementById('sp-title'); if(tEl) tEl.innerText = subcatName; 
+            let iEl = document.getElementById('sp-icon'); if(iEl) iEl.innerText = pageInfo.icon; 
+            let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
+            
             let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
-            contentDiv.innerHTML = pageInfo.content; editorDiv.value = pageInfo.content; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; document.getElementById('btn-edit-page').innerText = "[Editar Contenido]"; 
-            renderSubpageTasks(catKey, subcatName); 
+            if(contentDiv) contentDiv.innerHTML = pageInfo.content; 
+            if(editorDiv) editorDiv.value = pageInfo.content; 
+            if(contentDiv) contentDiv.style.display = 'block'; 
+            if(editorDiv) editorDiv.style.display = 'none'; 
+            let btnEdit = document.getElementById('btn-edit-page'); if(btnEdit) btnEdit.innerText = "[Editar Contenido]"; 
+            
+            try { renderSubpageTasks(catKey, subcatName); } catch(e) { console.error("Error al pintar subpágina:", e); }
             
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
             document.getElementById('subpage-view').classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            if(window.MathJax) MathJax.typesetPromise(); 
+            
+            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
         function goBackFromSubpage() { if(currentParentView) { switchView(currentParentView, document.querySelector(`#main-nav button[onclick*="${currentParentView}"]`)); } else goToHome(); }
@@ -687,6 +685,7 @@
         
         function renderSubpageTasks(catKey, subcatName) { 
             const dynamicArea = document.getElementById('sp-dynamic-content-area'); if(!dynamicArea) return;
+            
             if (subcatName === 'Selfcare') { renderSelfcareDashboard(); return; }
 
             let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcatName); 
@@ -699,7 +698,9 @@
                     <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">📋 Tabla</button>
                     <button id="tab-kanban" class="view-tab ${subpageViewMode==='kanban'?'active':''}" onclick="setSubpageView('kanban')">📌 Kanban</button>
                     <button id="tab-list" class="view-tab ${subpageViewMode==='list'?'active':''}" onclick="setSubpageView('list')">📄 Lista</button>
-                </div><div id="sp-content-inner">`;
+                </div>
+                <div id="sp-content-inner">
+            `;
             
             if(subTasks.length === 0) { html += '<p style="color: #888; font-size: 0.9em;">No hay registros. Crea uno nuevo para empezar.</p></div>'; dynamicArea.innerHTML = html; return; } 
             
@@ -718,7 +719,8 @@
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
                 setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
-            html += '</div>'; dynamicArea.innerHTML = html;
+            html += '</div>';
+            dynamicArea.innerHTML = html;
         }
 
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
