@@ -45,10 +45,15 @@
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); z-index: 1000; backdrop-filter: blur(2px); }
         .menu-overlay.open { display: block; }
 
-        header { text-align: center; padding: 20px 0 10px 0; display: flex; align-items: baseline; gap: 15px; flex-wrap: wrap; justify-content: center;}
+        /* CABECERA DINÁMICA */
+        header { text-align: center; padding: 20px 0 10px 0; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .header-top-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; flex-wrap: wrap; margin-bottom: 5px;}
         header h1 { font-family: 'Playfair Display', serif; color: var(--text-dark); font-size: 3em; margin: 0; font-weight: 600; letter-spacing: -0.5px;}
         .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 2.2em; margin: 0;}
         
+        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3); }
+        .nav-icon-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
+
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .view-section.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -176,7 +181,7 @@
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
-        /* SELFCARE DASHBOARD (NUEVO) */
+        /* SELFCARE DASHBOARD */
         .selfcare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 15px; }
         .habit-group { background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px; }
         .habit-group h4 { margin: 0 0 15px 0; font-family: 'Playfair Display', serif; font-size: 1.1em; color: var(--accent); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; display:flex; justify-content:space-between;}
@@ -227,8 +232,18 @@
     </nav>
 
     <header>
-        <h1>Life Planner</h1>
-        <p class="welcome-script">welcome home, Quimicute</p>
+        <div class="header-top-row">
+            <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M12 3l10 9h-3v9h-14v-9h-3z"/></svg>
+            </button>
+            
+            <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            
+            <h1 id="main-header-title">Life Planner</h1>
+        </div>
+        <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
     </header>
 
     <button class="fab" onclick="openTaskModal()">+</button>
@@ -406,10 +421,6 @@
                 
                 <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="changeCover()" title="Cambiar Icono">✧</div></div>
                 <div style="padding: 0 5vw 50px 5vw;">
-                    <button class="edit-btn" style="margin-bottom: 20px; font-size: 1em;" onclick="goBackFromSubpage()">← Volver</button>
-                    
-                    <h2 id="sp-title" contenteditable="true" onblur="renameSubcategory(this.innerText)" onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}" style="background: transparent; color: var(--text-dark); padding: 2px; margin: 0 0 0 -2px; font-size: 2.8em; letter-spacing: -0.5px; border:none; outline:none; border-radius:4px; transition:0.2s;">Título</h2>
-                    <p id="sp-subtitle" style="color: #888; margin-top: 5px; margin-bottom: 30px; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; font-family: 'Inter', sans-serif;"></p>
                     
                     <div id="sp-general-info-container">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
@@ -450,7 +461,6 @@
         let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
         let defaultTasks = [ { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' } ];
         
-        // EL NUEVO CEREBRO DE HÁBITOS
         let defaultHabits = [
             {id: 1, title: 'Masaje cuero cabelludo', group: 'Haircare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
             {id: 2, title: 'Despunte', group: 'Haircare', category: 'Bodycare', freq: 'monthly', lastDone: '', streak: 0},
@@ -497,6 +507,39 @@
             renderAll();
         }).catch(() => renderAll());
 
+        // --- SISTEMA DE CABECERA DINÁMICA ---
+        function goToHome() { switchView('dashboard', document.querySelectorAll('#main-nav button')[0]); }
+
+        function updateHeader(view, catLabel = '', subcatLabel = '') {
+            let titleEl = document.getElementById('main-header-title');
+            let btnHome = document.getElementById('btn-home');
+            let btnBack = document.getElementById('btn-back');
+            let subtitle = document.getElementById('main-header-subtitle');
+
+            if (view === 'dashboard') {
+                titleEl.innerText = 'Life Planner';
+                btnHome.style.display = 'none';
+                btnBack.style.display = 'none';
+                subtitle.style.display = 'block';
+            } else if (view === 'category') {
+                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${catLabel}`;
+                btnHome.style.display = 'flex';
+                btnBack.style.display = 'none';
+                subtitle.style.display = 'none';
+            } else if (view === 'subpage') {
+                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${catLabel} <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${subcatLabel}`;
+                btnHome.style.display = 'flex';
+                btnBack.style.display = 'flex';
+                subtitle.style.display = 'none';
+            } else {
+                let viewNames = { 'kanban-general': 'Kanban Global', 'full-calendar-view': 'Calendario Maestro', 'master-view': 'Buscador Maestro' };
+                titleEl.innerHTML = `Life Planner <span style="color:#aaa; font-weight:300; margin:0 10px;">|</span> ${viewNames[view] || ''}`;
+                btnHome.style.display = 'flex';
+                btnBack.style.display = 'none';
+                subtitle.style.display = 'none';
+            }
+        }
+
         function toggleMenu() { let nav = document.getElementById('main-nav'); let overlay = document.getElementById('menu-overlay'); if(nav && overlay) { nav.classList.toggle('open'); overlay.classList.toggle('open'); } }
 
         function changeCatCover(cat) { let c = prompt(`URL de portada para ${cat}:`, appState.categories[cat].cover); if(c) { appState.categories[cat].cover = c; saveToMemory(); let el = document.getElementById('tg-'+cat); if(el) el.style.backgroundImage = `url('${c}')`; let hp = document.getElementById('cover-'+cat+'-page'); if(hp) hp.src=c; } }
@@ -532,7 +575,6 @@
             if(habit.freq === 'daily') return habit.lastDone === today;
             if(habit.freq === 'monthly') return habit.lastDone.startsWith(getMonthStr());
             if(habit.freq === 'weekly') {
-                // Simplificación: si se hizo en los últimos 7 días
                 let diff = (new Date(today) - new Date(habit.lastDone)) / (1000 * 60 * 60 * 24);
                 return diff < 7;
             }
@@ -543,8 +585,8 @@
             let h = appState.habits.find(x => x.id === id);
             if(!h) return;
             let done = isHabitDone(h);
-            if(done) { h.lastDone = ''; h.streak = Math.max(0, h.streak - 1); } // Uncheck
-            else { h.lastDone = getTodayStr(); h.streak++; } // Check
+            if(done) { h.lastDone = ''; h.streak = Math.max(0, h.streak - 1); } 
+            else { h.lastDone = getTodayStr(); h.streak++; } 
             saveToMemory(); renderAll();
             let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
@@ -560,7 +602,6 @@
             let container = document.getElementById('personal-habits-summary'); if(!container) return;
             let today = getTodayStr();
             let dueHabits = appState.habits.filter(h => !isHabitDone(h));
-            let doneHabits = appState.habits.filter(h => isHabitDone(h));
             
             let html = '';
             if(dueHabits.length === 0) {
@@ -578,83 +619,76 @@
 
         function renderSelfcareDashboard() {
             let area = document.getElementById('sp-dynamic-content-area'); if(!area) return;
-            
-            // Calculamos racha promedio para la frase
             let avgStreak = appState.habits.reduce((acc, h) => acc + h.streak, 0) / (appState.habits.length || 1);
             let quote = getQuoteForStreak(Math.round(avgStreak));
 
-            let html = `
-                <div class="quote-box">${quote}</div>
-                <div class="selfcare-grid">
-                    <div>
-                        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">🌸 Bodycare</h3>
-            `;
-            
-            // Haircare
+            let html = `<div class="quote-box">${quote}</div><div class="selfcare-grid"><div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">🌸 Bodycare</h3>`;
             let hair = appState.habits.filter(h => h.group === 'Haircare');
             html += `<div class="habit-group"><h4>💇‍♀️ Haircare</h4>`;
-            hair.forEach(h => {
-                let done = isHabitDone(h);
-                html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`;
-            });
+            hair.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
             html += `</div>`;
 
-            // Skincare
             let skin = appState.habits.filter(h => h.group === 'Skincare');
             html += `<div class="habit-group"><h4>🫧 Skincare</h4>`;
-            skin.forEach(h => {
-                let done = isHabitDone(h);
-                html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`;
-            });
-            html += `</div></div>`;
-
-            // FITNESS
-            html += `
-                    <div>
-                        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">💪 Fitness</h3>
-            `;
+            skin.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
+            html += `</div></div><div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">💪 Fitness</h3>`;
             
-            // Estiramientos
             let est = appState.habits.filter(h => h.group === 'Estiramientos');
             html += `<div class="habit-group"><h4>🧘‍♀️ Estiramientos</h4>`;
-            est.forEach(h => {
-                let done = isHabitDone(h);
-                html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`;
-            });
+            est.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
             html += `</div>`;
 
-            // Pilates & Gym
             let gym = appState.habits.filter(h => h.group === 'Pilates' || h.group === 'Gym');
             html += `<div class="habit-group"><h4>🏋️‍♀️ Rutinas Activas</h4>`;
-            gym.forEach(h => {
-                let done = isHabitDone(h);
-                let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver rutina">🔗</a>` : '';
-                html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`;
-            });
+            gym.forEach(h => { let done = isHabitDone(h); let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver rutina">🔗</a>` : ''; html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
             html += `</div></div></div>`;
 
             area.innerHTML = html;
         }
 
+        // --- NAVEGACIÓN Y VISTAS ---
+        function switchView(viewId, btn) { 
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
+            let target = document.getElementById(viewId); if(target) target.classList.add('active'); 
+            if(btn) { document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
 
-        // --- CALENDARIOS, GALERÍA Y FILTROS ---
+            // Actualizar Cabecera
+            if(viewId === 'dashboard') updateHeader('dashboard');
+            else if(viewId === 'mod-personal') updateHeader('category', getCatLabel('personal'));
+            else if(viewId === 'mod-escolar') updateHeader('category', getCatLabel('escolar'));
+            else if(viewId === 'mod-profesional') updateHeader('category', getCatLabel('profesional'));
+            else updateHeader(viewId);
+        }
+
+        function openSubpage(catKey, subcatName) { 
+            currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
+            let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
+            updateHeader('subpage', getCatLabel(catKey), subcatName);
+            
+            document.getElementById('sp-title').innerText = subcatName; document.getElementById('sp-subtitle').innerText = getCatLabel(catKey); document.getElementById('sp-icon').innerText = pageInfo.icon; document.getElementById('sp-cover').src = pageInfo.cover; 
+            let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
+            contentDiv.innerHTML = pageInfo.content; editorDiv.value = pageInfo.content; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; document.getElementById('btn-edit-page').innerText = "[Editar Contenido]"; 
+            renderSubpageTasks(catKey, subcatName); 
+            
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
+            document.getElementById('subpage-view').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(window.MathJax) MathJax.typesetPromise(); 
+        }
+
+        function goBackFromSubpage() { if(currentParentView) { switchView(currentParentView, document.querySelector(`#main-nav button[onclick*="${currentParentView}"]`)); } else goToHome(); }
+
         function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 10) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${getCatColor(t.category)}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
         function renderModule(catKey, containerId) { const container = document.getElementById(containerId); if(!container) return; container.innerHTML = ''; if (!appState.categories[catKey] || !appState.categories[catKey].subcats) return; appState.categories[catKey].subcats.forEach(subcat => { let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; container.innerHTML += `<div class="gallery-card" onclick="openSubpage('${catKey}', '${subcat}')"><img src="${pageInfo.cover}" class="gallery-cover"><div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;"><div class="gallery-icon">${pageInfo.icon}</div><h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3><div style="flex:1; min-height: 60px;">${taskPreview}</div><button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button></div></div>`; }); }
         function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); let tab = document.getElementById('tab-' + mode); if(tab) tab.classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
         
         function renderSubpageTasks(catKey, subcatName) { 
             const dynamicArea = document.getElementById('sp-dynamic-content-area'); if(!dynamicArea) return;
-            
-            // OVERRIDE PARA SELFCARE
-            if (subcatName === 'Selfcare') {
-                renderSelfcareDashboard();
-                return;
-            }
+            if (subcatName === 'Selfcare') { renderSelfcareDashboard(); return; }
 
-            // OVERRIDE NORMAL
             let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcatName); 
             let html = `
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
@@ -665,9 +699,7 @@
                     <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">📋 Tabla</button>
                     <button id="tab-kanban" class="view-tab ${subpageViewMode==='kanban'?'active':''}" onclick="setSubpageView('kanban')">📌 Kanban</button>
                     <button id="tab-list" class="view-tab ${subpageViewMode==='list'?'active':''}" onclick="setSubpageView('list')">📄 Lista</button>
-                </div>
-                <div id="sp-content-inner">
-            `;
+                </div><div id="sp-content-inner">`;
             
             if(subTasks.length === 0) { html += '<p style="color: #888; font-size: 0.9em;">No hay registros. Crea uno nuevo para empezar.</p></div>'; dynamicArea.innerHTML = html; return; } 
             
@@ -686,14 +718,17 @@
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
                 setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
-            html += '</div>';
-            dynamicArea.innerHTML = html;
+            html += '</div>'; dynamicArea.innerHTML = html;
         }
 
-        function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); let target = document.getElementById(viewId); if(target) target.classList.add('active'); if(btn) { document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function openSubpage(catKey, subcatName) { currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; document.getElementById('sp-title').innerText = subcatName; document.getElementById('sp-subtitle').innerText = getCatLabel(catKey); document.getElementById('sp-icon').innerText = pageInfo.icon; document.getElementById('sp-cover').src = pageInfo.cover; let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); contentDiv.innerHTML = pageInfo.content; editorDiv.value = pageInfo.content; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; document.getElementById('btn-edit-page').innerText = "[Editar Contenido]"; renderSubpageTasks(catKey, subcatName); switchView('subpage-view', null); if(window.MathJax) MathJax.typesetPromise(); }
-        function goBackFromSubpage() { if(currentParentView) { let btn = document.querySelector(`#main-nav button[onclick="switchView('${currentParentView}', this); toggleMenu()"]`); switchView(currentParentView, btn); } else switchView('dashboard', document.querySelector('#main-nav button')); }
+        function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
         function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
+
+        function renderModalTags() { const container = document.getElementById('m-tags-container'); if(!container) return; container.innerHTML = predefinedTagsList.map(tag => { const isActive = currentModalTags.includes(tag) ? 'active' : ''; return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`; }).join(''); }
+        function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
+        function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
+        function toggleRecurrence() { let isRec = document.getElementById('m-recurring').checked; let typeEl = document.getElementById('m-recurrence-type'); if(typeEl) typeEl.style.display = isRec ? 'block' : 'none'; }
+        function toggleEnmsFields() { let subcat = document.getElementById('m-subcategory').value; let enmsEl = document.getElementById('enms-custom-fields'); if(enmsEl) enmsEl.style.display = (subcat === 'ENMS Labs') ? 'flex' : 'none'; }
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
@@ -712,7 +747,7 @@
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
             } 
-            toggleEnmsFields(); window.currentEditId = taskId; 
+            toggleEnmsFields(); window.currentEditId = taskId; renderModalTags();
         }
         
         function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
