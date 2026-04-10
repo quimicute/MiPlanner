@@ -14,6 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
+        * { box-sizing: border-box; } /* Esto arregla el desborde de todos los inputs */
+
         :root {
             /* MODO DÍA */
             --bg-color: #fdfafc; --text-dark: #4a4a4a; --text-light: #ffffff; 
@@ -30,7 +32,6 @@
             --cat-personal: #be185d; --cat-escolar: #7e22ce; --cat-profesional: #c2410c; 
         }
 
-        /* Ajuste: padding lateral más pequeño para aprovechar el ancho */
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 15px 40px 15px; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease;}
 
         nav { background: transparent; padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: flex-start; gap: 20px; position: sticky; top: 0; z-index: 100; margin-bottom: 20px; backdrop-filter: blur(15px); overflow-x: auto; white-space: nowrap; transition: 0.3s;}
@@ -46,14 +47,13 @@
         .view-section.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* GRID PANORÁMICO: 4 columnas en compu, 100% de ancho */
+        /* GRID PANORÁMICO */
         .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; max-width: 100%; margin: auto; }
         .grid-col-1 { grid-column: span 1; } 
         .grid-col-2 { grid-column: span 2; } 
         .grid-col-3 { grid-column: span 3; }
         .grid-col-4 { grid-column: span 4; }
         
-        /* Grid para las otras vistas (Kanban, settings) para que no se estiren feo */
         .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
         .panel { background: var(--panel-bg); border-radius: 6px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border-color); position: relative; transition: 0.3s; display: flex; flex-direction: column;}
@@ -204,17 +204,13 @@
 
         /* 📱 MAGIA RESPONSIVA REAL PARA CELULARES Y TABLETS 📱 */
         @media (max-width: 1024px) {
-            /* En pantallas medianas, pasamos a 2 columnas */
             .dashboard-grid, .standard-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
-            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } /* Top gallery se mantiene en 3 hasta el cel */
-            
-            /* Hacemos que el calendario abarque 2 columnas si es posible en tablet */
+            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } 
             #cal-dashboard-container { grid-column: span 2 !important; }
         }
 
         @media (max-width: 768px) {
-            /* En celulares, TODO a 1 columna apilada */
             .dashboard-grid, .standard-grid, .top-gallery, .inner-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important;}
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; width: 100% !important; }
             #cal-dashboard-container { grid-column: span 1 !important; }
@@ -224,7 +220,6 @@
             header h1 { font-size: 2.2em; }
             .welcome-script { font-size: 1.8em; }
             
-            /* Responsive Table Trick */
             .notion-table thead { display: none; }
             .notion-table, .notion-table tbody, .notion-table tr, .notion-table td { display: block; width: 100%; box-sizing: border-box;}
             .notion-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--panel-bg);}
@@ -348,16 +343,26 @@
                         <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); font-family:inherit; outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
                         <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
                     </div>
-                    <div id="quick-todo-list">
-                        </div>
+                    <div id="quick-todo-list"></div>
                 </div>
             </div>
             
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="panel" style="flex:1;">
+                <div class="panel" style="flex:1; display:flex; flex-direction:column; max-height: 480px;">
                     <h2>📝 Notas Rápidas</h2>
-                    <textarea id="quick-notes-area" style="width:100%; height:calc(100% - 60px); min-height:120px; border:1px dashed var(--border-color); border-radius:4px; padding:12px; font-family:inherit; background:var(--hover-bg); color:var(--text-dark); resize:vertical; font-size:0.9em; outline:none;" placeholder="Escribe ideas o pendientes rápidos aquí..." onblur="saveQuickNotes(this.value)"></textarea>
+                    
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="quick-note-img" placeholder="URL de imagen (opcional)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; box-sizing:border-box; background:var(--bg-color); color:var(--text-dark);">
+                            <button class="add-small-btn" onclick="addQuickNote()" style="background:var(--accent); color:white; border:none;">Guardar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="quick-notes-feed" style="overflow-y:auto; flex:1; padding-right:5px; display:flex; flex-direction:column; gap:12px;">
+                        </div>
                 </div>
+                
                 <div class="panel" id="recetas-widget" style="flex:1;">
                     </div>
             </div>
@@ -442,7 +447,6 @@
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        // --- LISTA DE ETIQUETAS PREDETERMINADAS ---
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = [];
         let currentModalPriority = 'medium';
@@ -460,22 +464,7 @@
         };
         let defaultDashboard = { 
             cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=600&q=80', 
-            content: `
-<details class="folder-tree">
-  <summary>☁️ OneDrive (Maestría)</summary>
-  <div class="folder-content">
-     <a href="#" target="_blank">📄 Borrador_Tesis.docx</a>
-     <a href="#" target="_blank">📊 Datos_Espectroscopia.xlsx</a>
-     <a href="#" target="_blank">📁 Carpeta de Artículos PDF</a>
-  </div>
-</details>
-
-<details class="folder-tree">
-  <summary>🌿 Overleaf (Proyectos)</summary>
-  <div class="folder-content">
-     <a href="#" target="_blank">📝 Reporte_Quimica.tex</a>
-  </div>
-</details>` 
+            content: `<details class="folder-tree"><summary>☁️ OneDrive (Maestría)</summary><div class="folder-content"><a href="#" target="_blank">📄 Borrador_Tesis.docx</a></div></details>` 
         };
 
         let defaultTasks = [
@@ -484,13 +473,12 @@
             { id: 3, type: 'event', title: 'Concierto de The Killers', category: 'personal', subcategory: 'Wishlist', date: '', priority: 'high', status: 'todo', tags: ['ideas'] }
         ];
 
-        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotes: '', quickTodos: [] };
+        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [] };
         let taskIdCounter = 4; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null;
         let subpageViewMode = 'table'; 
 
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
 
-        // --- 3. DARK MODE INTELIGENTE ---
         function checkDarkMode() { let hour = new Date().getHours(); if(hour >= 19 || hour <= 6) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
 
         checkDarkMode();
@@ -502,31 +490,76 @@
                 if(data.pageData) appState.pageData = data.pageData;
                 
                 appState.dashboard = data.dashboard || defaultDashboard; 
-                appState.quickNotes = data.quickNotes || '';
-                appState.quickTodos = data.quickTodos || [];
                 
+                // Migración por si antes tenías string y ahora usamos lista de objetos
+                appState.quickNotesList = data.quickNotesList || [];
+                if(typeof data.quickNotes === 'string' && data.quickNotes.trim() !== '') {
+                    appState.quickNotesList.push({text: data.quickNotes, img: '', date: 'Nota anterior'});
+                    delete appState.quickNotes; // limpiar
+                }
+                
+                appState.quickTodos = data.quickTodos || [];
                 taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 1; 
             } else saveToMemory();
             renderAll();
         }).catch(() => renderAll());
 
-        // --- FUNCIONES DASHBOARD Y WIDGETS ---
+        // --- DASHBOARD: ARCHIVOS ---
         function changeDashCover() { let c = prompt("URL de nueva imagen:", appState.dashboard.cover); if(c) { appState.dashboard.cover = c; saveToMemory(); renderDashboardInfo(); } }
         function toggleDashEdit() { let c = document.getElementById('dash-content-area'); let e = document.getElementById('dash-editor-area'); let b = document.getElementById('btn-dash-edit'); if(e.style.display==='none'){ c.style.display='none'; e.style.display='block'; b.innerText='[Guardar]'; } else { c.innerHTML = e.value; c.style.display='block'; e.style.display='none'; b.innerText='[Editar]'; appState.dashboard.content = e.value; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
-        
-        function saveQuickNotes(val) { appState.quickNotes = val; saveToMemory(); }
-        
-        function renderDashboardInfo() { 
-            document.getElementById('dash-cover-img').src = appState.dashboard.cover; 
-            document.getElementById('dash-content-area').innerHTML = appState.dashboard.content; 
-            document.getElementById('dash-editor-area').value = appState.dashboard.content; 
-            let notesArea = document.getElementById('quick-notes-area');
-            if (notesArea && document.activeElement !== notesArea) {
-                notesArea.value = appState.quickNotes || '';
+        function renderDashboardInfo() { document.getElementById('dash-cover-img').src = appState.dashboard.cover; document.getElementById('dash-content-area').innerHTML = appState.dashboard.content; document.getElementById('dash-editor-area').value = appState.dashboard.content; }
+
+        // --- DASHBOARD: NOTAS RÁPIDAS INDIVIDUALES ---
+        function renderQuickNotes() {
+            const feed = document.getElementById('quick-notes-feed');
+            if(!feed) return;
+            if(!appState.quickNotesList) appState.quickNotesList = [];
+            
+            if(appState.quickNotesList.length === 0) {
+                feed.innerHTML = `<p style="color:#888; font-size:0.85em; text-align:center; margin-top:20px;">No tienes notas recientes.</p>`;
+                return;
+            }
+
+            feed.innerHTML = appState.quickNotesList.map((note, idx) => `
+                <div style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:6px; padding:12px; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                    <button class="edit-btn" style="position:absolute; top:8px; right:8px; color:#ef4444; font-size:1.2em; opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" onclick="deleteQuickNote(${idx})" title="Borrar nota">×</button>
+                    <p style="margin:0 0 8px 0; font-size:0.9em; white-space:pre-wrap; padding-right:15px; color:var(--text-dark); line-height:1.5;">${note.text}</p>
+                    ${note.img ? `<img src="${note.img}" style="width:100%; max-height:200px; object-fit:cover; border-radius:4px; margin-bottom:8px; border:1px solid var(--border-color);">` : ''}
+                    <span style="font-size:0.75em; color:#aaa; display:block; text-align:right;">${note.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function addQuickNote() {
+            let textInput = document.getElementById('quick-note-input');
+            let imgInput = document.getElementById('quick-note-img');
+            let text = textInput.value.trim();
+            let img = imgInput.value.trim();
+            
+            if(text || img) {
+                if(!appState.quickNotesList) appState.quickNotesList = [];
+                let d = new Date();
+                let dateStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                // unshift pone la nota nueva al principio
+                appState.quickNotesList.unshift({ text: text, img: img, date: dateStr }); 
+                
+                textInput.value = '';
+                imgInput.value = '';
+                saveToMemory();
+                renderQuickNotes();
             }
         }
 
-        // NUEVO: CHECKLIST RÁPIDO LÓGICA
+        function deleteQuickNote(idx) {
+            if(confirm("¿Borrar esta nota?")) {
+                appState.quickNotesList.splice(idx, 1);
+                saveToMemory();
+                renderQuickNotes();
+            }
+        }
+
+        // --- DASHBOARD: CHECKLIST RÁPIDO ---
         function renderQuickTodos() {
             const container = document.getElementById('quick-todo-list');
             if(!container) return;
@@ -538,28 +571,11 @@
                 </div>
             `).join('');
         }
-        function addQuickTodo() {
-            let input = document.getElementById('quick-todo-input');
-            let text = input.value.trim();
-            if(text) {
-                appState.quickTodos.push({ text: text, done: false });
-                input.value = '';
-                saveToMemory();
-                renderQuickTodos();
-            }
-        }
-        function toggleQuickTodo(idx) {
-            appState.quickTodos[idx].done = !appState.quickTodos[idx].done;
-            saveToMemory();
-            renderQuickTodos();
-        }
-        function deleteQuickTodo(idx) {
-            appState.quickTodos.splice(idx, 1);
-            saveToMemory();
-            renderQuickTodos();
-        }
+        function addQuickTodo() { let input = document.getElementById('quick-todo-input'); let text = input.value.trim(); if(text) { appState.quickTodos.push({ text: text, done: false }); input.value = ''; saveToMemory(); renderQuickTodos(); } }
+        function toggleQuickTodo(idx) { appState.quickTodos[idx].done = !appState.quickTodos[idx].done; saveToMemory(); renderQuickTodos(); }
+        function deleteQuickTodo(idx) { appState.quickTodos.splice(idx, 1); saveToMemory(); renderQuickTodos(); }
 
-        // LÓGICA DEL WIDGET DE RECETAS
+        // --- DASHBOARD: RECETAS WIDGET ---
         function renderRecetasWidget() {
             const hour = new Date().getHours();
             let mealTag = 'postre'; let mealName = 'un antojo'; let greeting = '🌙';
@@ -596,6 +612,7 @@
             `;
         }
 
+        // --- GESTOR CATEGORIAS Y COLORES ---
         function updateCatColor(key, color) { appState.categories[key].color = color; saveToMemory(); renderAll(); }
         function applyDynamicColors() { document.documentElement.style.setProperty('--cat-personal', appState.categories.personal.color); document.documentElement.style.setProperty('--cat-escolar', appState.categories.escolar.color); document.documentElement.style.setProperty('--cat-profesional', appState.categories.profesional.color); }
         function addNewSubcatInline(catKey) { let name = prompt("Nombre de la nueva página:"); if (name && name.trim() !== '') { name = name.trim(); if (!appState.categories[catKey].subcats.includes(name)) { appState.categories[catKey].subcats.push(name); saveToMemory(); renderAll(); } else alert("Ya existe."); } }
@@ -607,6 +624,7 @@
         function renderModule(catKey, containerId) { const container = document.getElementById(containerId); container.innerHTML = ''; appState.categories[catKey].subcats.forEach(subcat => { let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; container.innerHTML += `<div class="gallery-card" onclick="openSubpage('${catKey}', '${subcat}')"><img src="${pageInfo.cover}" class="gallery-cover"><div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;"><div class="gallery-icon">${pageInfo.icon}</div><h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3><div style="flex:1; min-height: 60px;">${taskPreview}</div><button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button></div></div>`; }); container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; }
         function filterByTag(tag) { switchView('master-view', document.querySelectorAll('nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
+        // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + mode).classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
         
         function renderSubpageTasks(catKey, subcatName) { 
@@ -737,7 +755,7 @@
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); if(document.getElementById('subpage-view').classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
-        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderQuickTodos(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
+        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderQuickNotes(); renderQuickTodos(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
     </script>
 </body>
 </html>
