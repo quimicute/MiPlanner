@@ -34,7 +34,7 @@
 
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 15px 40px 15px; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease;}
 
-        /* NUEVO MENÚ HAMBURGUESA */
+        /* MENÚ HAMBURGUESA */
         .menu-btn { position: fixed; bottom: 30px; left: 30px; width: 55px; height: 55px; border-radius: 50%; background: var(--accent); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 1002; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; display: flex; justify-content: center; align-items: center;}
         .menu-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
         
@@ -65,12 +65,6 @@
         .fab { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; transition: transform 0.2s, background 0.2s;}
         .fab:hover { transform: scale(1.1); background: var(--accent-hover); }
         .widget-iframe { width: 100%; border: none; border-radius: 4px; border: 1px solid var(--border-color);}
-
-        /* DASHBOARD MAIN COVER */
-        .dash-main-cover { width: 100%; height: 200px; border-radius: 8px; margin-bottom: 25px; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .dash-main-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .dash-main-cover button { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.85); border: none; padding: 6px 12px; border-radius: 4px; font-weight: 500; color: #333; cursor: pointer; transition: 0.2s; font-family: inherit;}
-        .dash-main-cover button:hover { background: #fff; transform: scale(1.05); }
 
         /* GALERÍA DE MÓDULOS (TOP PANORÁMICO) */
         .top-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; width: 100%; max-width: 100%;}
@@ -147,7 +141,6 @@
         .task-title { font-weight: 500; display: block; margin-top: 10px; font-size: 1.05em; color: var(--text-dark); line-height: 1.4;}
         
         .pill { padding: 3px 10px; border-radius: 4px; font-size: 0.7em; color: #fff; font-weight: 600; display: inline-block; margin-right: 5px; margin-bottom: 5px; letter-spacing: 0.5px; border: 1px solid transparent; transition: 0.2s;}
-        .pill.personal { background-color: var(--cat-personal); } .pill.escolar { background-color: var(--cat-escolar); } .pill.profesional { background-color: var(--cat-profesional); } 
         .pill.tag { background: var(--hover-bg); color: var(--text-dark); border-color: var(--border-color); cursor: pointer; }
         .pill.tag:hover { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.05); box-shadow: 0 2px 5px rgba(147,112,219,0.3);}
         
@@ -200,7 +193,6 @@
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
-        /* 📱 MAGIA RESPONSIVA REAL PARA CELULARES Y TABLETS 📱 */
         @media (max-width: 1024px) {
             .dashboard-grid, .standard-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
@@ -310,21 +302,16 @@
 
     <div id="dashboard" class="view-section active">
         
-        <div class="dash-main-cover">
-            <img id="dash-main-header-img" src="" alt="Cover">
-            <button onclick="changeDashMainCover()">📷 Editar Portada</button>
-        </div>
-
         <div class="top-gallery">
-            <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[4])">
+            <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('personal')">📷 Editar</button>
                 <h3>Personal</h3>
             </div>
-            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[5])">
+            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('escolar')">📷 Editar</button>
                 <h3>Académico</h3>
             </div>
-            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[6])">
+            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('profesional')">📷 Editar</button>
                 <h3>Profesional</h3>
             </div>
@@ -357,7 +344,7 @@
             </div>
             
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="panel" style="flex:1; display:flex; flex-direction:column; max-height: 480px;">
+                <div class="panel" style="flex:1; display:flex; flex-direction:column; max-height: 520px;">
                     <h2>📝 Notas Rápidas</h2>
                     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
                         <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
@@ -382,12 +369,11 @@
                         <button class="add-small-btn" onclick="addDashLink()" style="background:var(--accent); color:white; border:none;">Agregar Link</button>
                     </div>
 
-                    <div id="dash-links-list" style="display:flex; flex-direction:column; gap:8px;">
-                        </div>
+                    <div id="dash-links-list" style="display:flex; flex-direction:column; gap:8px;"></div>
                 </div>
             </div>
 
-            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[3])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
+            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent);">Calendario</h2><span style="font-size:0.85em; color:var(--accent); font-weight:500;">⤢ Pantalla Completa</span>
                 </div>
@@ -464,14 +450,15 @@
             "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
             "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` }
         };
-        let defaultDashboard = { 
-            mainCover: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
-            links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ]
-        };
+        let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
         let defaultTasks = [ { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' } ];
 
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [] };
         let taskIdCounter = 2; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
+
+        // HELPER FUNCTIONS ANTIBLOQUEO
+        function getCatColor(catKey) { return (appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
+        function getCatLabel(catKey) { return (appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
 
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
         function checkDarkMode() { let hour = new Date().getHours(); if(hour >= 19 || hour <= 6) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode'); }
@@ -484,7 +471,6 @@
                 if(data.categories) appState.categories = data.categories;
                 if(data.pageData) appState.pageData = data.pageData;
                 appState.dashboard = data.dashboard || defaultDashboard; 
-                if(!appState.dashboard.mainCover) appState.dashboard.mainCover = defaultDashboard.mainCover;
                 if(!appState.dashboard.links) appState.dashboard.links = defaultDashboard.links;
                 if(!appState.categories.personal.cover) {
                     appState.categories.personal.cover = defaultCategories.personal.cover;
@@ -505,28 +491,21 @@
         }
 
         // --- DASHBOARD: COVERS & LINKS ---
-        function changeDashMainCover() { let c = prompt("URL de nueva portada panorámica:", appState.dashboard.mainCover); if(c) { appState.dashboard.mainCover = c; saveToMemory(); document.getElementById('dash-main-header-img').src = appState.dashboard.mainCover; } }
         function changeCatCover(cat) { let c = prompt(`URL de portada para ${cat}:`, appState.categories[cat].cover); if(c) { appState.categories[cat].cover = c; saveToMemory(); document.getElementById('tg-'+cat).style.backgroundImage = `url('${c}')`; } }
         
         function renderDashboardLinks() {
-            const list = document.getElementById('dash-links-list');
-            if(!list) return;
+            const list = document.getElementById('dash-links-list'); if(!list) return;
             list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `
-                <div class="link-item">
-                    <a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a>
-                    <button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button>
-                </div>
+                <div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>
             `).join('');
         }
         function addDashLink() {
-            let t = document.getElementById('new-link-title').value.trim();
-            let u = document.getElementById('new-link-url').value.trim();
+            let t = document.getElementById('new-link-title').value.trim(); let u = document.getElementById('new-link-url').value.trim();
             if(t && u) {
                 if(!u.startsWith('http')) u = 'https://' + u;
                 if(!appState.dashboard.links) appState.dashboard.links = [];
                 appState.dashboard.links.push({title: t, url: u});
-                document.getElementById('new-link-title').value = '';
-                document.getElementById('new-link-url').value = '';
+                document.getElementById('new-link-title').value = ''; document.getElementById('new-link-url').value = '';
                 saveToMemory(); renderDashboardLinks();
             }
         }
@@ -589,11 +568,10 @@
         // --- GESTOR CATEGORIAS Y COLORES ---
         function updateCatColor(key, color) { appState.categories[key].color = color; saveToMemory(); renderAll(); }
         function applyDynamicColors() { 
-            document.documentElement.style.setProperty('--cat-personal', appState.categories.personal.color); 
-            document.documentElement.style.setProperty('--cat-escolar', appState.categories.escolar.color); 
-            document.documentElement.style.setProperty('--cat-profesional', appState.categories.profesional.color); 
+            document.documentElement.style.setProperty('--cat-personal', getCatColor('personal')); 
+            document.documentElement.style.setProperty('--cat-escolar', getCatColor('escolar')); 
+            document.documentElement.style.setProperty('--cat-profesional', getCatColor('profesional')); 
             
-            document.getElementById('dash-main-header-img').src = appState.dashboard.mainCover || '';
             document.getElementById('tg-personal').style.backgroundImage = `url('${appState.categories.personal.cover}')`;
             document.getElementById('tg-escolar').style.backgroundImage = `url('${appState.categories.escolar.cover}')`;
             document.getElementById('tg-profesional').style.backgroundImage = `url('${appState.categories.profesional.cover}')`;
@@ -603,9 +581,9 @@
         function deleteCurrentSubpage() { if(confirm(`¿Eliminar la página "${currentSubcatOpened}" y sus tareas?`)) { let catKey = currentParentView.replace('mod-', ''); appState.categories[catKey].subcats = appState.categories[catKey].subcats.filter(s => s !== currentSubcatOpened); delete appState.pageData[currentSubcatOpened]; appState.tasks = appState.tasks.filter(t => t.subcategory !== currentSubcatOpened); saveToMemory(); goBackFromSubpage(); renderAll(); } }
 
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
-        function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 9) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${appState.categories[t.category].color};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${appState.categories[t.category].color}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
+        function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 9) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${getCatColor(t.category)}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
         function renderModule(catKey, containerId) { const container = document.getElementById(containerId); container.innerHTML = ''; appState.categories[catKey].subcats.forEach(subcat => { let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; container.innerHTML += `<div class="gallery-card" onclick="openSubpage('${catKey}', '${subcat}')"><img src="${pageInfo.cover}" class="gallery-cover"><div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;"><div class="gallery-icon">${pageInfo.icon}</div><h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3><div style="flex:1; min-height: 60px;">${taskPreview}</div><button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button></div></div>`; }); container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; }
-        function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[7]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + mode).classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
@@ -628,18 +606,18 @@
                 subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item" onclick="openTaskModal(null, ${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
             } else if (subpageViewMode === 'kanban') {
                 html = `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
-                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${appState.categories[t.category].color}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
+                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
             contentDiv.innerHTML = html;
         }
 
         function switchView(viewId, btn) { document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); document.getElementById(viewId).classList.add('active'); if(btn) { document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function openSubpage(catKey, subcatName) { currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; document.getElementById('sp-title').innerText = subcatName; document.getElementById('sp-subtitle').innerText = appState.categories[catKey].label; document.getElementById('sp-icon').innerText = pageInfo.icon; document.getElementById('sp-cover').src = pageInfo.cover; let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); contentDiv.innerHTML = pageInfo.content; editorDiv.value = pageInfo.content; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; document.getElementById('btn-edit-page').innerText = "[Editar Contenido]"; renderSubpageTasks(catKey, subcatName); switchView('subpage-view', null); if(window.MathJax) MathJax.typesetPromise(); }
+        function openSubpage(catKey, subcatName) { currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; document.getElementById('sp-title').innerText = subcatName; document.getElementById('sp-subtitle').innerText = getCatLabel(catKey); document.getElementById('sp-icon').innerText = pageInfo.icon; document.getElementById('sp-cover').src = pageInfo.cover; let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); contentDiv.innerHTML = pageInfo.content; editorDiv.value = pageInfo.content; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; document.getElementById('btn-edit-page').innerText = "[Editar Contenido]"; renderSubpageTasks(catKey, subcatName); switchView('subpage-view', null); if(window.MathJax) MathJax.typesetPromise(); }
         function goBackFromSubpage() { if(currentParentView) { let btn = document.querySelector(`#main-nav button[onclick="switchView('${currentParentView}', this); toggleMenu()"]`); switchView(currentParentView, btn); } else switchView('dashboard', document.querySelector('#main-nav button')); }
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
         function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
 
-        // --- LÓGICA MODAL EDITADO ---
+        // --- LÓGICA MODAL ---
         function renderModalTags() { const container = document.getElementById('m-tags-container'); container.innerHTML = predefinedTagsList.map(tag => { const isActive = currentModalTags.includes(tag) ? 'active' : ''; return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`; }).join(''); }
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; document.getElementById('btn-prio-low').classList.remove('active'); document.getElementById('btn-prio-medium').classList.remove('active'); document.getElementById('btn-prio-high').classList.remove('active'); document.getElementById('btn-prio-' + prio).classList.add('active'); }
@@ -680,13 +658,35 @@
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); if(document.getElementById('subpage-view').classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
         function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
-        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${appState.categories[t.category].color}"><span class="pill" style="background:${appState.categories[t.category].color}; color:#fff; border-color:${appState.categories[t.category].color}">${appState.categories[t.category].label}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
-        function renderMasterEvents() { const list = document.getElementById('master-events-list'); list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${ev.id})" style="border-left-color:${appState.categories[ev.category].color}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
-        function renderMasterView() { const container = document.getElementById('master-list'); const query = document.getElementById('master-filter').value.toLowerCase().trim(); let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="border-left-color: ${appState.categories[t.category].color}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${appState.categories[t.category].label} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
+        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        function renderMasterEvents() { const list = document.getElementById('master-events-list'); list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
+        function renderMasterView() { const container = document.getElementById('master-list'); const query = document.getElementById('master-filter').value.toLowerCase().trim(); let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); if(document.getElementById('subpage-view').classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
-        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderDashboardLinks(); renderQuickNotes(); renderQuickTodos(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
+        function safeRender(fn) { try { fn(); } catch(e) { console.error("Error visual, recuperando...", e); } }
+
+        function renderAll() { 
+            safeRender(applyDynamicColors); 
+            safeRender(renderDashboardInfo); 
+            safeRender(renderDashboardLinks); 
+            safeRender(renderQuickNotes); 
+            safeRender(renderQuickTodos); 
+            safeRender(renderRecetasWidget); 
+            safeRender(() => renderModule('personal', 'render-personal')); 
+            safeRender(() => renderModule('escolar', 'render-escolar')); 
+            safeRender(() => renderModule('profesional', 'render-profesional')); 
+            safeRender(renderKanban); 
+            safeRender(renderMasterEvents); 
+            safeRender(renderUpcomingTasks); 
+            safeRender(renderMasterView); 
+            safeRender(() => renderCalendar('cal-dashboard', 'all')); 
+            safeRender(() => renderCalendar('cal-full', 'all')); 
+            safeRender(() => renderCalendar('cal-personal', 'personal')); 
+            safeRender(() => renderCalendar('cal-escolar', 'escolar')); 
+            safeRender(() => renderCalendar('cal-profesional', 'profesional')); 
+            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
+        }
     </script>
 </body>
 </html>
