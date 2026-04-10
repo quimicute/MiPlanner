@@ -30,7 +30,8 @@
             --cat-personal: #be185d; --cat-escolar: #7e22ce; --cat-profesional: #c2410c; 
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 20px 40px 20px; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease;}
+        /* Ajuste: padding lateral más pequeño para aprovechar el ancho */
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 15px 40px 15px; overflow-x: hidden; transition: background-color 0.5s ease, color 0.5s ease;}
 
         nav { background: transparent; padding: 15px 0; border-bottom: 1px solid var(--border-color); display: flex; justify-content: flex-start; gap: 20px; position: sticky; top: 0; z-index: 100; margin-bottom: 20px; backdrop-filter: blur(15px); overflow-x: auto; white-space: nowrap; transition: 0.3s;}
         nav::-webkit-scrollbar { display: none; }
@@ -45,12 +46,18 @@
         .view-section.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
-        .grid-col-1 { grid-column: span 1; } .grid-col-2 { grid-column: span 2; } .grid-col-3 { grid-column: span 3; }
-        .inner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        /* GRID PANORÁMICO: 4 columnas en compu, 100% de ancho */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; max-width: 100%; margin: auto; }
+        .grid-col-1 { grid-column: span 1; } 
+        .grid-col-2 { grid-column: span 2; } 
+        .grid-col-3 { grid-column: span 3; }
+        .grid-col-4 { grid-column: span 4; }
         
-        .panel { background: var(--panel-bg); border-radius: 6px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border-color); position: relative; transition: 0.3s;}
-        .panel h2 { font-family: 'Playfair Display', serif; font-size: 1.2em; background-color: var(--accent); color: var(--text-light); display: inline-block; padding: 6px 12px; margin-top: 0; margin-bottom: 20px; font-weight: 400; letter-spacing: 0.5px; border-radius: 4px; }
+        /* Grid para las otras vistas (Kanban, settings) para que no se estiren feo */
+        .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
+        
+        .panel { background: var(--panel-bg); border-radius: 6px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border-color); position: relative; transition: 0.3s; display: flex; flex-direction: column;}
+        .panel h2 { font-family: 'Playfair Display', serif; font-size: 1.2em; background-color: var(--accent); color: var(--text-light); display: inline-block; padding: 6px 12px; margin-top: 0; margin-bottom: 20px; font-weight: 400; letter-spacing: 0.5px; border-radius: 4px; align-self: flex-start;}
         
         .fab { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; transition: transform 0.2s, background 0.2s;}
         .fab:hover { transform: scale(1.1); background: var(--accent-hover); }
@@ -91,6 +98,15 @@
         .checkbox-container { display: flex; align-items: center; gap: 8px; font-size: 0.9em; color: var(--text-dark); cursor: pointer; margin-top: 10px; }
         .checkbox-container input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
 
+        /* MINI CHECKLIST ESTILOS */
+        .todo-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 0.9em; color: var(--text-dark); transition: 0.2s;}
+        .todo-item.done span { text-decoration: line-through; color: #aaa; }
+        .todo-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent); margin-top: 2px;}
+        .todo-item button { background: transparent; border: none; color: #fca5a5; cursor: pointer; opacity: 0; transition: 0.2s; padding: 0 5px;}
+        .todo-item:hover button { opacity: 1; }
+        .todo-item button:hover { color: #ef4444; }
+
+        /* UTILIDADES */
         .status-select { border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 8px; font-family: inherit; font-size: 0.85em; background: var(--bg-color); color: var(--text-dark); cursor: pointer; transition: 0.2s;}
         .edit-btn { background: transparent; border: none; cursor: pointer; font-size: 0.85em; color: #888; transition: 0.2s; font-family: 'Inter', sans-serif; padding:0;}
         .edit-btn:hover { color: var(--accent); text-decoration: underline;}
@@ -123,8 +139,8 @@
         .event-item:hover { transform: translateX(3px); box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-color: var(--accent);}
         .icon-symbol { color: var(--accent); font-weight: bold; margin-right: 5px;}
 
-        /* GALERÍA DE MÓDULOS */
-        .top-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; max-width: 1200px; margin-left: auto; margin-right: auto;}
+        /* GALERÍA DE MÓDULOS (TOP PANORÁMICO) */
+        .top-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; width: 100%; max-width: 100%;}
         .top-gallery-card { background: var(--panel-bg); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: 0.3s; position: relative; overflow: hidden;}
         .top-gallery-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); border-color: var(--accent);}
         .top-gallery-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5em; margin: 10px 0 0 0; position: relative; z-index: 2;}
@@ -132,6 +148,7 @@
         .top-gallery-card.escolar::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:var(--cat-escolar); }
         .top-gallery-card.profesional::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:var(--cat-profesional); }
 
+        /* GALERÍAS NORMALES INTERNAS */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
         .gallery-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; display: flex; flex-direction: column; }
         .gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: var(--accent);}
@@ -157,6 +174,15 @@
         .full-cal-task { font-size: 0.75em; padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; cursor: pointer; transition: 0.2s; font-weight: 500;}
         .full-cal-task:hover { filter: brightness(0.9); transform: translateX(2px);}
 
+        /* CARPETAS ACORDEÓN (Links de Archivos) */
+        details.folder-tree { margin-bottom: 10px; background: var(--hover-bg); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; transition: 0.2s; }
+        details.folder-tree summary { font-weight: 600; cursor: pointer; padding: 12px 15px; color: var(--text-dark); list-style: none; display: flex; align-items: center; gap: 8px; outline: none; font-size: 0.95em; }
+        details.folder-tree summary::-webkit-details-marker { display: none; }
+        details.folder-tree summary:hover { background: rgba(147, 112, 219, 0.1); color: var(--accent); }
+        details.folder-tree .folder-content { padding: 10px 15px 15px 35px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--border-color); background: var(--panel-bg); }
+        details.folder-tree .folder-content a { color: #888; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 0.9em; transition: 0.2s; }
+        details.folder-tree .folder-content a:hover { color: var(--accent); transform: translateX(5px); }
+
         /* NOTION PROPERTIES TABLE */
         .view-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; overflow-x: auto;}
         .view-tab { background: transparent; border: none; color: #888; cursor: pointer; font-weight: 600; font-size: 0.9em; padding: 8px 12px; border-radius: 4px; transition: 0.2s;}
@@ -176,14 +202,29 @@
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
-        /* MEDIA QUERIES */
-        @media (max-width: 900px) {
-            .dashboard-grid, .top-gallery, .inner-grid { grid-template-columns: 1fr !important; }
-            .grid-col-1, .grid-col-2, .grid-col-3 { grid-column: span 1 !important; }
+        /* 📱 MAGIA RESPONSIVA REAL PARA CELULARES Y TABLETS 📱 */
+        @media (max-width: 1024px) {
+            /* En pantallas medianas, pasamos a 2 columnas */
+            .dashboard-grid, .standard-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
+            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } /* Top gallery se mantiene en 3 hasta el cel */
+            
+            /* Hacemos que el calendario abarque 2 columnas si es posible en tablet */
+            #cal-dashboard-container { grid-column: span 2 !important; }
+        }
+
+        @media (max-width: 768px) {
+            /* En celulares, TODO a 1 columna apilada */
+            .dashboard-grid, .standard-grid, .top-gallery, .inner-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important;}
+            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; width: 100% !important; }
+            #cal-dashboard-container { grid-column: span 1 !important; }
+            
             .kanban { flex-direction: column; }
             .kanban-col { min-height: 100px; padding-bottom: 20px;}
             header h1 { font-size: 2.2em; }
             .welcome-script { font-size: 1.8em; }
+            
+            /* Responsive Table Trick */
             .notion-table thead { display: none; }
             .notion-table, .notion-table tbody, .notion-table tr, .notion-table td { display: block; width: 100%; box-sizing: border-box;}
             .notion-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--panel-bg);}
@@ -287,65 +328,78 @@
         </div>
 
         <div class="dashboard-grid">
-            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel">
+            
+            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="panel" style="flex:1;">
                     <h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
                     <div style="margin-top: 25px;"></div>
                     <h2>Ambiente</h2><iframe style="border-radius:4px; border: 1px solid var(--border-color);" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
                 </div>
-                
-                <div class="panel">
-                    <h2>📝 Notas Rápidas</h2>
-                    <textarea id="quick-notes-area" style="width:100%; min-height:160px; border:1px dashed var(--border-color); border-radius:4px; padding:12px; font-family:inherit; background:var(--hover-bg); color:var(--text-dark); resize:vertical; font-size:0.9em; outline:none;" placeholder="Escribe ideas o pendientes rápidos aquí..." onblur="saveQuickNotes(this.value)"></textarea>
-                </div>
-
-                <div class="panel" id="recetas-widget">
-                    </div>
             </div>
             
-            <div class="grid-col-2" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="inner-grid">
-                    <div class="panel">
-                        <h2>Próximas Acciones</h2>
-                        <div id="upcoming-tasks-container"></div>
-                    </div>
-                    <div class="panel" style="padding:0; overflow:hidden;">
-                        <div style="position:relative;">
-                            <img id="dash-cover-img" src="" style="width:100%; height:120px; object-fit:cover; background:#ddd;">
-                            <button class="edit-btn" onclick="changeDashCover()" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); padding:6px 10px; border-radius:4px; color:#333;">📷 Editar</button>
-                        </div>
-                        <div style="padding: 20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
-                                <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:1.2em;">Archivos & Links</h3>
-                                <button class="edit-btn" id="btn-dash-edit" onclick="toggleDashEdit()">[Editar]</button>
-                            </div>
-                            <div id="dash-content-area" class="page-content-area" style="margin-bottom:0;"></div>
-                            <textarea id="dash-editor-area" class="page-content-editor" style="min-height:100px;"></textarea>
-                        </div>
-                    </div>
+            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="panel" style="flex:1;">
+                    <h2>Próximas Acciones</h2>
+                    <div id="upcoming-tasks-container"></div>
                 </div>
-
-                <div class="panel" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent);">Calendario</h2><span style="font-size:0.85em; color:var(--accent); font-weight:500;">⤢ Expandir</span>
+                <div class="panel" style="flex:1;">
+                    <h2>✅ Quick To-Do</h2>
+                    <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                        <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); font-family:inherit; outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
+                        <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
                     </div>
-                    <div class="calendar-grid" id="cal-dashboard" style="gap:2px;"></div>
+                    <div id="quick-todo-list">
+                        </div>
                 </div>
             </div>
+            
+            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="panel" style="flex:1;">
+                    <h2>📝 Notas Rápidas</h2>
+                    <textarea id="quick-notes-area" style="width:100%; height:calc(100% - 60px); min-height:120px; border:1px dashed var(--border-color); border-radius:4px; padding:12px; font-family:inherit; background:var(--hover-bg); color:var(--text-dark); resize:vertical; font-size:0.9em; outline:none;" placeholder="Escribe ideas o pendientes rápidos aquí..." onblur="saveQuickNotes(this.value)"></textarea>
+                </div>
+                <div class="panel" id="recetas-widget" style="flex:1;">
+                    </div>
+            </div>
+
+            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="panel" style="padding:0; overflow:hidden; flex:1;">
+                    <div style="position:relative;">
+                        <img id="dash-cover-img" src="" style="width:100%; height:120px; object-fit:cover; background:#ddd;">
+                        <button class="edit-btn" onclick="changeDashCover()" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); padding:6px 10px; border-radius:4px; color:#333;">📷 Editar</button>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+                            <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:1.2em;">Archivos & Links</h3>
+                            <button class="edit-btn" id="btn-dash-edit" onclick="toggleDashEdit()">[Editar]</button>
+                        </div>
+                        <div id="dash-content-area" class="page-content-area" style="margin-bottom:0;"></div>
+                        <textarea id="dash-editor-area" class="page-content-editor" style="min-height:100px;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent);">Calendario</h2><span style="font-size:0.85em; color:var(--accent); font-weight:500;">⤢ Pantalla Completa</span>
+                </div>
+                <div class="calendar-grid" id="cal-dashboard" style="gap:5px;"></div>
+            </div>
+
         </div>
     </div>
 
-    <div id="full-calendar-view" class="view-section"><div class="dashboard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><h2 style="margin:0; font-size: 2em; background:transparent; color:var(--text-dark); padding:0;">Calendario Maestro</h2><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
-    <div id="kanban-general" class="view-section"><div class="dashboard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
+    <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><h2 style="margin:0; font-size: 2em; background:transparent; color:var(--text-dark); padding:0;">Calendario Maestro</h2><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
+    <div id="kanban-general" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
     
-    <div id="mod-personal" class="view-section"><div class="dashboard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-personal" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2><div><input type="color" id="color-personal" style="display:none;" onchange="updateCatColor('personal', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-personal').click()" title="Cambiar color del área">🎨</button></div></div><div class="gallery-grid" id="render-personal"></div></div></div></div>
-    <div id="mod-escolar" class="view-section"><div class="dashboard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><div><input type="color" id="color-escolar" style="display:none;" onchange="updateCatColor('escolar', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-escolar').click()">🎨</button></div></div><div class="gallery-grid" id="render-escolar"></div></div></div></div>
-    <div id="mod-profesional" class="view-section"><div class="dashboard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><div><input type="color" id="color-profesional" style="display:none;" onchange="updateCatColor('profesional', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-profesional').click()">🎨</button></div></div><div class="gallery-grid" id="render-profesional"></div></div></div></div>
+    <div id="mod-personal" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-personal" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2><div><input type="color" id="color-personal" style="display:none;" onchange="updateCatColor('personal', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-personal').click()" title="Cambiar color del área">🎨</button></div></div><div class="gallery-grid" id="render-personal"></div></div></div></div>
+    <div id="mod-escolar" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><div><input type="color" id="color-escolar" style="display:none;" onchange="updateCatColor('escolar', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-escolar').click()">🎨</button></div></div><div class="gallery-grid" id="render-escolar"></div></div></div></div>
+    <div id="mod-profesional" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div></div><div class="grid-col-2"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><div><input type="color" id="color-profesional" style="display:none;" onchange="updateCatColor('profesional', this.value)"><button class="edit-btn" style="font-size:1.5em;" onclick="document.getElementById('color-profesional').click()">🎨</button></div></div><div class="gallery-grid" id="render-profesional"></div></div></div></div>
     
-    <div id="master-view" class="view-section"><div class="dashboard-grid"><div class="panel grid-col-3" style="max-width: 800px; margin: 0 auto; width: 100%;"><h2>Buscador Global</h2><input type="text" id="master-filter" placeholder="Buscar por nombre o #etiqueta..." oninput="renderMasterView()" style="width:100%; padding:14px; border-radius:6px; border: 1px solid var(--border-color); margin-bottom:20px; outline:none; font-family:inherit; background:var(--bg-color); color:var(--text-dark); font-size:1em;"><div id="master-list"></div></div></div></div>
+    <div id="master-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3" style="max-width: 800px; margin: 0 auto; width: 100%;"><h2>Buscador Global</h2><input type="text" id="master-filter" placeholder="Buscar por nombre o #etiqueta..." oninput="renderMasterView()" style="width:100%; padding:14px; border-radius:6px; border: 1px solid var(--border-color); margin-bottom:20px; outline:none; font-family:inherit; background:var(--bg-color); color:var(--text-dark); font-size:1em;"><div id="master-list"></div></div></div></div>
 
     <div id="subpage-view" class="view-section">
-        <div class="dashboard-grid">
+        <div class="standard-grid">
             <div class="panel grid-col-3" style="max-width: 1000px; margin: 0 auto; width: 100%; padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
                 <div style="position: relative;">
                     <img src="" class="page-cover" id="sp-cover" alt="Cover">
@@ -388,7 +442,7 @@
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        // --- LISTA DE ETIQUETAS PREDETERMINADAS (Nuevas agregadas) ---
+        // --- LISTA DE ETIQUETAS PREDETERMINADAS ---
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = [];
         let currentModalPriority = 'medium';
@@ -404,7 +458,25 @@
             "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
             "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b> para que te las sugiera el widget principal.</p>` }
         };
-        let defaultDashboard = { cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=600&q=80', content: '<p><a href="https://overleaf.com" target="_blank" style="color:var(--accent); font-weight:500;">📄 Mis proyectos en Overleaf</a></p>' };
+        let defaultDashboard = { 
+            cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=600&q=80', 
+            content: `
+<details class="folder-tree">
+  <summary>☁️ OneDrive (Maestría)</summary>
+  <div class="folder-content">
+     <a href="#" target="_blank">📄 Borrador_Tesis.docx</a>
+     <a href="#" target="_blank">📊 Datos_Espectroscopia.xlsx</a>
+     <a href="#" target="_blank">📁 Carpeta de Artículos PDF</a>
+  </div>
+</details>
+
+<details class="folder-tree">
+  <summary>🌿 Overleaf (Proyectos)</summary>
+  <div class="folder-content">
+     <a href="#" target="_blank">📝 Reporte_Quimica.tex</a>
+  </div>
+</details>` 
+        };
 
         let defaultTasks = [
             { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' },
@@ -412,7 +484,7 @@
             { id: 3, type: 'event', title: 'Concierto de The Killers', category: 'personal', subcategory: 'Wishlist', date: '', priority: 'high', status: 'todo', tags: ['ideas'] }
         ];
 
-        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotes: '' };
+        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotes: '', quickTodos: [] };
         let taskIdCounter = 4; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null;
         let subpageViewMode = 'table'; 
 
@@ -425,9 +497,14 @@
         db.collection("usuarios").doc("datos_planner").get().then((doc) => {
             if (doc.exists) { 
                 let data = doc.data();
-                if(data.tasks && data.tasks.length > 0) appState = data; 
-                if(!appState.dashboard) appState.dashboard = defaultDashboard; 
-                if(!appState.quickNotes) appState.quickNotes = '';
+                if(data.tasks && data.tasks.length > 0) appState.tasks = data.tasks; 
+                if(data.categories) appState.categories = data.categories;
+                if(data.pageData) appState.pageData = data.pageData;
+                
+                appState.dashboard = data.dashboard || defaultDashboard; 
+                appState.quickNotes = data.quickNotes || '';
+                appState.quickTodos = data.quickTodos || [];
+                
                 taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 1; 
             } else saveToMemory();
             renderAll();
@@ -449,6 +526,39 @@
             }
         }
 
+        // NUEVO: CHECKLIST RÁPIDO LÓGICA
+        function renderQuickTodos() {
+            const container = document.getElementById('quick-todo-list');
+            if(!container) return;
+            container.innerHTML = appState.quickTodos.map((todo, idx) => `
+                <div class="todo-item ${todo.done ? 'done' : ''}">
+                    <input type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleQuickTodo(${idx})">
+                    <span style="flex:1;">${todo.text}</span>
+                    <button onclick="deleteQuickTodo(${idx})">✖</button>
+                </div>
+            `).join('');
+        }
+        function addQuickTodo() {
+            let input = document.getElementById('quick-todo-input');
+            let text = input.value.trim();
+            if(text) {
+                appState.quickTodos.push({ text: text, done: false });
+                input.value = '';
+                saveToMemory();
+                renderQuickTodos();
+            }
+        }
+        function toggleQuickTodo(idx) {
+            appState.quickTodos[idx].done = !appState.quickTodos[idx].done;
+            saveToMemory();
+            renderQuickTodos();
+        }
+        function deleteQuickTodo(idx) {
+            appState.quickTodos.splice(idx, 1);
+            saveToMemory();
+            renderQuickTodos();
+        }
+
         // LÓGICA DEL WIDGET DE RECETAS
         function renderRecetasWidget() {
             const hour = new Date().getHours();
@@ -468,7 +578,7 @@
                 let randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
                 suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--accent); text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='rgba(147,112,219,0.1)'" onmouseout="this.style.background='var(--hover-bg)'" onclick="openTaskModal(null, ${randomRecipe.id})">
                     <span style="font-size:1.8em;">🍽️</span>
-                    <h4 style="margin:8px 0 5px 0; color:var(--text-dark);">${randomRecipe.title}</h4>
+                    <h4 style="margin:8px 0 5px 0; color:var(--text-dark); font-family:'Playfair Display', serif; font-size:1.2em;">${randomRecipe.title}</h4>
                     <p style="font-size:0.85em; color:#888; margin:0;">Sugerencia para ${mealName}</p>
                 </div>`;
             } else {
@@ -480,7 +590,7 @@
             widget.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h2 style="margin:0;">${greeting} ¿Qué cocinamos?</h2>
-                    <button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ir al Recetario</button>
+                    <button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ver Recetario</button>
                 </div>
                 ${suggestionHtml}
             `;
@@ -493,7 +603,7 @@
         function deleteCurrentSubpage() { if(confirm(`¿Eliminar la página "${currentSubcatOpened}" y sus tareas?`)) { let catKey = currentParentView.replace('mod-', ''); appState.categories[catKey].subcats = appState.categories[catKey].subcats.filter(s => s !== currentSubcatOpened); delete appState.pageData[currentSubcatOpened]; appState.tasks = appState.tasks.filter(t => t.subcategory !== currentSubcatOpened); saveToMemory(); goBackFromSubpage(); renderAll(); } }
 
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
-        function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 9) ? 'today' : ''; if (containerId === 'cal-full') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${appState.categories[t.category].color};" onclick="openTaskModal(null, ${t.id})">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${appState.categories[t.category].color}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
+        function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 9) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${appState.categories[t.category].color};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${appState.categories[t.category].color}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
         function renderModule(catKey, containerId) { const container = document.getElementById(containerId); container.innerHTML = ''; appState.categories[catKey].subcats.forEach(subcat => { let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; container.innerHTML += `<div class="gallery-card" onclick="openSubpage('${catKey}', '${subcat}')"><img src="${pageInfo.cover}" class="gallery-cover"><div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;"><div class="gallery-icon">${pageInfo.icon}</div><h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3><div style="flex:1; min-height: 60px;">${taskPreview}</div><button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button></div></div>`; }); container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; }
         function filterByTag(tag) { switchView('master-view', document.querySelectorAll('nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
@@ -627,7 +737,7 @@
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); if(document.getElementById('subpage-view').classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
-        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
+        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderQuickTodos(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
     </script>
 </body>
 </html>
