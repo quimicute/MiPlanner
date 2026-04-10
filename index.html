@@ -47,6 +47,7 @@
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         .grid-col-1 { grid-column: span 1; } .grid-col-2 { grid-column: span 2; } .grid-col-3 { grid-column: span 3; }
+        .inner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         
         .panel { background: var(--panel-bg); border-radius: 6px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border-color); position: relative; transition: 0.3s;}
         .panel h2 { font-family: 'Playfair Display', serif; font-size: 1.2em; background-color: var(--accent); color: var(--text-light); display: inline-block; padding: 6px 12px; margin-top: 0; margin-bottom: 20px; font-weight: 400; letter-spacing: 0.5px; border-radius: 4px; }
@@ -175,8 +176,9 @@
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
+        /* MEDIA QUERIES */
         @media (max-width: 900px) {
-            .dashboard-grid, .top-gallery { grid-template-columns: 1fr !important; }
+            .dashboard-grid, .top-gallery, .inner-grid { grid-template-columns: 1fr !important; }
             .grid-col-1, .grid-col-2, .grid-col-3 { grid-column: span 1 !important; }
             .kanban { flex-direction: column; }
             .kanban-col { min-height: 100px; padding-bottom: 20px;}
@@ -285,31 +287,41 @@
         </div>
 
         <div class="dashboard-grid">
-            <div class="panel grid-col-1">
-                <h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
-                <div style="margin-top: 25px;"></div>
-                <h2>Ambiente</h2><iframe style="border-radius:4px; border: 1px solid var(--border-color);" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                
-            </div>
-            
-            <div class="panel grid-col-1">
-                <h2>Próximas Acciones</h2>
-                <div id="upcoming-tasks-container"></div>
-            </div>
-            
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel" style="padding:0; overflow:hidden;">
-                    <div style="position:relative;">
-                        <img id="dash-cover-img" src="" style="width:100%; height:120px; object-fit:cover; background:#ddd;">
-                        <button class="edit-btn" onclick="changeDashCover()" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); padding:6px 10px; border-radius:4px; color:#333;">📷 Editar</button>
+                <div class="panel">
+                    <h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
+                    <div style="margin-top: 25px;"></div>
+                    <h2>Ambiente</h2><iframe style="border-radius:4px; border: 1px solid var(--border-color);" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                </div>
+                
+                <div class="panel">
+                    <h2>📝 Notas Rápidas</h2>
+                    <textarea id="quick-notes-area" style="width:100%; min-height:160px; border:1px dashed var(--border-color); border-radius:4px; padding:12px; font-family:inherit; background:var(--hover-bg); color:var(--text-dark); resize:vertical; font-size:0.9em; outline:none;" placeholder="Escribe ideas o pendientes rápidos aquí..." onblur="saveQuickNotes(this.value)"></textarea>
+                </div>
+
+                <div class="panel" id="recetas-widget">
                     </div>
-                    <div style="padding: 20px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
-                            <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:1.2em;">Archivos & Links</h3>
-                            <button class="edit-btn" id="btn-dash-edit" onclick="toggleDashEdit()">[Editar]</button>
+            </div>
+            
+            <div class="grid-col-2" style="display: flex; flex-direction: column; gap: 25px;">
+                <div class="inner-grid">
+                    <div class="panel">
+                        <h2>Próximas Acciones</h2>
+                        <div id="upcoming-tasks-container"></div>
+                    </div>
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                        <div style="position:relative;">
+                            <img id="dash-cover-img" src="" style="width:100%; height:120px; object-fit:cover; background:#ddd;">
+                            <button class="edit-btn" onclick="changeDashCover()" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); padding:6px 10px; border-radius:4px; color:#333;">📷 Editar</button>
                         </div>
-                        <div id="dash-content-area" class="page-content-area" style="margin-bottom:0;"></div>
-                        <textarea id="dash-editor-area" class="page-content-editor" style="min-height:100px;"></textarea>
+                        <div style="padding: 20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+                                <h3 style="margin:0; font-family:'Playfair Display', serif; font-size:1.2em;">Archivos & Links</h3>
+                                <button class="edit-btn" id="btn-dash-edit" onclick="toggleDashEdit()">[Editar]</button>
+                            </div>
+                            <div id="dash-content-area" class="page-content-area" style="margin-bottom:0;"></div>
+                            <textarea id="dash-editor-area" class="page-content-editor" style="min-height:100px;"></textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -376,12 +388,12 @@
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        // --- LISTA DE ETIQUETAS PREDETERMINADAS ---
-        const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas'];
+        // --- LISTA DE ETIQUETAS PREDETERMINADAS (Nuevas agregadas) ---
+        const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = [];
         let currentModalPriority = 'medium';
 
-        // --- 2. ESTADO INICIAL (Actualizado con Wishlist, Asuntos Sociales y ENMS Labs) ---
+        // --- 2. ESTADO INICIAL ---
         let defaultCategories = { 
             personal: { label: 'Personal', color: '#ffb3c6', subcats: ['Cuidado Personal', 'Rutinas', 'Wishlist', 'Recetas', 'Asuntos Sociales'] }, 
             escolar: { label: 'Académico', color: '#c8a2c8', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'] }, 
@@ -389,18 +401,18 @@
         };
         let defaultPageData = { 
             "ENMS Labs": { icon: "🧪", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
-            "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` } 
+            "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
+            "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b> para que te las sugiera el widget principal.</p>` }
         };
         let defaultDashboard = { cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=600&q=80', content: '<p><a href="https://overleaf.com" target="_blank" style="color:var(--accent); font-weight:500;">📄 Mis proyectos en Overleaf</a></p>' };
 
-        // Tareas por defecto pre-cargadas para ENMS Labs y Wishlist
         let defaultTasks = [
             { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' },
             { id: 2, type: 'event', title: 'Química Orgánica', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-20', priority: 'medium', status: 'todo', enmsMateria: 'Química Orgánica', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo B', enmsPractica: 'Práctica 1' },
             { id: 3, type: 'event', title: 'Concierto de The Killers', category: 'personal', subcategory: 'Wishlist', date: '', priority: 'high', status: 'todo', tags: ['ideas'] }
         ];
 
-        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard };
+        let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotes: '' };
         let taskIdCounter = 4; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null;
         let subpageViewMode = 'table'; 
 
@@ -415,15 +427,65 @@
                 let data = doc.data();
                 if(data.tasks && data.tasks.length > 0) appState = data; 
                 if(!appState.dashboard) appState.dashboard = defaultDashboard; 
+                if(!appState.quickNotes) appState.quickNotes = '';
                 taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 1; 
             } else saveToMemory();
             renderAll();
         }).catch(() => renderAll());
 
-        // --- FUNCIONES DASHBOARD ---
+        // --- FUNCIONES DASHBOARD Y WIDGETS ---
         function changeDashCover() { let c = prompt("URL de nueva imagen:", appState.dashboard.cover); if(c) { appState.dashboard.cover = c; saveToMemory(); renderDashboardInfo(); } }
         function toggleDashEdit() { let c = document.getElementById('dash-content-area'); let e = document.getElementById('dash-editor-area'); let b = document.getElementById('btn-dash-edit'); if(e.style.display==='none'){ c.style.display='none'; e.style.display='block'; b.innerText='[Guardar]'; } else { c.innerHTML = e.value; c.style.display='block'; e.style.display='none'; b.innerText='[Editar]'; appState.dashboard.content = e.value; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
-        function renderDashboardInfo() { document.getElementById('dash-cover-img').src = appState.dashboard.cover; document.getElementById('dash-content-area').innerHTML = appState.dashboard.content; document.getElementById('dash-editor-area').value = appState.dashboard.content; }
+        
+        function saveQuickNotes(val) { appState.quickNotes = val; saveToMemory(); }
+        
+        function renderDashboardInfo() { 
+            document.getElementById('dash-cover-img').src = appState.dashboard.cover; 
+            document.getElementById('dash-content-area').innerHTML = appState.dashboard.content; 
+            document.getElementById('dash-editor-area').value = appState.dashboard.content; 
+            let notesArea = document.getElementById('quick-notes-area');
+            if (notesArea && document.activeElement !== notesArea) {
+                notesArea.value = appState.quickNotes || '';
+            }
+        }
+
+        // LÓGICA DEL WIDGET DE RECETAS
+        function renderRecetasWidget() {
+            const hour = new Date().getHours();
+            let mealTag = 'postre'; let mealName = 'un antojo'; let greeting = '🌙';
+
+            if (hour >= 6 && hour < 12) { mealTag = 'desayuno'; mealName = 'el desayuno'; greeting = '☀️'; }
+            else if (hour >= 12 && hour < 17) { mealTag = 'almuerzo'; mealName = 'el almuerzo'; greeting = '🌤️'; }
+            else if (hour >= 17 && hour < 22) { mealTag = 'cena'; mealName = 'la cena'; greeting = '🌙'; }
+
+            const widget = document.getElementById('recetas-widget');
+            if (!widget) return;
+
+            let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags || []).includes(mealTag));
+            let suggestionHtml = '';
+
+            if (recipes.length > 0) {
+                let randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
+                suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--accent); text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='rgba(147,112,219,0.1)'" onmouseout="this.style.background='var(--hover-bg)'" onclick="openTaskModal(null, ${randomRecipe.id})">
+                    <span style="font-size:1.8em;">🍽️</span>
+                    <h4 style="margin:8px 0 5px 0; color:var(--text-dark);">${randomRecipe.title}</h4>
+                    <p style="font-size:0.85em; color:#888; margin:0;">Sugerencia para ${mealName}</p>
+                </div>`;
+            } else {
+                suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--border-color); text-align:center; font-size:0.85em; color:#888;">
+                    No tienes recetas con la etiqueta <b>#${mealTag}</b>.<br>¡Agrega una para inspirarte!
+                </div>`;
+            }
+
+            widget.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2 style="margin:0;">${greeting} ¿Qué cocinamos?</h2>
+                    <button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ir al Recetario</button>
+                </div>
+                ${suggestionHtml}
+            `;
+        }
+
         function updateCatColor(key, color) { appState.categories[key].color = color; saveToMemory(); renderAll(); }
         function applyDynamicColors() { document.documentElement.style.setProperty('--cat-personal', appState.categories.personal.color); document.documentElement.style.setProperty('--cat-escolar', appState.categories.escolar.color); document.documentElement.style.setProperty('--cat-profesional', appState.categories.profesional.color); }
         function addNewSubcatInline(catKey) { let name = prompt("Nombre de la nueva página:"); if (name && name.trim() !== '') { name = name.trim(); if (!appState.categories[catKey].subcats.includes(name)) { appState.categories[catKey].subcats.push(name); saveToMemory(); renderAll(); } else alert("Ya existe."); } }
@@ -565,7 +627,7 @@
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); if(document.getElementById('subpage-view').classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
-        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
+        function renderAll() { applyDynamicColors(); renderDashboardInfo(); renderRecetasWidget(); renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional'); renderKanban(); renderMasterEvents(); renderUpcomingTasks(); renderMasterView(); renderCalendar('cal-dashboard', 'all'); renderCalendar('cal-full', 'all'); renderCalendar('cal-personal', 'personal'); renderCalendar('cal-escolar', 'escolar'); renderCalendar('cal-profesional', 'profesional'); if(window.MathJax) MathJax.typesetPromise(); }
     </script>
 </body>
 </html>
