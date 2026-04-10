@@ -200,6 +200,7 @@
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
+        /* 📱 MAGIA RESPONSIVA REAL PARA CELULARES Y TABLETS 📱 */
         @media (max-width: 1024px) {
             .dashboard-grid, .standard-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
@@ -315,15 +316,15 @@
         </div>
 
         <div class="top-gallery">
-            <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('nav button')[3])">
+            <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[4])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('personal')">📷 Editar</button>
                 <h3>Personal</h3>
             </div>
-            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('nav button')[4])">
+            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[5])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('escolar')">📷 Editar</button>
                 <h3>Académico</h3>
             </div>
-            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('nav button')[5])">
+            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[6])">
                 <button class="btn-edit-cover" onclick="event.stopPropagation(); changeCatCover('profesional')">📷 Editar</button>
                 <h3>Profesional</h3>
             </div>
@@ -386,7 +387,7 @@
                 </div>
             </div>
 
-            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
+            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[3])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent);">Calendario</h2><span style="font-size:0.85em; color:var(--accent); font-weight:500;">⤢ Pantalla Completa</span>
                 </div>
@@ -537,7 +538,7 @@
             if(!appState.quickNotesList || appState.quickNotesList.length === 0) { feed.innerHTML = `<p style="color:#888; font-size:0.85em; text-align:center; margin-top:20px;">No tienes notas recientes.</p>`; return; }
             feed.innerHTML = appState.quickNotesList.map((note, idx) => `
                 <div style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:6px; padding:12px; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
-                    <button class="edit-btn" style="position:absolute; top:8px; right:8px; color:#ef4444; font-size:1.2em; opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" onclick="deleteQuickNote(${idx})">×</button>
+                    <button class="edit-btn" style="position:absolute; top:8px; right:8px; color:#ef4444; font-size:1.2em; opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" onclick="deleteQuickNote(${idx})" title="Borrar nota">×</button>
                     <p style="margin:0 0 8px 0; font-size:0.9em; white-space:pre-wrap; padding-right:15px; color:var(--text-dark); line-height:1.5;">${note.text}</p>
                     ${note.img ? `<img src="${note.img}" style="width:100%; max-height:200px; object-fit:cover; border-radius:4px; margin-bottom:8px; border:1px solid var(--border-color);">` : ''}
                     <span style="font-size:0.75em; color:#aaa; display:block; text-align:right;">${note.date}</span>
@@ -565,7 +566,6 @@
         function addQuickTodo() { 
             let input = document.getElementById('quick-todo-input'); let text = input.value.trim(); 
             if(text) { 
-                // EASTER EGG BRANDON
                 if(text.toLowerCase().includes('brandon') || text.toLowerCase().includes('killers')) {
                     text = "✨ Escuchar a Brandon Flowers (El amor de mi vida) 🎸";
                 }
@@ -605,7 +605,7 @@
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
         function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 9) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${appState.categories[t.category].color};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => `<span class="task-indicator" style="background:${appState.categories[t.category].color}" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();"></span>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container">${indicators}</div></div>`; } } }
         function renderModule(catKey, containerId) { const container = document.getElementById(containerId); container.innerHTML = ''; appState.categories[catKey].subcats.forEach(subcat => { let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; container.innerHTML += `<div class="gallery-card" onclick="openSubpage('${catKey}', '${subcat}')"><img src="${pageInfo.cover}" class="gallery-cover"><div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;"><div class="gallery-icon">${pageInfo.icon}</div><h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3><div style="flex:1; min-height: 60px;">${taskPreview}</div><button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button></div></div>`; }); container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; }
-        function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[7]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); document.getElementById('tab-' + mode).classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
