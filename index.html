@@ -280,6 +280,8 @@
         .tracker-dot.complete { background: var(--accent); color: white; border-color: transparent; box-shadow: 0 0 0 4px rgba(147,112,219,0.12); }
         .tracker-dot span { font-weight: 700; }
         .tracker-summary { font-size: 0.9em; color: var(--text-dark); opacity: 0.8; margin-top: 10px; }
+        .bouncy { transition: transform 0.2s ease; }
+        .bouncy:hover { transform: translateY(-2px); }
         .task-card { padding: 12px 14px; font-size: 0.9em; border-radius: 18px; border: 1px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.75); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
         .task-card label { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; }
         .task-card .habit-left { gap: 10px; }
@@ -1196,7 +1198,19 @@
             let haircareRoutines = bodycareHabits.filter(h => h.group === 'Haircare');
             let weeklyProgress = getWeeklyHabitProgress();
 
-            let html = `<div class="selfcare-grid">
+            let weekDays = [{n:'Lunes', v:1}, {n:'Martes', v:2}, {n:'Miérc', v:3}, {n:'Jueves', v:4}, {n:'Viernes', v:5}, {n:'Sábado', v:6}, {n:'Domingo', v:0}];
+            let weekHtml = '<div style="grid-column: 1 / -1; margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 20px;"><h3 style="font-family:Playfair Display; color:var(--text-dark); font-size:1.4em; margin-bottom:14px;">📅 Planeador Semanal</h3><div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:10px; overflow-x:auto; padding-bottom:10px;">';
+            weekDays.forEach(d => {
+                weekHtml += '<div style="background: rgba(255,255,255,0.4); border-radius: 8px; padding: 10px; min-width: 120px;"><h4 style="text-align:center; color:var(--color-p4); margin:0 0 10px 0; border-bottom:1px solid rgba(0,0,0,0.05); padding-bottom:5px;">'+d.n+'</h4>';
+                let dayHabits = appState.habits.filter(h => h.freq === 'daily' || (h.freq === 'specific' && h.specificDays && h.specificDays.includes(d.v)));
+                dayHabits.forEach(h => {
+                    weekHtml += '<div class="bouncy" onclick="openTaskModal(\'routine\', '+h.id+')" style="background:var(--panel-bg); padding:8px; border-radius:6px; margin-bottom:8px; font-size:11px; cursor:pointer; border-left:3px solid var(--color-p1); box-shadow:0 2px 5px rgba(0,0,0,0.02);"><b>'+h.title+'</b><div style="color:#888; font-size:9px; margin-top:3px;">'+(h.group||'')+'</div></div>';
+                });
+                weekHtml += '</div>';
+            });
+            weekHtml += '</div></div>';
+
+            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><h2 style="margin:0; font-family:'Playfair Display', serif; font-size:1.8em; color:var(--text-dark);">Selfcare</h2><button class="add-small-btn" style="background:var(--accent); color:white; border:none;" onclick="openTaskModal('routine', null, 'personal', 'Selfcare')">+ Añadir Hábito</button></div><div class="selfcare-grid">
                 <div style="display:grid; gap:20px;">
                     <div class="bento-widget bento-focus">
                         <div>
@@ -1264,6 +1278,7 @@
                         <div class="tracker-summary">${weeklyProgress.filter(p => p.complete).length} de 7 días con todos los hábitos completados.</div>
                     </div>
                 </div>
+                ${weekHtml}
             </div>`;
             area.innerHTML = html;
         }
