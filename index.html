@@ -305,7 +305,7 @@
             <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
             <div style="display:flex; gap:10px;">
                 <div style="flex:1;"><select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select></div>
-                <div style="flex:1;"><select id="m-subcategory" onchange="toggleEnmsFields()"></select></div>
+                <div style="flex:1;"><select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags();"></select></div>
             </div>
             <div style="display:flex; gap:10px; margin-top: 10px;">
                 <div style="flex:1;"><input type="date" id="m-date"></div><div style="flex:1;"><input type="time" id="m-time"></div>
@@ -1151,18 +1151,30 @@
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
         function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
 
-        function renderModalTags(category) { 
-            const container = document.getElementById('m-tags-container'); 
-            if(!container) return; 
-            let tagsList = predefinedTagsList; // fallback
-            if(category && appState.categories[category] && appState.categories[category].defaultTags) {
-                tagsList = appState.categories[category].defaultTags.concat(predefinedTagsList.filter(t => !appState.categories[category].defaultTags.includes(t)));
-            }
-            container.innerHTML = tagsList.map(tag => { 
-                const isActive = currentModalTags.includes(tag) ? 'active' : ''; 
-                return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`; 
-            }).join(''); 
+        const tagsMap = {
+            "Selfcare": ["skincare", "haircare", "gym", "meditación", "salud mental"],
+            "Recetas": ["desayuno", "almuerzo", "cena", "postre", "snack", "mercado"],
+            "Biblioteca": ["libro", "artículo", "leído", "pendiente", "favorito"],
+            "Quimicute": ["guión", "grabación", "edición", "idea", "ciencia"],
+            "Perfumes Lab": ["fórmula", "ensayo", "fragancia", "ingredientes"],
+            "Japón 15D": ["trámites", "presupuesto", "itinerario", "vuelo"],
+            "Asuntos Sociales": ["cumpleaños", "salida", "reunión", "familia"],
+            "ENMS Labs": ["práctica", "reporte", "pendiente", "revisión"]
+        };
+
+        function renderModalTags() {
+            const container = document.getElementById('m-tags-container');
+            if(!container) return;
+
+            const subcat = document.getElementById('m-subcategory').value;
+            const tagsToShow = tagsMap[subcat] || ["urgente", "importante", "pendiente", "personal"];
+
+            container.innerHTML = tagsToShow.map(tag => {
+                const isActive = currentModalTags.includes(tag) ? 'active' : '';
+                return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`;
+            }).join('');
         }
+
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
         function toggleRecurrence() { 
@@ -1273,7 +1285,7 @@
                 document.getElementById('m-yearly-month').value = '';
                 document.getElementById('m-yearly-day').value = '';
             } 
-            toggleCustomFields(); window.currentEditId = taskId; renderModalTags(document.getElementById('m-category').value);
+            toggleCustomFields(); window.currentEditId = taskId; renderModalTags();
         }
         
         function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
@@ -1287,7 +1299,7 @@
                     dd.innerHTML = ''; 
                 } 
                 toggleCustomFields(); 
-                renderModalTags(cat);
+                renderModalTags();
             } 
         }
         
