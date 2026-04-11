@@ -106,6 +106,17 @@
         .modal-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);}
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; font-weight: 300; transition: 0.2s; line-height: 1;}
         .close-modal:hover { color: var(--accent); transform: rotate(90deg);}
+
+        /* CONFIRM MODAL PERSONALIZADO */
+        #confirmModalOverlay .modal { max-width: 420px; padding: 25px 25px 20px; border-radius: 12px; width: 90%; }
+        #confirmModalOverlay .modal h2 { font-size: 1.7em; margin-bottom: 12px; font-family: 'Playfair Display', serif; }
+        #confirmModalOverlay .confirm-message { color: var(--text-dark); font-size: 1em; line-height: 1.6; margin-bottom: 20px; }
+        .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+        .confirm-actions .confirm-btn { flex: 1 1 auto; min-width: 120px; padding: 12px 15px; border-radius: 10px; border: none; font-size: 0.95em; cursor: pointer; transition: 0.2s;}
+        .confirm-actions .yes-btn { background: var(--color-p1); color: #3d2b2b; }
+        .confirm-actions .yes-btn:hover { filter: brightness(0.95); }
+        .confirm-actions .cancel-btn { background: var(--hover-bg); color: var(--text-dark); }
+        .confirm-actions .cancel-btn:hover { background: var(--border-color); }
         
         /* BOTONES PRIORIDAD SEMÁFORO */
         .priority-group { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 15px;}
@@ -257,6 +268,7 @@
             .header-top-row { gap: 8px; }
             .bc-main { font-size: 1.5em; }
             .bc-cat { font-size: 1.1em; }
+            .bc-sub { font-size: 1em; }
             
             .modal { padding: 20px; width: 95%; }
             .modal h2 { font-size: 1.3em; }
@@ -387,6 +399,17 @@
             <div class="tags-container" id="m-tags-container"></div>
             <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModalOverlay" onclick="if(event.target===this) closeConfirmModal()">
+        <div class="modal">
+            <h2>Confirmar acción</h2>
+            <p class="confirm-message">¿Estás segura de que quieres continuar?</p>
+            <div class="confirm-actions">
+                <button class="confirm-btn yes-btn" onclick="confirmModalYes()">Sí, eliminar</button>
+                <button class="confirm-btn cancel-btn" onclick="closeConfirmModal()">Cancelar</button>
+            </div>
         </div>
     </div>
 
@@ -770,11 +793,15 @@
         
         function renderDashboardLinks() { const list = document.getElementById('dash-links-list'); if(!list) return; list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
         function addDashLink() { let t = document.getElementById('new-link-title').value.trim(); let u = document.getElementById('new-link-url').value.trim(); if(t && u) { if(!u.startsWith('http')) u = 'https://' + u; if(!appState.dashboard.links) appState.dashboard.links = []; appState.dashboard.links.push({title: t, url: u}); document.getElementById('new-link-title').value = ''; document.getElementById('new-link-url').value = ''; saveToMemory(); renderDashboardLinks(); } }
-        function deleteDashLink(idx) { if(confirm("¿Borrar link?")) { appState.dashboard.links.splice(idx,1); saveToMemory(); renderDashboardLinks(); } }
+        function deleteDashLink(idx) { customConfirm("¿Borrar link?", () => { appState.dashboard.links.splice(idx,1); saveToMemory(); renderDashboardLinks(); }); }
 
         function renderQuickNotes() { const feed = document.getElementById('quick-notes-feed'); if(!feed) return; if(!appState.quickNotesList || appState.quickNotesList.length === 0) { feed.innerHTML = `<p style="color:#888; font-size:0.85em; text-align:center; margin-top:20px;">No tienes notas recientes.</p>`; return; } feed.innerHTML = appState.quickNotesList.map((note, idx) => `<div style="background:var(--panel-bg); border:1px solid var(--border-color); border-radius:6px; padding:12px; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.02);"><button class="edit-btn" style="position:absolute; top:8px; right:8px; color:#ef4444; font-size:1.2em; opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" onclick="deleteQuickNote(${idx})" title="Borrar nota">×</button><button class="edit-btn" style="position:absolute; top:8px; right:30px; color:#888; font-size:1.2em; opacity:0.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6" onclick="copyNote('${note.text.replace(/'/g, "\\'")}')" title="Copiar texto">📋</button><p style="margin:0 0 8px 0; font-size:0.9em; white-space:pre-wrap; padding-right:60px; color:var(--text-dark); line-height:1.5;">${note.text}</p>${note.img ? `<img src="${note.img}" style="width:100%; max-height:200px; object-fit:cover; border-radius:4px; margin-bottom:8px; border:1px solid var(--border-color);">` : ''}<span style="font-size:0.75em; color:#aaa; display:block; text-align:right;">${note.date}</span></div>`).join(''); }
         function addQuickNote() { let t = document.getElementById('quick-note-input'); let i = document.getElementById('quick-note-img'); if(t.value.trim() || i.value.trim()) { let d = new Date(); let dStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); if(!appState.quickNotesList) appState.quickNotesList = []; appState.quickNotesList.unshift({ text: t.value.trim(), img: i.value.trim(), date: dStr }); t.value = ''; i.value = ''; saveToMemory(); renderQuickNotes(); } }
-        function deleteQuickNote(idx) { if(confirm("¿Borrar nota?")) { appState.quickNotesList.splice(idx, 1); saveToMemory(); renderQuickNotes(); } }
+        function deleteQuickNote(idx) { customConfirm("¿Borrar nota?", () => { appState.quickNotesList.splice(idx, 1); saveToMemory(); renderQuickNotes(); }); }
+
+        function customConfirm(message, callback) { const overlay = document.getElementById('confirmModalOverlay'); if(!overlay) { if(confirm(message)) callback(); return; } overlay.querySelector('.confirm-message').innerText = message; overlay.style.display = 'flex'; window._confirmCallback = callback; }
+        function closeConfirmModal() { const overlay = document.getElementById('confirmModalOverlay'); if(overlay) overlay.style.display = 'none'; window._confirmCallback = null; }
+        function confirmModalYes() { if(window._confirmCallback) window._confirmCallback(); closeConfirmModal(); }
 
         function copyNote(text) { navigator.clipboard.writeText(text).then(() => alert('Texto copiado al portapapeles!')).catch(err => console.error('Error al copiar:', err)); }
 
@@ -925,7 +952,7 @@
             }
             saveToMemory(); closeHabitModal(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
-        function deleteHabit(id) { if(confirm('¿Seguro que quieres borrar este hábito? perderás la racha.')) { appState.habits = appState.habits.filter(h => h.id !== id); saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard(); } }
+        function deleteHabit(id) { customConfirm('¿Seguro que quieres borrar este hábito? perderás la racha.', () => { appState.habits = appState.habits.filter(h => h.id !== id); saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard(); }); }
 
         let currentConfigCat = null;
         function openCategoryConfig(catKey) {
@@ -1027,14 +1054,14 @@
         function ctxSetColor(colorVar) { if(!appState.pageData[window.contextTarget.subcat]) appState.pageData[window.contextTarget.subcat] = {}; appState.pageData[window.contextTarget.subcat].color = colorVar; saveToMemory(); renderAll(); document.getElementById('module-context-menu').style.display='none';}
         
         function ctxDelete() { 
-            if(confirm(`¿Seguro que quieres borrar "${window.contextTarget.subcat}"? Se borrarán sus tareas.`)) {
+            customConfirm(`¿Seguro que quieres borrar "${window.contextTarget.subcat}"? Se borrarán sus tareas.`, () => {
                 let cat = window.contextTarget.cat; let sub = window.contextTarget.subcat;
                 appState.categories[cat].subcats = appState.categories[cat].subcats.filter(s => s !== sub);
                 if(appState.pageData[sub]) delete appState.pageData[sub];
                 appState.tasks = appState.tasks.filter(t => t.subcategory !== sub);
                 saveToMemory(); renderAll();
-            }
-            document.getElementById('module-context-menu').style.display='none';
+                document.getElementById('module-context-menu').style.display='none';
+            });
         }
 
         function addNewSubcatInline(catKey) { let name = prompt("Nombre de la nueva página:"); if (name && name.trim() !== '') { name = name.trim(); if (!appState.categories[catKey].subcats.includes(name)) { appState.categories[catKey].subcats.push(name); saveToMemory(); renderAll(); } else alert("Ya existe."); } }
