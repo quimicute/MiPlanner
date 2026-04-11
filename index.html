@@ -47,10 +47,14 @@
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); z-index: 1000; backdrop-filter: blur(2px); animation: fadeIn 0.3s; }
         .menu-overlay.open { display: block; }
 
-        /* CABECERA (BREADCRUMBS REDUCIDOS) */
-        header { text-align: center; padding: 15px 0 10px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s;}
-        .header-top-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; flex-wrap: wrap; margin-bottom: 5px;}
-        header h1 { margin: 0; display:flex; align-items:center; flex-wrap:wrap; justify-content:center;}
+        /* CABECERA PRINCIPAL */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; transition: 0.3s; flex-wrap: wrap; gap: 20px; }
+        .header-left { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+        .header-top-row { display: flex; align-items: center; gap: 12px; }
+        .header-title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+        .header-right { display: flex; justify-content: flex-end; align-items: flex-end; width: 100%; max-width: 420px; }
+        .header-quote { font-family: 'Great Vibes', cursive; color: #888; font-size: 1.05em; text-align: right; margin: 0; line-height: 1.4; }
+        header h1 { margin: 0; display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-start; }
         
         .bc-main { font-family: 'Playfair Display', serif; font-size: 1.8em; font-weight: 600; cursor: pointer; transition: 0.2s;}
         .bc-cat { font-family: 'Playfair Display', serif; font-size: 1.3em; color: #888; cursor: pointer; }
@@ -72,7 +76,7 @@
         .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
         .panel { background: var(--panel-bg); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s;}
-        .panel h2 { font-size: 1em; padding: 4px 10px; margin-bottom: 12px; }
+        .panel h2 { font-size: 1.3em; padding: 4px 10px; margin-bottom: 12px; }
         
         .fab { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: white; border: none; border-radius: 50%; width: 55px; height: 55px; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 999; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .fab:hover { transform: scale(1.15) rotate(90deg); background: var(--accent-hover); }
@@ -106,6 +110,12 @@
         .modal-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);}
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; font-weight: 300; transition: 0.2s; line-height: 1;}
         .close-modal:hover { color: var(--accent); transform: rotate(90deg);}
+
+        /* SCROLLBAR PERSONALIZADO */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
 
         /* CONFIRM MODAL PERSONALIZADO */
         #confirmModalOverlay .modal { max-width: 420px; padding: 25px 25px 20px; border-radius: 12px; width: 90%; }
@@ -161,7 +171,7 @@
         .kanban { display: flex; gap: 20px; margin-top: 10px; }
         .kanban-col { flex: 1; min-height: 250px; transition: 0.3s; border: 2px dashed transparent; border-radius: 6px; padding: 5px;}
         .kanban-col.drag-over { border-color: var(--accent); background: rgba(147, 112, 219, 0.05); }
-        .kanban-col h3 { text-align: left; font-family: 'Playfair Display', serif; font-size: 1.1em; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-top: 0;}
+        .kanban-col h3 { text-align: left; font-family: 'Playfair Display', serif; font-size: 1.3em; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-top: 0;}
         .task-card { background: var(--panel-bg); padding: 15px; border-radius: 6px; margin-bottom: 12px; font-size: 0.9em; border: 1px solid var(--border-color); cursor: grab; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s;}
         .task-card:hover { border-color: var(--accent); transform: translateY(-2px);}
         .task-title { font-weight: 500; display: block; margin-top: 10px; font-size: 1.05em; color: var(--text-dark); line-height: 1.4;}
@@ -171,7 +181,7 @@
         
         .event-item { background: var(--panel-bg); padding: 15px; border-radius: 4px; margin-bottom: 10px; border: 1px solid var(--border-color); border-left: 3px solid var(--accent); font-size: 0.9em; transition: 0.2s; cursor:pointer;}
         .event-item:hover { transform: translateX(3px); border-color: var(--accent);}
-        .icon-symbol { color: var(--accent); font-weight: bold; margin-right: 5px;}
+        .icon-symbol { color: var(--accent); font-weight: bold; margin-right: 5px; font-size: 1.4em; vertical-align: middle; }
 
         /* TARJETAS INTERNAS */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
@@ -179,7 +189,7 @@
         .gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.08);}
         .gallery-cover { width: 100%; height: 110px; object-fit: cover; background: #ddd; border-bottom: 1px solid var(--border-color); transition: 0.3s; }
         .gallery-card:hover .gallery-cover { transform: scale(1.05); }
-        .gallery-icon { font-size: 1.8em; position: absolute; top: -25px; left: 15px; background: var(--panel-bg); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.08); z-index: 2;}
+        .gallery-icon { font-size: 2.6em; position: absolute; top: -25px; left: 15px; background: var(--panel-bg); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.08); z-index: 2;}
         .new-card { display:flex; align-items:center; justify-content:center; min-height:180px; background:transparent; border: 2px dashed var(--border-color); box-shadow:none; cursor:pointer; color:#888; font-weight:600; font-size:1.1em; transition: 0.2s; border-radius: 10px;}
 
         /* CALENDARIOS */
@@ -211,7 +221,7 @@
         
         .page-cover { width: 100%; height: 220px; object-fit: cover; background: #ddd; transition: filter 0.3s; border-radius: 8px 8px 0 0;}
         .page-icon-wrapper { margin-top: -40px; margin-left: 40px; margin-bottom: 20px; position: relative; z-index: 2;}
-        .page-icon { font-size: 3.5em; background: var(--panel-bg); border-radius: 50%; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color); color: var(--text-dark); font-family: 'Playfair Display', serif; box-shadow: 0 4px 15px rgba(0,0,0,0.08);}
+        .page-icon { font-size: 4.5em; background: var(--panel-bg); border-radius: 50%; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color); color: var(--text-dark); font-family: 'Playfair Display', serif; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
@@ -266,6 +276,8 @@
             .grid-col-1, .grid-col-2, .grid-col-4 { grid-column: span 1; }
             
             .header-top-row { gap: 8px; }
+            .header-right { justify-content: flex-start; max-width: 100%; }
+            .header-quote { text-align: left; font-size: 1em; }
             .bc-main { font-size: 1.5em; }
             .bc-cat { font-size: 1.1em; }
             .bc-sub { font-size: 1em; }
@@ -305,22 +317,29 @@
         <button onclick="switchView('kanban-general', this); toggleMenu()">📌 Kanban Global</button>
         <button onclick="switchView('full-calendar-view', this); toggleMenu()">📅 Calendario</button>
         <button onclick="switchView('mod-personal', this); toggleMenu()">🌸 Personal</button>
-        <button onclick="switchView('mod-escolar', this); toggleMenu()">📚 Académico</button>
-        <button onclick="switchView('mod-profesional', this); toggleMenu()">🧪 Profesional</button>
+        <button onclick="switchView('mod-escolar', this); toggleMenu()">Académico</button>
+        <button onclick="switchView('mod-profesional', this); toggleMenu()">Profesional</button>
         <button onclick="switchView('master-view', this); toggleMenu()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🔍 Buscador Maestro</button>
     </nav>
 
     <header>
-        <div class="header-top-row">
-            <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
-                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            </button>
-            <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
-                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <h1 id="main-header-title">Life Planner</h1>
+        <div class="header-left">
+            <div class="header-top-row">
+                <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
+                <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </button>
+            </div>
+            <div class="header-title-group">
+                <h1 id="main-header-title">Life Planner</h1>
+                <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
+            </div>
         </div>
-        <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
+        <div class="header-right">
+            <p class="header-quote">“You always have two choices: your commitment versus your fear.”</p>
+        </div>
     </header>
 
     <button class="fab" onclick="openTaskModal()">+</button>
@@ -332,8 +351,14 @@
             <select id="m-type" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
             <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
             <div style="display:flex; gap:10px;">
-                <div style="flex:1;"><select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select></div>
-                <div style="flex:1;"><select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags();"></select></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:0.8em; color:#888;">Ámbito</label>
+                    <select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select>
+                </div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+                    <label style="font-size:0.8em; color:#888;">Módulo</label>
+                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags();"></select>
+                </div>
             </div>
             <div style="display:flex; gap:10px; margin-top: 10px;">
                 <div style="flex:1;"><input type="date" id="m-date"></div><div style="flex:1;"><input type="time" id="m-time"></div>
@@ -420,7 +445,7 @@
             <input type="text" id="h-title" placeholder="Nombre del hábito (ej. Tomar agua)..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
             <div style="display:flex; gap:10px;">
                 <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#888;">Categoría</label>
+                    <label style="font-size:0.8em; color:#888;">Ámbito</label>
                     <select id="h-category">
                         <option value="Bodycare">🌸 Bodycare</option>
                         <option value="Fitness">💪 Fitness</option>
@@ -529,19 +554,19 @@
                 <div class="panel" style="flex:1;">
                     <h2>Próximas Acciones</h2><div id="upcoming-tasks-container"></div>
                 </div>
-                <div class="panel" style="flex:1;">
-                    <h2>✅ Quick To-Do</h2>
+                <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
+                    <h2>Quick To-Do</h2>
                     <div style="display:flex; gap:10px; margin-bottom: 15px;">
                         <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
                         <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
                     </div>
-                    <div id="quick-todo-list"></div>
+                    <div id="quick-todo-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
             </div>
             
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="panel" style="flex:1; display:flex; flex-direction:column; max-height: 520px;">
-                    <h2>📝 Notas Rápidas</h2>
+                <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
+                    <h2>Notas Rápidas</h2>
                     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
                         <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
                         <div style="display:flex; gap:10px;">
@@ -549,14 +574,14 @@
                             <button class="add-small-btn" onclick="addQuickNote()" style="background:var(--accent); color:white; border:none;">Guardar</button>
                         </div>
                     </div>
-                    <div id="quick-notes-feed" style="overflow-y:auto; flex:1; padding-right:5px; display:flex; flex-direction:column; gap:12px;"></div>
+                    <div id="quick-notes-feed" style="flex: 1; overflow-y: auto; padding-right: 10px; display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
                 <div class="panel" id="recetas-widget" style="flex:1;"></div>
             </div>
 
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="panel" style="flex:1;">
-                    <h2>🔗 Archivos & Links</h2>
+                    <h2>Archivos & Links</h2>
                     <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
                         <input type="text" id="new-link-title" placeholder="Nombre (ej. Tesis)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
                         <input type="text" id="new-link-url" placeholder="URL del link" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
@@ -582,13 +607,13 @@
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
                 <div class="panel" id="habits-widget-container">
-                    <h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">✨ Hábitos de Hoy</h2>
+                    <h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">Hábitos de Hoy</h2>
                     <div id="personal-habits-summary"></div>
                     <button class="add-inline-btn" style="margin-top:15px;" onclick="openSubpage('personal', 'Selfcare')">Ir a Selfcare →</button>
                 </div>
                 <div class="panel clickable-panel" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">🥂 Social & Cumpleaños</h2>
+                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">Social & Cumpleaños</h2>
                     </div>
                     <button class="add-small-btn" onclick="event.stopPropagation(); openTaskModal('event', null, 'personal', 'Asuntos Sociales')" style="width:100%; border: 1px dashed var(--border-color); color:#888; margin-bottom:10px;">+ Añadir Cumpleaños/Salida</button>
                     <div class="calendar-grid" id="cal-personal" style="gap:2px;"></div>
@@ -664,12 +689,12 @@
             profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: ['proyecto', 'cliente', 'departamento'] } 
         };
         let defaultPageData = { 
-            "ENMS Labs": { icon: "🧪", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
-            "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
-            "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` },
-            "Selfcare": { icon: "🧘‍♀️", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
-            "Biblioteca": { icon: "📚", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi biblioteca personal. Agrega links de libros, artículos o recursos que quieres leer.</p>`, links: [] },
-            "Asuntos Sociales": { icon: "🥂", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
+            "ENMS Labs": { icon: "⌬", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
+            "Wishlist": { icon: "✦", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
+            "Recetas": { icon: "◈", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` },
+            "Selfcare": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
+            "Biblioteca": { icon: "¶", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi biblioteca personal. Agrega links de libros, artículos o recursos que quieres leer.</p>`, links: [] },
+            "Asuntos Sociales": { icon: "❦", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
         };
         let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
         
@@ -727,7 +752,7 @@
                 // Asegurar links en pageData
                 for(let cat in defaultCategories) {
                     for(let sub of defaultCategories[cat].subcats) {
-                        if(!appState.pageData[sub]) appState.pageData[sub] = defaultPageData[sub] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "" };
+                        if(!appState.pageData[sub]) appState.pageData[sub] = defaultPageData[sub] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "" };
                         if(!appState.pageData[sub].links) appState.pageData[sub].links = [];
                     }
                 }
@@ -1070,7 +1095,7 @@
             const container = document.getElementById(containerId); if(!container) return; container.innerHTML = ''; 
             if (!appState.categories[catKey] || !appState.categories[catKey].subcats) return; 
             appState.categories[catKey].subcats.forEach(subcat => { 
-                let pageInfo = appState.pageData[subcat] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; 
+                let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; 
                 let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); 
                 let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); 
                 if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; 
@@ -1093,7 +1118,32 @@
         }
 
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
-        function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 10) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => { let emo = t.subcategory === 'Asuntos Sociales' ? (t.title.toLowerCase().includes('cumple')?'🎂':'🥂') : ''; return `<button class="task-indicator" style="background:${emo? 'transparent' : getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${emo? emo : '•'}</button>`; }).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; } } }
+        function renderCalendar(containerId, filterCat) { 
+            const calGrid = document.getElementById(containerId); 
+            if(!calGrid) return; 
+            const iconMap = { 'personal': '✧', 'escolar': '◈', 'profesional': '⌬', 'default': '•' };
+            calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
+            for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
+            for(let day=1; day<=30; day++) { 
+                let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; 
+                let dayTasks = appState.tasks.filter(t => t.date === dateStr); 
+                if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); 
+                let isToday = (day === 10) ? 'today' : ''; 
+                if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
+                    let taskBars = dayTasks.map(t => { 
+                        let icon = iconMap[t.category] || iconMap['default']; 
+                        return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
+                    }).join(''); 
+                    calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
+                } else { 
+                    let indicators = dayTasks.map(t => { 
+                        let icon = iconMap[t.category] || iconMap['default']; 
+                        return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${icon}</button>`; 
+                    }).join(''); 
+                    calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
+                } 
+            } 
+        }
         function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
@@ -1112,9 +1162,9 @@
                     <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button>
                 </div>
                 <div class="view-tabs">
-                    <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">📋 Tabla</button>
-                    <button id="tab-kanban" class="view-tab ${subpageViewMode==='kanban'?'active':''}" onclick="setSubpageView('kanban')">📌 Kanban</button>
-                    <button id="tab-list" class="view-tab ${subpageViewMode==='list'?'active':''}" onclick="setSubpageView('list')">📄 Lista</button>
+                    <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">Tabla</button>
+                    <button id="tab-kanban" class="view-tab ${subpageViewMode==='kanban'?'active':''}" onclick="setSubpageView('kanban')">Kanban</button>
+                    <button id="tab-list" class="view-tab ${subpageViewMode==='list'?'active':''}" onclick="setSubpageView('list')">Lista</button>
                 </div><div id="sp-content-inner">`;
             
             if(subTasks.length === 0) { html += '<p style="color: #888; font-size: 0.9em;">No hay registros. Crea uno nuevo para empezar.</p></div>'; dynamicArea.innerHTML = html; return; } 
@@ -1167,7 +1217,7 @@
 
         function openSubpage(catKey, subcatName) { 
             currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
-            let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
+            let pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
             
             updateHeader('subpage', getCatLabel(catKey), subcatName);
             
@@ -1191,8 +1241,8 @@
         }
 
         function goBackFromSubpage() { if(currentParentView) { switchView(currentParentView, document.querySelector(`#main-nav button[onclick*="${currentParentView}"]`)); } else goToHome(); }
-        function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
-        function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
+        function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Símbolo (ej. ◈, ¶, ✧, ⌬, ⚝):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
+        function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
 
         const tagsMap = {
             "Selfcare": ["skincare", "haircare", "gym", "meditación", "salud mental"],
@@ -1252,7 +1302,7 @@
             if(!customEl || !container || !titleEl) return; 
             if(subcat === 'ENMS Labs') {
                 customEl.style.display = 'flex'; 
-                titleEl.innerText = '🧪 Datos de Laboratorio'; 
+                titleEl.innerText = '⌬ Datos de Laboratorio'; 
                 container.innerHTML = `<input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;"><input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;"><input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;"><input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;">`;
             } else {
                 let customization = appState.categories[cat]; 
