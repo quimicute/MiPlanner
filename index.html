@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quimicute Life Planner</title>
+    <title>Life Planner | Quimicute</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -15,169 +15,173 @@
 
     <style>
         * { box-sizing: border-box; }
+
         :root {
             --color-p1: #EBBAB9; --color-p2: #C9C5BA; --color-p3: #97B1A6; 
             --color-p4: #5AA2AB; --color-p5: #407076; --color-p6: #FFDDD4;
-            --bg-color: #fdfafc; --text-dark: #3a3a3a; --accent: #9370db;
+            --bg-color: #fdfafc; --text-dark: #3a3a3a; --text-light: #ffffff; 
+            --accent: #9370db; --accent-hover: #7b68ee; --script-color: #da70d6; 
             --panel-bg: #ffffff; --border-color: #eee; --hover-bg: #fafafa;
         }
-        body.dark-mode { --bg-color: #1a1a1e; --text-dark: #e4e4e7; --panel-bg: #24242a; --border-color: #3f3f46; --hover-bg: #2d2d35; }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 15px 40px 15px; overflow-x: hidden; transition: 0.5s; font-size: 13px;}
+        body.dark-mode {
+            --bg-color: #1a1a1e; --text-dark: #e4e4e7; --panel-bg: #24242a;
+            --border-color: #3f3f46; --hover-bg: #2d2d35;
+        }
 
-        /* BREADCRUMBS */
-        header { text-align: center; padding: 15px 0; }
-        .bc-main { font-family: 'Playfair Display', serif; font-size: 2.2em; font-weight: 600; cursor: pointer; transition: 0.2s;}
-        .bc-cat { font-family: 'Playfair Display', serif; font-size: 1.4em; color: #888; cursor: pointer; }
-        .bc-sub { font-family: 'Playfair Display', serif; font-size: 1.1em; color: #aaa; }
-        .bc-sep { color: #eee; margin: 0 10px; font-weight: 300; }
-        .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 1.6em; margin-top: 5px;}
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 0 15px 40px 15px; overflow-x: hidden; transition: 0.5s; font-size: 14px;}
 
-        /* GRID */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; }
+        header { text-align: center; padding: 20px 0; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .header-top-row { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap;}
+        .bc-main { font-family: 'Playfair Display', serif; font-size: 2.2em; font-weight: 600; color: var(--text-dark); cursor: pointer; transition: 0.2s;}
+        .bc-main:hover { color: var(--accent); }
+        .bc-cat { font-family: 'Playfair Display', serif; font-size: 1.5em; font-weight: 400; color: #888; cursor: pointer; transition: 0.2s;}
+        .bc-cat:hover { color: var(--accent); }
+        .bc-sub { font-family: 'Playfair Display', serif; font-size: 1.2em; font-weight: 400; color: #aaa; }
+        .bc-sep { color: #ddd; margin: 0 8px; font-weight: 300; font-size: 1.2em;}
+        .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 1.8em; margin: 5px 0 0 0;}
+
+        .menu-btn { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: white; border: none; font-size: 20px; cursor: pointer; z-index: 1002; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s;}
+        nav { position: fixed; top: 0; left: -300px; width: 260px; height: 100vh; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-right: 1px solid var(--border-color); z-index: 1001; transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; padding: 60px 20px; }
+        nav.open { left: 0; }
+        nav button { background: transparent; color: var(--text-dark); border: none; padding: 12px 15px; font-weight: 500; cursor: pointer; transition: 0.2s; border-radius: 6px; text-align: left;}
+        nav button:hover { background: rgba(147, 112, 219, 0.1); color: var(--accent); transform: translateX(5px); }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; margin: auto; }
         .grid-col-1 { grid-column: span 1; } .grid-col-2 { grid-column: span 2; } .grid-col-4 { grid-column: span 4; }
+        .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
-        .panel { background: var(--panel-bg); border-radius: 10px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: 0.3s;}
-        .panel h2 { font-family: 'Playfair Display', serif; font-size: 1.1em; background-color: var(--color-p3); color: white; display: inline-block; padding: 4px 10px; margin-top: 0; margin-bottom: 15px; border-radius: 4px;}
+        .panel { background: var(--panel-bg); border-radius: 8px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid var(--border-color); position: relative; transition: 0.3s;}
+        .panel h2 { font-family: 'Playfair Display', serif; font-size: 1.1em; background-color: var(--color-p3); color: white; display: inline-block; padding: 5px 12px; margin-top: 0; margin-bottom: 15px; border-radius: 4px;}
 
-        /* CARDS */
-        .top-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
-        .top-gallery-card { border-radius: 10px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; background-size: cover; background-position: center; border: 1px solid var(--border-color); min-height: 100px; display:flex; align-items:center; justify-content:center;}
-        .top-gallery-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.3); z-index: 1;}
-        .top-gallery-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5em; color: white; z-index: 2; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
-        .top-gallery-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .top-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; width: 100%; }
+        .top-gallery-card { border-radius: 10px; padding: 30px 15px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; background-size: cover; background-position: center; min-height: 120px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);}
+        .top-gallery-card::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.35); z-index: 1;}
+        .top-gallery-card h3 { font-family: 'Playfair Display', serif; font-size: 1.6em; color: white; z-index: 2; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.4);}
 
-        /* CONTEXT MENU */
-        .context-menu { display: none; position: absolute; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 9999; flex-direction: column; padding: 5px; min-width: 150px; }
-        .context-menu button { background: transparent; border: none; padding: 8px 12px; text-align: left; font-size: 0.9em; cursor: pointer; width: 100%; border-radius: 4px;}
+        .context-menu { display: none; position: absolute; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 9999; flex-direction: column; padding: 8px; min-width: 200px; }
+        .context-menu button { background: transparent; border: none; padding: 8px 12px; text-align: left; font-size: 0.9em; cursor: pointer; border-radius: 5px; color: var(--text-dark); display: flex; gap: 10px; align-items: center;}
         .context-menu button:hover { background: var(--hover-bg); color: var(--accent); }
+        .color-palette-ctx { display: flex; gap: 5px; padding: 8px; justify-content: center; border-top: 1px solid var(--border-color); margin-top: 5px;}
+        .color-circle { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); transition: 0.2s;}
 
-        /* HABITS & LIBRARY */
-        .item-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
-        .item-row span { flex: 1; margin-left: 10px; }
-        .tag-pill { font-size: 10px; padding: 2px 6px; border-radius: 10px; background: #eee; color: #666; margin-left: 5px;}
+        .habit-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 5px; border-bottom: 1px solid var(--border-color); font-size: 0.9em;}
+        .progress-bar-bg { width: 100%; background: #eee; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px;}
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--color-p4), var(--accent)); transition: width 0.6s ease-in-out; }
 
-        /* MODAL */
+        .recipe-kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .recipe-col { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 8px; min-height: 300px;}
+        .recipe-col h4 { font-family: 'Playfair Display', serif; text-align: center; border-bottom: 2px solid var(--color-p3); padding-bottom: 8px; margin-top: 0; color: var(--color-p5); text-transform: capitalize;}
+
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal { background: var(--panel-bg); padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+        .modal { background: var(--panel-bg); padding: 40px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto;}
         
-        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;}
-        .menu-btn { position: fixed; bottom: 25px; left: 25px; width: 45px; height: 45px; border-radius: 50%; background: var(--accent); color: white; border: none; font-size: 18px; z-index: 1002; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-        
-        .progress-bar-bg { width: 100%; background: #eee; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px;}
-        .progress-bar-fill { height: 100%; background: var(--color-p4); transition: 0.5s; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px;}
+        .cal-day { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 6px; min-height: 40px; padding: 5px; display: flex; flex-direction: column; }
+        .cal-day.today { border: 2px solid var(--accent); }
+        .day-num { font-size: 10px; color: #888; align-self: flex-end;}
 
-        @media (max-width: 800px) { .dashboard-grid, .top-gallery { grid-template-columns: 1fr 1fr; } }
+        .link-item { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 5px; font-size: 12px;}
+        .link-item a { text-decoration: none; color: var(--text-dark); font-weight: 500;}
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .bouncy { transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bouncy:hover { transform: scale(1.02); }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="ctx-menu" class="context-menu">
-        <button onclick="ctxEdit()">✏️ Editar</button>
-        <button onclick="ctxDelete()" style="color:red;">🗑️ Eliminar</button>
+        <button onclick="ctxChangeCover()">📷 Cambiar Portada</button>
+        <button onclick="ctxChangeIcon()">✧ Cambiar Ícono</button>
+        <div class="color-palette-ctx">
+            <div class="color-circle" style="background:var(--color-p1)" onclick="ctxSetColor('var(--color-p1)')"></div>
+            <div class="color-circle" style="background:var(--color-p3)" onclick="ctxSetColor('var(--color-p3)')"></div>
+            <div class="color-circle" style="background:var(--color-p4)" onclick="ctxSetColor('var(--color-p4)')"></div>
+        </div>
+        <button onclick="ctxDelete()" style="color: #ef4444; border-top: 1px solid #eee;">🗑️ Eliminar</button>
     </div>
 
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
-    <nav id="main-nav" style="position:fixed; top:0; left:-280px; width:260px; height:100vh; background:white; z-index:1001; transition:0.4s; padding:40px 20px; border-right:1px solid #eee;">
-        <h3 style="font-family:'Playfair Display'">Navegación</h3>
-        <button onclick="switchView('dashboard'); toggleMenu()" style="width:100%; text-align:left; padding:10px; border:none; background:transparent; cursor:pointer;">🏠 Inicio</button>
-        <button onclick="switchView('mod-personal'); toggleMenu()" style="width:100%; text-align:left; padding:10px; border:none; background:transparent; cursor:pointer;">🌸 Personal</button>
-        <button onclick="switchView('mod-proyectos'); toggleMenu()" style="width:100%; text-align:left; padding:10px; border:none; background:transparent; cursor:pointer;">🚀 Proyectos</button>
-        <button onclick="switchView('mod-escolar'); toggleMenu()" style="width:100%; text-align:left; padding:10px; border:none; background:transparent; cursor:pointer;">📚 Académico</button>
-        <button onclick="switchView('mod-profesional'); toggleMenu()" style="width:100%; text-align:left; padding:10px; border:none; background:transparent; cursor:pointer;">🧪 Profesional</button>
+    <nav id="main-nav">
+        <h2 style="font-family:'Playfair Display'; margin-bottom: 20px;">Explorer</h2>
+        <button onclick="switchView('dashboard', this); toggleMenu()">🏠 Dashboard</button>
+        <button onclick="switchView('kanban-general', this); toggleMenu()">📌 Kanban</button>
+        <button onclick="switchView('full-calendar-view', this); toggleMenu()">📅 Calendario</button>
+        <button onclick="switchView('mod-personal', this); toggleMenu()">🌸 Personal</button>
+        <button onclick="switchView('mod-escolar', this); toggleMenu()">📚 Académico</button>
+        <button onclick="switchView('mod-profesional', this); toggleMenu()">🧪 Profesional</button>
     </nav>
 
     <header>
         <div class="header-top-row">
-            <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;"><svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
-            <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;"><svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-            <h1 id="main-header-title" class="bc-main" onclick="goToHome()">Life Planner</h1>
+            <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;"><svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
+            <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;"><svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+            <h1 id="main-header-title"></h1>
         </div>
         <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
     </header>
 
     <button class="fab" onclick="openTaskModal()">+</button>
 
-    <div id="dashboard" class="view-section active">
-        <div class="top-gallery">
-            <div class="top-gallery-card" id="tg-personal" onclick="switchView('mod-personal')"><h3>Personal</h3></div>
-            <div class="top-gallery-card" id="tg-proyectos" onclick="switchView('mod-proyectos')"><h3>Proyectos</h3></div>
-            <div class="top-gallery-card" id="tg-escolar" onclick="switchView('mod-escolar')"><h3>Académico</h3></div>
-            <div class="top-gallery-card" id="tg-profesional" onclick="switchView('mod-profesional')"><h3>Profesional</h3></div>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="grid-col-1 panel">
-                <h2>🕒 Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" style="width:100%; height:120px; border:none;"></iframe>
-                <div style="margin-top:15px;"></div>
-                <h2>📖 Reading List</h2>
-                <div id="reading-list-widget"></div>
-            </div>
-            <div class="grid-col-1 panel">
-                <h2>⚡ Acciones</h2>
-                <div id="upcoming-tasks"></div>
-            </div>
-            <div class="grid-col-1 panel">
-                <h2>📝 Quick Notes</h2>
-                <div id="notes-feed" style="overflow-y:auto; max-height:300px;"></div>
-            </div>
-            <div class="grid-col-1 panel">
-                <h2>🔗 Quick Links</h2>
-                <div id="links-list"></div>
-                <div style="margin-top:15px;"></div>
-                <iframe src="https://notion-quotes-asnhvg7g6-hiscodesmells.vercel.app/quote?theme=light&fontSize=heading-2&quoteType=random" width="100%" height="120" style="border:none;"></iframe>
-            </div>
-            <div class="grid-col-4 panel">
-                <h2>📅 Calendario Maestro</h2>
-                <div class="calendar-grid" id="cal-main"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="mod-proyectos" class="view-section">
-        <div class="standard-grid">
-            <div class="grid-col-1 panel">
-                <h2>🚀 Pipeline</h2>
-                <p>Gestiona aquí tus ideas para <b>Quimicute</b> y tus creaciones de perfumes.</p>
-            </div>
-            <div class="grid-col-2">
-                <div class="gallery-grid" id="render-proyectos"></div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="taskModal">
         <div class="modal">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
-            <h2 style="font-size:1.2em;">Nuevo Registro</h2>
-            <input type="text" id="m-title" placeholder="Título..." required style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #eee; border-radius:4px;">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <select id="m-category" onchange="updateSubcatDropdown()" style="flex:1;"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option><option value="proyectos">Proyectos</option></select>
+            <h2>Nuevo Registro</h2>
+            <select id="m-type"><option value="task">Tarea</option><option value="event">Evento</option><option value="routine">Rutina</option></select>
+            <input type="text" id="m-title" placeholder="¿Qué sigue?..." required>
+            <div style="display:flex; gap:10px;">
+                <select id="m-category" onchange="updateSubcatDropdown()" style="flex:1;"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select>
                 <select id="m-subcategory" style="flex:1;"></select>
             </div>
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="date" id="m-date" style="flex:1;">
-                <input type="time" id="m-time-start" title="Inicio" style="flex:1;">
-                <input type="time" id="m-time-end" title="Fin" style="flex:1;">
-            </div>
-            <div style="margin-bottom:10px;">
-                <label style="font-size:10px; color:#888;">REPETICIÓN</label>
-                <select id="m-repeat" style="width:100%;"><option value="none">Nunca</option><option value="daily">Diario</option><option value="weekly">Semanal</option><option value="monthly">Mensual</option></select>
-            </div>
-            <textarea id="m-notes" placeholder="Notas, links o ideas..." rows="3" style="width:100%; border:1px solid #eee; padding:10px;"></textarea>
-            <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
+            <div style="display:flex; gap:10px;"><input type="date" id="m-date" style="flex:1;"><input type="time" id="m-time" style="flex:1;"></div>
+            <textarea id="m-notes" placeholder="Notas..." rows="3"></textarea>
+            <button class="modal-btn" onclick="saveTask()">Guardar</button>
+        </div>
+    </div>
+
+    <div id="dashboard" class="view-section active">
+        <div class="top-gallery">
+            <div class="top-gallery-card bouncy" id="tg-personal" onclick="switchView('mod-personal')"><h3>Personal</h3></div>
+            <div class="top-gallery-card bouncy" id="tg-escolar" onclick="switchView('mod-escolar')"><h3>Académico</h3></div>
+            <div class="top-gallery-card bouncy" id="tg-profesional" onclick="switchView('mod-profesional')"><h3>Profesional</h3></div>
+        </div>
+        <div class="dashboard-grid">
+            <div class="grid-col-1 panel"><h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 140px;"></iframe><div style="margin-top:15px;"></div><iframe style="border-radius:8px;" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0"></iframe></div>
+            <div class="grid-col-1 panel"><h2>Acciones</h2><div id="upcoming-tasks-container"></div><div style="margin-top:15px;"></div><h2>✅ Quick List</h2><div id="quick-todo-list"></div></div>
+            <div class="grid-col-1 panel"><h2>📝 Notas</h2><div id="quick-notes-feed"></div></div>
+            <div class="grid-col-1 panel"><h2>🔗 Links</h2><div id="dash-links-list"></div><div style="margin-top:15px;"></div><iframe src="https://notion-quotes-asnhvg7g6-hiscodesmells.vercel.app/quote?theme=light&fontSize=heading-2&quoteType=random" width="100%" height="130" style="border:none;"></iframe></div>
+            <div class="grid-col-4 panel" onclick="switchView('full-calendar-view')" style="cursor:pointer;"><h2>Calendario Maestro</h2><div class="calendar-grid" id="cal-dashboard"></div></div>
+        </div>
+    </div>
+
+    <div id="mod-personal" class="view-section">
+        <div class="standard-grid">
+            <div class="grid-col-1 panel"><h2>Hábitos</h2><div id="habits-summary-area"></div><div style="margin-top:20px;"></div><h2>Calendario Social 🥂</h2><div class="calendar-grid" id="cal-personal"></div></div>
+            <div class="grid-col-2"><h2>Módulos</h2><div class="gallery-grid" id="render-personal"></div></div>
+        </div>
+    </div>
+
+    <div id="mod-escolar" class="view-section">
+        <div class="standard-grid">
+            <div class="grid-col-1 panel"><h2>Japan Roadmap 🇯🇵</h2><p>Estudio de Kanji • Pitch Prep • Beca</p></div>
+            <div class="grid-col-2"><h2>Academia</h2><div class="gallery-grid" id="render-escolar"></div></div>
+        </div>
+    </div>
+
+    <div id="mod-profesional" class="view-section">
+        <div class="standard-grid">
+            <div class="grid-col-1 panel"><h2>Labs 🧪</h2><p>Inventario de reactivos y control de prácticas.</p></div>
+            <div class="grid-col-2"><h2>Workspace</h2><div class="gallery-grid" id="render-profesional"></div></div>
         </div>
     </div>
 
     <div id="subpage-view" class="view-section">
         <div class="standard-grid">
-            <div class="panel grid-col-3" style="padding:0; overflow:hidden;">
-                <img src="" id="sp-cover" style="width:100%; height:180px; object-fit:cover;">
-                <div style="padding:20px 40px;">
-                    <h2 id="sp-title" style="font-family:'Playfair Display'; font-size:2em; margin:0;"></h2>
-                    <div id="sp-dynamic-content"></div>
-                </div>
+            <div class="panel grid-col-3" style="padding: 0; overflow: hidden; border: none;">
+                <img src="" class="page-cover" id="sp-cover">
+                <div style="padding: 20px 40px;"><h2 id="sp-title" style="font-family:'Playfair Display'; font-size:2.5em; border:none; background:transparent;"></h2><div id="sp-dynamic-content"></div></div>
             </div>
         </div>
     </div>
@@ -186,69 +190,59 @@
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        let appState = {
-            categories: {
-                personal: { label: 'Personal', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=600', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Social'] },
-                proyectos: { label: 'Proyectos', cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=600', subcats: ['Quimicute', 'Perfumes Lab', 'Japón 15D'] },
-                escolar: { label: 'Académico', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?w=600', subcats: ['Maestría', 'Artículos'] },
-                profesional: { label: 'Profesional', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600', subcats: ['ENMS Labs', 'Inventario'] }
+        let appState = { 
+            categories: { 
+                personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=800', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Viajes'] }, 
+                escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?w=800', subcats: ['Maestría', 'Japón'] }, 
+                profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800', subcats: ['ENMS Labs', 'Inventario'] } 
             },
-            tasks: [], 
-            library: [ {title: 'Harry Potter y la Piedra Filosofal', author: 'JK Rowling', status: 'Reading', progress: 40} ],
-            quickNotes: [],
-            links: [{title: 'OneDrive', url: '#'}, {title: 'Overleaf', url: '#'}]
+            tasks: [], pageData: {}, dashboard: { links: [] }, quickNotesList: [], quickTodos: [], 
+            habits: [{id:1, title:'Meditación', category:'Mind', streak:0, lastDone:''}]
         };
-
-        let taskIdCounter = Date.now();
 
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
 
-        db.collection("usuarios").doc("datos_planner").get().then(doc => {
-            if(doc.exists) appState = doc.data();
+        db.collection("usuarios").doc("datos_planner").get().then((doc) => {
+            if (doc.exists) { 
+                let data = doc.data();
+                appState = {...appState, ...data};
+            }
             renderAll();
-        });
+        }).catch(() => renderAll());
 
         function toggleMenu() { document.getElementById('main-nav').classList.toggle('open'); document.getElementById('menu-overlay').classList.toggle('open'); }
         function goToHome() { switchView('dashboard'); }
-
-        function updateHeader(view, catLabel = '', subcatLabel = '') {
-            let titleEl = document.getElementById('main-header-title');
-            let btnHome = document.getElementById('btn-home');
-            let btnBack = document.getElementById('btn-back');
-            
-            if(view === 'dashboard') {
-                titleEl.innerHTML = `<span class="bc-main" onclick="goToHome()">Life Planner</span>`;
-                btnHome.style.display = 'none'; btnBack.style.display = 'none';
-            } else if (view === 'category') {
-                titleEl.innerHTML = `<span class="bc-main" onclick="goToHome()">Life Planner</span> <span class="bc-sep">|</span> <span class="bc-cat">${catLabel}</span>`;
-                btnHome.style.display = 'flex'; btnBack.style.display = 'none';
-            } else if (view === 'subpage') {
-                titleEl.innerHTML = `<span class="bc-main" onclick="goToHome()">Life Planner</span> <span class="bc-sep">|</span> <span class="bc-cat" onclick="switchView('mod-${currentParentView}')">${catLabel}</span> <span class="bc-sep">|</span> <span class="bc-sub">${subcatLabel}</span>`;
-                btnHome.style.display = 'flex'; btnBack.style.display = 'flex';
-            }
-        }
-
-        function switchView(viewId) {
+        
+        function switchView(viewId, btn) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            let target = document.getElementById(viewId);
-            if(target) target.classList.add('active');
-            
+            let target = document.getElementById(viewId); if(target) target.classList.add('active');
             if(viewId === 'dashboard') updateHeader('dashboard');
-            else if(viewId.startsWith('mod-')) {
-                currentParentView = viewId.replace('mod-','');
-                updateHeader('category', appState.categories[currentParentView].label);
-            }
+            else if(viewId.startsWith('mod-')) updateHeader('category', appState.categories[viewId.replace('mod-','')].label);
             window.scrollTo({top:0, behavior:'smooth'});
         }
 
+        function updateHeader(view, catLabel = '', subcatLabel = '') {
+            let titleEl = document.getElementById('main-header-title');
+            if (view === 'dashboard') updateHeaderHtml(`Life Planner`, null, null);
+            else if (view === 'category') updateHeaderHtml(`Life Planner`, catLabel, null);
+            else if (view === 'subpage') updateHeaderHtml(`Life Planner`, catLabel, subcatLabel);
+        }
+
+        function updateHeaderHtml(main, cat, sub) {
+            let html = `<span class="bc-main" onclick="goToHome()">${main}</span>`;
+            if(cat) html += `<span class="bc-sep">|</span><span class="bc-cat">${cat}</span>`;
+            if(sub) html += `<span class="bc-sep">|</span><span class="bc-sub">${sub}</span>`;
+            document.getElementById('main-header-title').innerHTML = html;
+            document.getElementById('btn-home').style.display = cat ? 'flex' : 'none';
+            document.getElementById('btn-back').style.display = sub ? 'flex' : 'none';
+        }
+
         function openSubpage(catKey, subcatName) {
-            currentParentView = catKey;
-            currentSubcatOpened = subcatName;
+            currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName;
             updateHeader('subpage', appState.categories[catKey].label, subcatName);
-            
+            let page = appState.pageData[subcatName] || { cover: 'https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?w=800' };
             document.getElementById('sp-title').innerText = subcatName;
-            document.getElementById('sp-cover').src = appState.categories[catKey].cover;
-            
+            document.getElementById('sp-cover').src = page.cover;
             renderSubpageContent(subcatName);
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById('subpage-view').classList.add('active');
@@ -256,121 +250,77 @@
 
         function renderSubpageContent(sub) {
             const area = document.getElementById('sp-dynamic-content');
-            if(sub === 'Recetas') { renderRecetaBoard(area); return; }
-            
-            let tasks = appState.tasks.filter(t => t.subcategory === sub);
-            let html = `<button class="add-small-btn" style="margin-top:20px;" onclick="openTaskModal('task',null,'${currentParentView}','${sub}')">+ Agregar Item</button>`;
-            html += `<table class="notion-table" style="width:100%; margin-top:20px; border-collapse:collapse;">
-                        <thead><tr style="text-align:left; color:#888; border-bottom:1px solid #eee;"><th>Nombre</th><th>Fecha</th><th>Tiempo</th><th>Nota</th></tr></thead>
-                        <tbody>`;
-            tasks.forEach(t => {
-                html += `<tr style="border-bottom:1px solid #fafafa; padding:10px 0;">
-                            <td style="padding:10px 0;"><b>${t.title}</b></td>
-                            <td>${t.date || '-'}</td>
-                            <td>${t.timeStart ? t.timeStart + ' - ' + t.timeEnd : '-'}</td>
-                            <td style="color:#888; font-size:0.9em;">${t.notes || ''}</td>
-                         </tr>`;
-            });
-            area.innerHTML = html + `</tbody></table>`;
+            if(sub === 'Recetas') { renderRecipeBoard(area); return; }
+            if(sub === 'Selfcare') { renderSelfcareDashboard(area); return; }
+            area.innerHTML = `<button class="add-small-btn" onclick="openTaskModal('task',null,'personal','${sub}')">+ Nuevo</button><p style="color:#888;">Contenido de ${sub}...</p>`;
         }
 
-        function renderRecetaBoard(container) {
+        function renderRecipeBoard(container) {
             let groups = ['desayuno', 'almuerzo', 'cena', 'snack'];
             let html = `<div class="recipe-kanban">`;
             groups.forEach(g => {
                 html += `<div class="recipe-col"><h4>${g}</h4>`;
-                let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.notes||'').toLowerCase().includes(g));
-                recipes.forEach(r => html += `<div class="panel bouncy" style="margin-bottom:10px; cursor:pointer;" onclick="openTaskModal(null,${r.id})"><b>${r.title}</b></div>`);
+                let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags||[]).includes(g));
+                recipes.forEach(r => html += `<div class="task-card bouncy" onclick="openTaskModal(null,${r.id})">${r.title}</div>`);
                 html += `</div>`;
             });
             container.innerHTML = html + `</div>`;
         }
 
-        function renderModule(catKey, containerId) {
-            const container = document.getElementById(containerId); if(!container) return;
-            container.innerHTML = (appState.categories[catKey].subcats || []).map(sub => `
-                <div class="gallery-card bouncy" onclick="openSubpage('${catKey}', '${sub}')" style="background-image:url('${appState.categories[catKey].cover}')">
-                    <h3 style="position:relative; z-index:2;">${sub}</h3>
-                </div>`).join('');
+        function renderSelfcareDashboard(container) {
+            container.innerHTML = `<div class="quote-box">"El autocuidado no es un lujo, es una prioridad."</div><div class="selfcare-grid"><div><h4>🌸 Bodycare</h4><div id="h-body"></div></div><div><h4>💪 Fitness</h4><div id="h-fit"></div></div></div>`;
+            // Lógica de render de hábitos similar a la anterior pero filtrando por categoría
         }
 
-        function renderLibrary() {
-            const container = document.getElementById('reading-list-widget');
-            container.innerHTML = appState.library.map(book => `
-                <div class="item-row">
-                    <div style="flex:1;">
-                        <b>${book.title}</b><br>
-                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${book.progress}%"></div></div>
-                    </div>
-                    <span class="tag-pill">${book.status}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderUpcoming() {
-            const container = document.getElementById('upcoming-tasks');
-            let tasks = appState.tasks.filter(t => t.date).sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0,5);
-            container.innerHTML = tasks.map(t => `<div class="item-row" onclick="openTaskModal(null,${t.id})" style="cursor:pointer"><span>${t.title}</span><small style="color:#aaa">${t.date}</small></div>`).join('');
-        }
-
-        function renderAll() {
-            renderModule('personal', 'render-personal');
-            renderModule('proyectos', 'render-proyectos');
-            renderModule('escolar', 'render-escolar');
-            renderModule('profesional', 'render-profesional');
-            renderLibrary();
-            renderUpcoming();
-            updateHeader('dashboard');
-            applyPalette();
-        }
-
-        function applyPalette() {
-            document.getElementById('tg-personal').style.backgroundImage = `url('${appState.categories.personal.cover}')`;
-            document.getElementById('tg-proyectos').style.backgroundImage = `url('${appState.categories.proyectos.cover}')`;
-            document.getElementById('tg-escolar').style.backgroundImage = `url('${appState.categories.escolar.cover}')`;
-            document.getElementById('tg-profesional').style.backgroundImage = `url('${appState.categories.profesional.cover}')`;
-        }
-
-        // MODAL LOGIC
-        function openTaskModal(type='task', id=null, cat='personal', sub='') {
-            document.getElementById('taskModal').style.display='flex';
-            updateSubcatDropdown();
-            if(id) { /* Load task to edit */ }
-        }
-        function closeTaskModal() { document.getElementById('taskModal').style.display='none'; }
-        function updateSubcatDropdown() {
-            let cat = document.getElementById('m-category').value;
-            document.getElementById('m-subcategory').innerHTML = appState.categories[cat].subcats.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
-
-        function saveTask() {
-            let t = {
-                id: Date.now(),
-                title: document.getElementById('m-title').value,
-                category: document.getElementById('m-category').value,
-                subcategory: document.getElementById('m-subcategory').value,
-                date: document.getElementById('m-date').value,
-                timeStart: document.getElementById('m-time-start').value,
-                timeEnd: document.getElementById('m-time-end').value,
-                notes: document.getElementById('m-notes').value,
-                status: 'todo'
-            };
-            appState.tasks.push(t);
-            saveToMemory();
-            closeTaskModal();
-            renderAll();
-        }
-
-        document.oncontextmenu = function(e) {
-            let target = e.target.closest('.panel, .gallery-card');
-            if(target) {
+        // CONTEXT MENU LOGIC
+        window.oncontextmenu = function(e) {
+            let card = e.target.closest('.gallery-card');
+            if(card) {
                 let menu = document.getElementById('ctx-menu');
                 menu.style.display = 'flex';
                 menu.style.left = e.pageX + 'px'; menu.style.top = e.pageY + 'px';
+                window.ctxTarget = { sub: card.querySelector('h3').innerText, cat: card.closest('.gallery-grid').id.replace('render-','') };
                 return false;
             }
         };
-        document.onclick = () => document.getElementById('ctx-menu').style.display='none';
+
+        function ctxDelete() { if(confirm('¿Borrar módulo?')){ 
+            appState.categories[window.ctxTarget.cat].subcats = appState.categories[window.ctxTarget.cat].subcats.filter(s=>s!==window.ctxTarget.sub); 
+            saveToMemory(); renderAll(); }
+            document.getElementById('ctx-menu').style.display='none';
+        }
+
+        function renderAll() {
+            applyDynamicColors();
+            renderModule('personal', 'render-personal'); renderModule('escolar', 'render-escolar'); renderModule('profesional', 'render-profesional');
+            renderCalendar('cal-dashboard', 'all');
+            updateHeader('dashboard');
+        }
+
+        function applyDynamicColors() {
+            let cats = ['personal', 'escolar', 'profesional'];
+            cats.forEach(c => {
+                let el = document.getElementById('tg-'+c); if(el) el.style.backgroundImage = `url('${appState.categories[c].cover}')`;
+            });
+        }
+
+        function renderModule(catKey, containerId) {
+            const container = document.getElementById(containerId); if(!container) return;
+            container.innerHTML = (appState.categories[catKey].subcats || []).map(sub => `
+                <div class="gallery-card bouncy" onclick="openSubpage('${catKey}', '${sub}')">
+                    <img src="${(appState.pageData[sub]||{}).cover || 'https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?w=400'}" class="gallery-cover">
+                    <div style="padding:15px; position:relative;">
+                        <div class="gallery-icon">${(appState.pageData[sub]||{}).icon || '📄'}</div>
+                        <h3 style="margin:10px 0 0 0; font-size:1.1em;">${sub}</h3>
+                    </div>
+                </div>`).join('') + `<div class="new-card bouncy" onclick="addNewSubcatInline('${catKey}')">+ New</div>`;
+        }
+
+        function toggleMenu() { document.getElementById('main-nav').classList.toggle('open'); document.getElementById('menu-overlay').classList.toggle('open'); }
+        function closeTaskModal() { document.getElementById('taskModal').style.display = 'none'; }
+        function openTaskModal() { document.getElementById('taskModal').style.display = 'flex'; }
+        
+        document.addEventListener('click', () => document.getElementById('ctx-menu').style.display='none');
     </script>
 </body>
 </html>
