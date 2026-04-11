@@ -313,7 +313,19 @@
             <div class="checkbox-container">
                 <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <label for="m-recurring">Se repite</label>
             </div>
-            <select id="m-recurrence-type" style="display:none; margin-top:5px;"><option value="daily">Diariamente</option><option value="weekly">Semanalmente</option><option value="monthly">Mensualmente</option><option value="yearly">Anualmente</option></select>
+            <select id="m-recurrence-type" style="display:none; margin-top:5px;" onchange="toggleTaskCustomFields()"><option value="daily">Diariamente</option><option value="weekly">Semanalmente</option><option value="monthly">Mensualmente</option><option value="yearly">Anualmente</option><option value="personalizado">Personalizado</option></select>
+            <div id="task-custom-fields" style="display:none; margin-top:15px; padding:10px; background: rgba(147,112,219,0.05); border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
+                <div style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; margin-bottom:10px;">Días Personalizados</div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <label><input type="checkbox" value="1" id="m-day-1"> Lunes</label>
+                    <label><input type="checkbox" value="2" id="m-day-2"> Martes</label>
+                    <label><input type="checkbox" value="3" id="m-day-3"> Miércoles</label>
+                    <label><input type="checkbox" value="4" id="m-day-4"> Jueves</label>
+                    <label><input type="checkbox" value="5" id="m-day-5"> Viernes</label>
+                    <label><input type="checkbox" value="6" id="m-day-6"> Sábado</label>
+                    <label><input type="checkbox" value="0" id="m-day-0"> Domingo</label>
+                </div>
+            </div>
             <div id="custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(147,112,219,0.05); padding:10px; border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
                 <div style="width:100%; font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase;" id="custom-fields-title">Campos Personalizados</div>
                 <div id="custom-fields-container"></div>
@@ -353,15 +365,28 @@
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <div style="flex:1;">
                     <label style="font-size:0.8em; color:#888;">Frecuencia</label>
-                    <select id="h-freq">
+                    <select id="h-freq" onchange="toggleHabitCustomFields()">
                         <option value="daily">Diario</option>
                         <option value="weekly">Semanal</option>
                         <option value="monthly">Mensual</option>
+                        <option value="personalizado">Personalizado</option>
                     </select>
                 </div>
                 <div style="flex:1;">
                     <label style="font-size:0.8em; color:#888;">Link / Guía</label>
                     <input type="text" id="h-link" placeholder="Link (Opcional)">
+                </div>
+            </div>
+            <div id="habit-custom-fields" style="display:none; margin-top:15px; padding:10px; background: rgba(147,112,219,0.05); border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
+                <div style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; margin-bottom:10px;">Días Personalizados</div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <label><input type="checkbox" value="1" id="h-day-1"> Lunes</label>
+                    <label><input type="checkbox" value="2" id="h-day-2"> Martes</label>
+                    <label><input type="checkbox" value="3" id="h-day-3"> Miércoles</label>
+                    <label><input type="checkbox" value="4" id="h-day-4"> Jueves</label>
+                    <label><input type="checkbox" value="5" id="h-day-5"> Viernes</label>
+                    <label><input type="checkbox" value="6" id="h-day-6"> Sábado</label>
+                    <label><input type="checkbox" value="0" id="h-day-0"> Domingo</label>
                 </div>
             </div>
             <button class="modal-btn" onclick="saveHabit()">Guardar Hábito</button>
@@ -563,7 +588,7 @@
             { id: 105, type: 'task', title: 'Huevos a la Mexicana', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito picado.' }
         ];
         let defaultHabits = [
-            {id: 1, title: 'Masaje cuero cabelludo', group: 'Haircare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
+            {id: 1, title: 'Masaje cuero cabelludo', group: 'Haircare', category: 'Bodycare', freq: 'personalizado', customDays: [1,3,5], lastDone: '', streak: 0},
             {id: 2, title: 'Despunte', group: 'Haircare', category: 'Bodycare', freq: 'monthly', lastDone: '', streak: 0},
             {id: 3, title: 'Repolarización capilar', group: 'Haircare', category: 'Bodycare', freq: 'monthly', lastDone: '', streak: 0},
             {id: 4, title: 'Exfoliación (cuerpo completo)', group: 'Skincare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
@@ -571,8 +596,8 @@
             {id: 6, title: 'Rutina cara noche', group: 'Skincare', category: 'Bodycare', freq: 'daily', lastDone: '', streak: 0},
             {id: 7, title: 'Inicio del día (Balasana)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
             {id: 8, title: 'Fin del día (Gato enojado)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
-            {id: 9, title: 'Rutina Pilates', group: 'Pilates', category: 'Fitness', freq: 'daily', link: 'https://youtube.com', lastDone: '', streak: 0},
-            {id: 10, title: 'Rutina Gym (Músculo del día)', group: 'Gym', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
+            {id: 9, title: 'Rutina Pilates', group: 'Pilates', category: 'Fitness', freq: 'personalizado', customDays: [1,3,5], link: 'https://youtube.com', lastDone: '', streak: 0},
+            {id: 10, title: 'Rutina Gym (Músculo del día)', group: 'Gym', category: 'Fitness', freq: 'personalizado', customDays: [2,4,6], lastDone: '', streak: 0},
             {id: 11, title: 'Meditación (10 mins)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', lastDone: '', streak: 0},
             {id: 12, title: 'Decir a mi familia que los quiero', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', lastDone: '', streak: 0},
             {id: 13, title: 'Carta mensual para mí misma', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', lastDone: '', streak: 0}
@@ -704,6 +729,10 @@
             if(habit.freq === 'daily') return habit.lastDone === today;
             if(habit.freq === 'monthly') return habit.lastDone.startsWith(getMonthStr());
             if(habit.freq === 'weekly') { let diff = (new Date(today) - new Date(habit.lastDone)) / (1000 * 60 * 60 * 24); return diff < 7; }
+            if(habit.freq === 'personalizado') {
+                let todayDay = new Date().getDay(); // 0=dom, 1=lun, etc.
+                return habit.lastDone === today && (habit.customDays || []).includes(todayDay);
+            }
             return false;
         }
 
@@ -721,14 +750,41 @@
             if(id) {
                 let h = appState.habits.find(x => x.id === id);
                 document.getElementById('h-title').value = h.title; document.getElementById('h-category').value = h.category; document.getElementById('h-group').value = h.group; document.getElementById('h-freq').value = h.freq; document.getElementById('h-link').value = h.link || '';
+                // Cargar días personalizados
+                if(h.customDays) {
+                    h.customDays.forEach(day => {
+                        let cb = document.getElementById('h-day-' + day);
+                        if(cb) cb.checked = true;
+                    });
+                }
             } else {
                 document.getElementById('h-title').value = ''; document.getElementById('h-category').value = 'Bodycare'; document.getElementById('h-group').value = ''; document.getElementById('h-freq').value = 'daily'; document.getElementById('h-link').value = '';
+                // Limpiar checkboxes
+                for(let i=0; i<7; i++) {
+                    let cb = document.getElementById('h-day-' + i);
+                    if(cb) cb.checked = false;
+                }
             }
+            toggleHabitCustomFields();
         }
         function closeHabitModal() { let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'none'; }
+        function toggleHabitCustomFields() {
+            let freq = document.getElementById('h-freq').value;
+            let customEl = document.getElementById('habit-custom-fields');
+            if(customEl) customEl.style.display = (freq === 'personalizado') ? 'block' : 'none';
+        }
         function saveHabit() {
             let title = document.getElementById('h-title').value.trim(); if(!title) return;
-            let hData = { title: title, category: document.getElementById('h-category').value, group: document.getElementById('h-group').value.trim() || 'General', freq: document.getElementById('h-freq').value, link: document.getElementById('h-link').value.trim(), lastDone: '', streak: 0 };
+            let freq = document.getElementById('h-freq').value;
+            let hData = { title: title, category: document.getElementById('h-category').value, group: document.getElementById('h-group').value.trim() || 'General', freq: freq, link: document.getElementById('h-link').value.trim(), lastDone: '', streak: 0 };
+            if(freq === 'personalizado') {
+                let customDays = [];
+                for(let i=0; i<7; i++) {
+                    let cb = document.getElementById('h-day-' + i);
+                    if(cb && cb.checked) customDays.push(parseInt(cb.value));
+                }
+                hData.customDays = customDays;
+            }
             if(currentEditHabitId) { let idx = appState.habits.findIndex(x => x.id === currentEditHabitId); hData.lastDone = appState.habits[idx].lastDone; hData.streak = appState.habits[idx].streak; appState.habits[idx] = { ...appState.habits[idx], ...hData }; } else { hData.id = habitIdCounter++; appState.habits.push(hData); }
             saveToMemory(); closeHabitModal(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
@@ -797,7 +853,8 @@
                         let habitsInGroup = catHabits.filter(h => h.group === g);
                         habitsInGroup.forEach(h => {
                             let done = isHabitDone(h); let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver">🔗</a>` : '';
-                            html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><div style="display:flex; align-items:center; gap:8px;"><span class="habit-streak">🔥 ${h.streak}</span><button class="edit-btn" onclick="openHabitModal(${h.id})">✏️</button><button class="edit-btn" style="color:#ef4444;" onclick="deleteHabit(${h.id})">🗑️</button></div></div>`;
+                            let freqStr = h.freq === 'personalizado' ? `Personalizado (${h.customDays.map(d => ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d]).join(', ')})` : h.freq.charAt(0).toUpperCase() + h.freq.slice(1);
+                            html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} <small style="color:#888;">(${freqStr})</small> ${linkHtml}</span></label><div style="display:flex; align-items:center; gap:8px;"><span class="habit-streak">🔥 ${h.streak}</span><button class="edit-btn" onclick="openHabitModal(${h.id})">✏️</button><button class="edit-btn" style="color:#ef4444;" onclick="deleteHabit(${h.id})">🗑️</button></div></div>`;
                         }); html += `</div>`;
                     }); html += `</div>`;
                 }
@@ -978,7 +1035,12 @@
         }
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
-        function toggleRecurrence() { let isRec = document.getElementById('m-recurring').checked; let typeEl = document.getElementById('m-recurrence-type'); if(typeEl) typeEl.style.display = isRec ? 'block' : 'none'; }
+        function toggleRecurrence() { let isRec = document.getElementById('m-recurring').checked; let typeEl = document.getElementById('m-recurrence-type'); if(typeEl) typeEl.style.display = isRec ? 'block' : 'none'; toggleTaskCustomFields(); }
+        function toggleTaskCustomFields() {
+            let recType = document.getElementById('m-recurrence-type').value;
+            let customEl = document.getElementById('task-custom-fields');
+            if(customEl) customEl.style.display = (recType === 'personalizado') ? 'block' : 'none';
+        }
         function toggleCustomFields() { 
             let cat = document.getElementById('m-category').value; 
             let subcat = document.getElementById('m-subcategory').value; 
@@ -1013,6 +1075,19 @@
                 currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) document.getElementById('m-recurrence-type').value = task.recurrenceType;
+                // Cargar días personalizados para tareas
+                if(task.customDays) {
+                    task.customDays.forEach(day => {
+                        let cb = document.getElementById('m-day-' + day);
+                        if(cb) cb.checked = true;
+                    });
+                } else {
+                    // Limpiar
+                    for(let i=0; i<7; i++) {
+                        let cb = document.getElementById('m-day-' + i);
+                        if(cb) cb.checked = false;
+                    }
+                }
                 // Populate custom fields
                 if(task.customFields) {
                     Object.keys(task.customFields).forEach(field => {
@@ -1031,6 +1106,11 @@
                 // Clear custom fields
                 document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
                 document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
+                // Limpiar días personalizados
+                for(let i=0; i<7; i++) {
+                    let cb = document.getElementById('m-day-' + i);
+                    if(cb) cb.checked = false;
+                }
             } 
             toggleCustomFields(); window.currentEditId = taskId; renderModalTags(document.getElementById('m-category').value);
         }
@@ -1055,6 +1135,14 @@
             let isRecurring = document.getElementById('m-recurring').checked;
             let cat = document.getElementById('m-category').value;
             let taskData = { type: document.getElementById('m-type').value, title: title, category: cat, subcategory: document.getElementById('m-subcategory').value, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, notes: document.getElementById('m-notes').value, priority: currentModalPriority, tags: currentModalTags, recurring: isRecurring, recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null }; 
+            if(isRecurring && taskData.recurrenceType === 'personalizado') {
+                let customDays = [];
+                for(let i=0; i<7; i++) {
+                    let cb = document.getElementById('m-day-' + i);
+                    if(cb && cb.checked) customDays.push(parseInt(cb.value));
+                }
+                taskData.customDays = customDays;
+            } 
             // Custom fields
             let customization = appState.categories[cat];
             if(customization && customization.customFields) {
