@@ -314,12 +314,9 @@
                 <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <label for="m-recurring">Se repite</label>
             </div>
             <select id="m-recurrence-type" style="display:none; margin-top:5px;"><option value="daily">Diariamente</option><option value="weekly">Semanalmente</option><option value="monthly">Mensualmente</option><option value="yearly">Anualmente</option></select>
-            <div id="enms-custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(147,112,219,0.05); padding:10px; border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
-                <div style="width:100%; font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase;">🧪 Datos de Laboratorio</div>
-                <input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;">
-                <input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;">
-                <input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;">
-                <input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;">
+            <div id="custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(147,112,219,0.05); padding:10px; border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
+                <div style="width:100%; font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase;" id="custom-fields-title">Campos Personalizados</div>
+                <div id="custom-fields-container"></div>
             </div>
             <div style="font-size: 0.85em; color: #888; margin-top: 15px; font-weight: 500;">Prioridad</div>
             <div class="priority-group" id="m-priority-group">
@@ -368,6 +365,21 @@
                 </div>
             </div>
             <button class="modal-btn" onclick="saveHabit()">Guardar Hábito</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="categoryConfigModal">
+        <div class="modal" style="max-width: 450px;">
+            <span class="close-modal" onclick="closeCategoryConfigModal()">×</span>
+            <h2 id="config-modal-title">Configurar Etiquetas</h2>
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="new-tag-input" placeholder="Nueva etiqueta..." style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark);">
+                <button class="add-small-btn" onclick="addNewTag()" style="margin-top: 10px; background: var(--accent); color: white; border: none;">+ Agregar</button>
+            </div>
+            <div id="tags-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-color);">
+                <!-- Tags will be rendered here -->
+            </div>
+            <button class="modal-btn" onclick="saveCategoryConfig()">Guardar Cambios</button>
         </div>
     </div>
 
@@ -464,7 +476,7 @@
                 </div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2><button class="edit-btn" onclick="openCategoryConfig('personal')" title="Configurar Etiquetas">⚙️</button></div>
                 <div class="gallery-grid" id="render-personal"></div>
             </div>
         </div>
@@ -476,7 +488,7 @@
                 <div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><button class="edit-btn" onclick="openCategoryConfig('escolar')" title="Configurar Etiquetas">⚙️</button></div>
                 <div class="gallery-grid" id="render-escolar"></div>
             </div>
         </div>
@@ -488,7 +500,7 @@
                 <div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><button class="edit-btn" onclick="openCategoryConfig('profesional')" title="Configurar Etiquetas">⚙️</button></div>
                 <div class="gallery-grid" id="render-profesional"></div>
             </div>
         </div>
@@ -528,9 +540,9 @@
         let currentModalTags = []; let currentModalPriority = 'medium';
 
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Asuntos Sociales'] }, 
-            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'] }, 
-            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'] } 
+            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Asuntos Sociales'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
+            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
+            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: ['proyecto', 'cliente', 'departamento'] } 
         };
         let defaultPageData = { 
             "ENMS Labs": { icon: "🧪", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
@@ -590,6 +602,12 @@
                     appState.categories.personal.cover = defaultCategories.personal.cover;
                     appState.categories.escolar.cover = defaultCategories.escolar.cover;
                     appState.categories.profesional.cover = defaultCategories.profesional.cover;
+                }
+                // Asegurar defaultTags y customFields
+                for(let cat in defaultCategories) {
+                    if(!appState.categories[cat]) appState.categories[cat] = defaultCategories[cat];
+                    if(!appState.categories[cat].defaultTags) appState.categories[cat].defaultTags = defaultCategories[cat].defaultTags;
+                    if(!appState.categories[cat].customFields) appState.categories[cat].customFields = defaultCategories[cat].customFields;
                 }
                 appState.quickNotesList = data.quickNotesList || [];
                 appState.quickTodos = data.quickTodos || [];
@@ -711,6 +729,40 @@
             saveToMemory(); closeHabitModal(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
         function deleteHabit(id) { if(confirm('¿Seguro que quieres borrar este hábito? perderás la racha.')) { appState.habits = appState.habits.filter(h => h.id !== id); saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard(); } }
+
+        let currentConfigCat = null;
+        function openCategoryConfig(catKey) {
+            currentConfigCat = catKey;
+            let modal = document.getElementById('categoryConfigModal');
+            if(modal) modal.style.display = 'flex';
+            document.getElementById('config-modal-title').innerText = 'Configurar Etiquetas - ' + getCatLabel(catKey);
+            renderTagsList();
+        }
+        function closeCategoryConfigModal() { let modal = document.getElementById('categoryConfigModal'); if(modal) modal.style.display = 'none'; currentConfigCat = null; }
+        function renderTagsList() {
+            let list = document.getElementById('tags-list');
+            if(!list || !currentConfigCat) return;
+            let tags = appState.categories[currentConfigCat].defaultTags || [];
+            list.innerHTML = tags.map(tag => `<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border-color);"><span>#${tag}</span><button class="edit-btn" onclick="removeTag('${tag}')" style="color:#ef4444;">×</button></div>`).join('');
+        }
+        function addNewTag() {
+            let input = document.getElementById('new-tag-input');
+            let tag = input.value.trim().toLowerCase();
+            if(tag && !appState.categories[currentConfigCat].defaultTags.includes(tag)) {
+                appState.categories[currentConfigCat].defaultTags.push(tag);
+                input.value = '';
+                renderTagsList();
+            }
+        }
+        function removeTag(tag) {
+            appState.categories[currentConfigCat].defaultTags = appState.categories[currentConfigCat].defaultTags.filter(t => t !== tag);
+            renderTagsList();
+        }
+        function saveCategoryConfig() {
+            saveToMemory();
+            closeCategoryConfigModal();
+            renderAll();
+        }
 
         function getQuoteForStreak(streak) { if(streak === 0) return "El mejor momento para empezar es hoy. 🌱"; if(streak < 3) return "¡Un día a la vez, lo estás haciendo genial! ✨"; if(streak < 7) return "¡Mírate brillar! La constancia da frutos. 🌸"; return "¡Imparable! Tienes el control total de tu vida. 🔥"; }
 
@@ -835,9 +887,22 @@
                 html += `<table class="notion-table"><thead><tr><th style="width:25%;">Práctica</th><th>Materia</th><th>Día / Hora</th><th>Profesor</th><th>Grupo</th><th>Estado</th></tr></thead><tbody>`;
                 subTasks.forEach(t => { html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Práctica"><div class="title-cell"><span class="icon-symbol">🧪</span><span>${t.enmsPractica || t.title}</span></div></td><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Día/Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td></tr>`; }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'table') {
-                html += `<table class="notion-table"><thead><tr><th style="width:40%;">Aa Nombre</th><th>Estado</th><th>📅 Fecha</th><th>🚩 Prioridad</th><th>🏷️ Etiquetas</th></tr></thead><tbody>`;
-                subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let prioClass = t.priority === 'high' ? 'prio-high' : (t.priority === 'low' ? 'prio-low' : 'prio-med'); let prioText = t.priority === 'high' ? 'Alta' : (t.priority === 'low' ? 'Baja' : 'Media'); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○'));
-                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td></tr>`;
+                let customization = appState.categories[catKey];
+                let customHeaders = '';
+                if(customization && customization.customFields) {
+                    customHeaders = customization.customFields.map(field => `<th>${field.charAt(0).toUpperCase() + field.slice(1)}</th>`).join('');
+                }
+                html += `<table class="notion-table"><thead><tr><th style="width:40%;">Aa Nombre</th><th>Estado</th><th>📅 Fecha</th><th>🚩 Prioridad</th><th>🏷️ Etiquetas</th>${customHeaders}</tr></thead><tbody>`;
+                subTasks.forEach(t => { 
+                    let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); 
+                    let prioClass = t.priority === 'high' ? 'prio-high' : (t.priority === 'low' ? 'prio-low' : 'prio-med'); 
+                    let prioText = t.priority === 'high' ? 'Alta' : (t.priority === 'low' ? 'Baja' : 'Media'); 
+                    let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○'));
+                    let customCols = '';
+                    if(customization && customization.customFields) {
+                        customCols = customization.customFields.map(field => `<td data-label="${field.charAt(0).toUpperCase() + field.slice(1)}">${(t.customFields && t.customFields[field]) || '-'}</td>`).join('');
+                    }
+                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
                 }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'list') {
                 html += '<ul class="module-list" style="border:none; background:transparent; padding:0;">';
@@ -893,11 +958,46 @@
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
         function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
 
-        function renderModalTags() { const container = document.getElementById('m-tags-container'); if(!container) return; container.innerHTML = predefinedTagsList.map(tag => { const isActive = currentModalTags.includes(tag) ? 'active' : ''; return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`; }).join(''); }
+        function renderModalTags(category) { 
+            const container = document.getElementById('m-tags-container'); 
+            if(!container) return; 
+            let tagsList = predefinedTagsList; // fallback
+            if(category && appState.categories[category] && appState.categories[category].defaultTags) {
+                tagsList = appState.categories[category].defaultTags.concat(predefinedTagsList.filter(t => !appState.categories[category].defaultTags.includes(t)));
+            }
+            container.innerHTML = tagsList.map(tag => { 
+                const isActive = currentModalTags.includes(tag) ? 'active' : ''; 
+                return `<button class="tag-toggle ${isActive}" onclick="toggleModalTag('${tag}')">#${tag}</button>`; 
+            }).join(''); 
+        }
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
         function toggleRecurrence() { let isRec = document.getElementById('m-recurring').checked; let typeEl = document.getElementById('m-recurrence-type'); if(typeEl) typeEl.style.display = isRec ? 'block' : 'none'; }
-        function toggleEnmsFields() { let subcat = document.getElementById('m-subcategory').value; let enmsEl = document.getElementById('enms-custom-fields'); if(enmsEl) enmsEl.style.display = (subcat === 'ENMS Labs') ? 'flex' : 'none'; }
+        function toggleCustomFields() { 
+            let cat = document.getElementById('m-category').value; 
+            let subcat = document.getElementById('m-subcategory').value; 
+            let customEl = document.getElementById('custom-fields'); 
+            let container = document.getElementById('custom-fields-container'); 
+            let titleEl = document.getElementById('custom-fields-title'); 
+            if(!customEl || !container || !titleEl) return; 
+            if(subcat === 'ENMS Labs') {
+                customEl.style.display = 'flex'; 
+                titleEl.innerText = '🧪 Datos de Laboratorio'; 
+                container.innerHTML = `<input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;"><input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;"><input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;"><input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;">`;
+            } else {
+                let customization = appState.categories[cat]; 
+                if(customization && customization.customFields && customization.customFields.length > 0) { 
+                    customEl.style.display = 'flex'; 
+                    titleEl.innerText = cat === 'escolar' ? '📚 Datos Académicos' : cat === 'profesional' ? '💼 Datos Profesionales' : 'Campos Personalizados'; 
+                    container.innerHTML = customization.customFields.map(field => { 
+                        let placeholder = field.charAt(0).toUpperCase() + field.slice(1); 
+                        return `<input type="text" id="m-custom-${field}" placeholder="${placeholder}" style="flex:1; min-width:140px;">`; 
+                    }).join(''); 
+                } else { 
+                    customEl.style.display = 'none'; 
+                } 
+            }
+        }
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
@@ -907,6 +1007,14 @@
                 currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) document.getElementById('m-recurrence-type').value = task.recurrenceType;
+                // Populate custom fields
+                if(task.customFields) {
+                    Object.keys(task.customFields).forEach(field => {
+                        let el = document.getElementById('m-custom-' + field);
+                        if(el) el.value = task.customFields[field] || '';
+                    });
+                }
+                // Legacy ENMS fields
                 document.getElementById('m-enms-materia').value = task.enmsMateria || ''; document.getElementById('m-enms-profesor').value = task.enmsProfesor || ''; document.getElementById('m-enms-grupo').value = task.enmsGrupo || ''; document.getElementById('m-enms-practica').value = task.enmsPractica || '';
             } else { 
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
@@ -914,18 +1022,43 @@
                 if(forceCat) { document.getElementById('m-category').value = forceCat; updateSubcatDropdown(); if(forceSubCat) document.getElementById('m-subcategory').value = forceSubCat; } else updateSubcatDropdown(); 
                 currentModalTags = []; setModalPriority('medium');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
+                // Clear custom fields
+                document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
                 document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
             } 
-            toggleEnmsFields(); window.currentEditId = taskId; renderModalTags();
+            toggleCustomFields(); window.currentEditId = taskId; renderModalTags(document.getElementById('m-category').value);
         }
         
         function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
-        function updateSubcatDropdown() { let cat = document.getElementById('m-category').value; let dd = document.getElementById('m-subcategory'); if(dd) { if(appState.categories[cat] && appState.categories[cat].subcats) { dd.innerHTML = appState.categories[cat].subcats.map(s => `<option value="${s}">${s}</option>`).join(''); } else { dd.innerHTML = ''; } toggleEnmsFields(); } }
+        function updateSubcatDropdown() { 
+            let cat = document.getElementById('m-category').value; 
+            let dd = document.getElementById('m-subcategory'); 
+            if(dd) { 
+                if(appState.categories[cat] && appState.categories[cat].subcats) { 
+                    dd.innerHTML = appState.categories[cat].subcats.map(s => `<option value="${s}">${s}</option>`).join(''); 
+                } else { 
+                    dd.innerHTML = ''; 
+                } 
+                toggleCustomFields(); 
+                renderModalTags(cat);
+            } 
+        }
         
         function saveTask() { 
             let title = document.getElementById('m-title').value; if(!title) return; 
             let isRecurring = document.getElementById('m-recurring').checked;
-            let taskData = { type: document.getElementById('m-type').value, title: title, category: document.getElementById('m-category').value, subcategory: document.getElementById('m-subcategory').value, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, notes: document.getElementById('m-notes').value, priority: currentModalPriority, tags: currentModalTags, recurring: isRecurring, recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null }; 
+            let cat = document.getElementById('m-category').value;
+            let taskData = { type: document.getElementById('m-type').value, title: title, category: cat, subcategory: document.getElementById('m-subcategory').value, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, notes: document.getElementById('m-notes').value, priority: currentModalPriority, tags: currentModalTags, recurring: isRecurring, recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null }; 
+            // Custom fields
+            let customization = appState.categories[cat];
+            if(customization && customization.customFields) {
+                taskData.customFields = {};
+                customization.customFields.forEach(field => {
+                    let el = document.getElementById('m-custom-' + field);
+                    if(el) taskData.customFields[field] = el.value;
+                });
+            }
+            // Legacy ENMS
             if(taskData.subcategory === 'ENMS Labs') { taskData.enmsMateria = document.getElementById('m-enms-materia').value; taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; taskData.enmsPractica = document.getElementById('m-enms-practica').value; }
             if (window.currentEditId) { let index = appState.tasks.findIndex(t => t.id === window.currentEditId); appState.tasks[index] = { ...appState.tasks[index], ...taskData }; } else { taskData.id = taskIdCounter++; taskData.status = 'todo'; appState.tasks.push(taskData); } 
             saveToMemory(); closeTaskModal(); renderAll(); 
