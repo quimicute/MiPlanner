@@ -1149,7 +1149,7 @@
             const container = document.getElementById(containerId); if(!container) return; container.innerHTML = ''; 
             if (!appState.categories[catKey] || !appState.categories[catKey].subcats) return; 
             appState.categories[catKey].subcats.forEach(subcat => { 
-                let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=600&q=80" }; 
+                let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
                 let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); 
                 let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); 
                 if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; 
@@ -1185,6 +1185,17 @@
                 let isToday = (day === 10) ? 'today' : ''; 
                 if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
                     let taskBars = dayTasks.map(t => { 
+                        if (containerId === 'cal-dashboard') {
+                            let sym = t.category === 'personal' ? '✧' : t.category === 'escolar' ? '◈' : t.category === 'profesional' ? '⌬' : '✦';
+                            let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
+                            return `<div class="cal-symbol-wrapper" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">
+                                        <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
+                                        <div class="aesthetic-tooltip">
+                                            <b style="color: ${getCatColor(t.category)};">${t.title}</b>
+                                            <span style="color: #888;">${tHora}</span>
+                                        </div>
+                                    </div>`;
+                        }
                         let icon = iconMap[t.category] || iconMap['default']; 
                         return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
                     }).join(''); 
@@ -1242,14 +1253,14 @@
                     if(customization && customization.customFields) {
                         customCols = customization.customFields.map(field => `<td data-label="${field.charAt(0).toUpperCase() + field.slice(1)}">${(t.customFields && t.customFields[field]) || '-'}</td>`).join('');
                     }
-                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
+                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
                 }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'list') {
                 html += '<ul class="module-list" style="border:none; background:transparent; padding:0;">';
                 subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item" onclick="openTaskModal(null, ${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
             } else if (subpageViewMode === 'kanban') {
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
-                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
+                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
             html += '</div>'; dynamicArea.innerHTML = html;
         }
@@ -1416,7 +1427,7 @@
                         if(el) el.value = task.customFields[field] || '';
                     });
                 }
-                // Legacy ENMS fields
+                // Legacy ENMS
                 document.getElementById('m-enms-materia').value = task.enmsMateria || ''; document.getElementById('m-enms-profesor').value = task.enmsProfesor || ''; document.getElementById('m-enms-grupo').value = task.enmsGrupo || ''; document.getElementById('m-enms-practica').value = task.enmsPractica || '';
             } else { 
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
@@ -1577,7 +1588,7 @@
             return filtered.map(t => `
                 <div class="panel" style="cursor: pointer;" onclick="openTaskModal(null, ${t.id})">
                     <h4 style="margin: 0 0 10px 0; font-family: 'Playfair Display', serif;">${t.title}</h4>
-                    <div style="font-size: 0.85em; color: #888;">${(t.tags || []).map(tag => `<span class="pill tag">#${tag}</span>`).join('')}</div>
+                    <div style="font-size: 0.85em; color: #888;">${(t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join('')}</div>
                     <p style="margin: 10px 0; font-size: 0.9em;">${t.notes || 'Sin descripción'}</p>
                 </div>
             `).join('');
