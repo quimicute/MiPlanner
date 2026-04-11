@@ -461,6 +461,24 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="taskDetailsModal">
+        <div class="modal">
+            <span class="close-modal" onclick="closeTaskDetailsModal()">×</span>
+            <h2 id="task-details-title" style="color: var(--accent); font-size: 1.8em; margin-bottom: 20px;"></h2>
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span id="task-details-scope" style="font-size: 1.2em; font-weight: 600;"></span>
+                </div>
+                <div id="task-details-schedule" style="font-size: 0.9em; color: #888;"></div>
+            </div>
+            <div id="task-details-notes" style="margin-bottom: 30px; line-height: 1.6; font-size: 0.95em;"></div>
+            <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                <button class="modal-btn" onclick="editTaskFromDetails()" style="background: var(--accent); flex: 1;">Editar</button>
+                <button class="modal-btn" onclick="deleteTaskFromDetails()" style="background: #ef4444; flex: 1;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="confirmModalOverlay" onclick="if(event.target===this) closeConfirmModal()">
         <div class="modal">
             <h2>Confirmar acción</h2>
@@ -596,7 +614,18 @@
                 </div>
             </div>
             
-            <div class="panel span-col-2 span-row-1" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="panel span-col-2 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent); font-size: 1.1em;">Calendario</h2>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button id="btn-quick-kanban" class="add-small-btn" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; padding: 0; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onclick="openFocusKanban(); event.stopPropagation();" title="Vista de Enfoque Kanban">◫</button>
+                            <span style="font-size:0.8em; color:var(--accent); font-weight:500;">⤢ Ver</span>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="cal-dashboard" style="gap:3px;"></div>
+                </div>
+                <div class="panel" id="recetas-widget" style="flex:1;"></div>
                 <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
                     <h2>Notas Rápidas</h2>
                     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
@@ -608,21 +637,9 @@
                     </div>
                     <div id="quick-notes-feed" style="flex: 1; overflow-y: auto; padding-right: 10px; display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
-                <div class="panel" id="recetas-widget" style="flex:1;"></div>
             </div>
 
-            <div class="panel span-col-2 span-row-1" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                    <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent); font-size: 1.1em;">Calendario</h2>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button id="btn-quick-kanban" class="add-small-btn" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; padding: 0; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onclick="openFocusKanban(); event.stopPropagation();" title="Vista de Enfoque Kanban">◫</button>
-                        <span style="font-size:0.8em; color:var(--accent); font-weight:500;">⤢ Ver</span>
-                    </div>
-                </div>
-                <div class="calendar-grid" id="cal-dashboard" style="gap:3px;"></div>
-            </div>
-
-            <div class="panel span-col-4 span-row-1" id="dash-links-panel" style="flex:1;">
+            <div class="panel span-col-2 span-row-1" id="dash-links-panel" style="flex:1;">
                 <h2>Archivos & Links</h2>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
                     <input type="text" id="new-link-title" placeholder="Nombre (ej. Tesis)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
@@ -889,7 +906,7 @@
         function toggleQuickTodo(idx) { appState.quickTodos[idx].done = !appState.quickTodos[idx].done; saveToMemory(); renderQuickTodos(); }
         function deleteQuickTodo(idx) { appState.quickTodos.splice(idx, 1); saveToMemory(); renderQuickTodos(); }
 
-        function renderRecetasWidget() { const widget = document.getElementById('recetas-widget'); if (!widget) return; const hour = new Date().getHours(); let mealTag = 'postre'; let mealName = 'un antojo'; let greeting = '🌙'; if (hour >= 6 && hour < 12) { mealTag = 'desayuno'; mealName = 'el desayuno'; greeting = '☀️'; } else if (hour >= 12 && hour < 17) { mealTag = 'almuerzo'; mealName = 'el almuerzo'; greeting = '🌤️'; } else if (hour >= 17 && hour < 22) { mealTag = 'cena'; mealName = 'la cena'; greeting = '🌙'; } let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags || []).includes(mealTag)); let suggestionHtml = ''; if (recipes.length > 0) { let randomRecipe = recipes[Math.floor(Math.random() * recipes.length)]; suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--accent); text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='rgba(147,112,219,0.1)'" onmouseout="this.style.background='var(--hover-bg)'" onclick="openTaskModal(null, ${randomRecipe.id})"><span style="font-size:1.8em;">🍽️</span><h4 style="margin:8px 0 5px 0; color:var(--text-dark); font-family:'Playfair Display', serif; font-size:1.2em;">${randomRecipe.title}</h4><p style="font-size:0.85em; color:#888; margin:0;">Sugerencia para ${mealName}</p></div>`; } else { suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--border-color); text-align:center; font-size:0.85em; color:#888;">No tienes recetas con la etiqueta <b>#${mealTag}</b>.<br>¡Agrega una para inspirarte!</div>`; } widget.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2 style="margin:0;">${greeting} ¿Qué cocinamos?</h2><button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ver Recetario</button></div>${suggestionHtml}`; }
+        function renderRecetasWidget() { const widget = document.getElementById('recetas-widget'); if (!widget) return; const hour = new Date().getHours(); let mealTag = 'postre'; let mealName = 'un antojo'; let greeting = '🌙'; if (hour >= 6 && hour < 12) { mealTag = 'desayuno'; mealName = 'el desayuno'; greeting = '☀️'; } else if (hour >= 12 && hour < 17) { mealTag = 'almuerzo'; mealName = 'el almuerzo'; greeting = '🌤️'; } else if (hour >= 17 && hour < 22) { mealTag = 'cena'; mealName = 'la cena'; greeting = '🌙'; } let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags || []).includes(mealTag)); let suggestionHtml = ''; if (recipes.length > 0) { let randomRecipe = recipes[Math.floor(Math.random() * recipes.length)]; suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--accent); text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='rgba(147,112,219,0.1)'" onmouseout="this.style.background='var(--hover-bg)'" onclick="openTaskDetails(${randomRecipe.id})"><span style="font-size:1.8em;">🍽️</span><h4 style="margin:8px 0 5px 0; color:var(--text-dark); font-family:'Playfair Display', serif; font-size:1.2em;">${randomRecipe.title}</h4><p style="font-size:0.85em; color:#888; margin:0;">Sugerencia para ${mealName}</p></div>`; } else { suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--border-color); text-align:center; font-size:0.85em; color:#888;">No tienes recetas con la etiqueta <b>#${mealTag}</b>.<br>¡Agrega una para inspirarte!</div>`; } widget.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2 style="margin:0;">${greeting} ¿Qué cocinamos?</h2><button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ver Recetario</button></div>${suggestionHtml}`; }
 
         function updateCatColor(key, color) { appState.categories[key].color = color; saveToMemory(); renderAll(); }
         function applyDynamicColors() { 
@@ -1188,7 +1205,7 @@
                         if (containerId === 'cal-dashboard') {
                             let sym = t.category === 'personal' ? '✧' : t.category === 'escolar' ? '◈' : t.category === 'profesional' ? '⌬' : '✦';
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
-                            return `<div class="cal-symbol-wrapper" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">
+                            return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
                                         <div class="aesthetic-tooltip">
                                             <b style="color: ${getCatColor(t.category)};">${t.title}</b>
@@ -1197,13 +1214,13 @@
                                     </div>`;
                         }
                         let icon = iconMap[t.category] || iconMap['default']; 
-                        return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
+                        return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
                     }).join(''); 
                     calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
                 } else { 
                     let indicators = dayTasks.map(t => { 
                         let icon = iconMap[t.category] || iconMap['default']; 
-                        return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${icon}</button>`; 
+                        return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon}</button>`; 
                     }).join(''); 
                     calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
                 } 
@@ -1236,7 +1253,7 @@
             
             if (subcatName === 'ENMS Labs' && subpageViewMode === 'table') {
                 html += `<table class="notion-table"><thead><tr><th style="width:25%;">Práctica</th><th>Materia</th><th>Día / Hora</th><th>Profesor</th><th>Grupo</th><th>Estado</th></tr></thead><tbody>`;
-                subTasks.forEach(t => { html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Práctica"><div class="title-cell"><span class="icon-symbol">🧪</span><span>${t.enmsPractica || t.title}</span></div></td><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Día/Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td></tr>`; }); html += `</tbody></table>`;
+                subTasks.forEach(t => { html += `<tr class="event-item" onclick="openTaskDetails(${t.id})"><td data-label="Práctica"><div class="title-cell"><span class="icon-symbol">🧪</span><span>${t.enmsPractica || t.title}</span></div></td><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Día/Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td></tr>`; }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'table') {
                 let customization = appState.categories[catKey];
                 let customHeaders = '';
@@ -1253,14 +1270,14 @@
                     if(customization && customization.customFields) {
                         customCols = customization.customFields.map(field => `<td data-label="${field.charAt(0).toUpperCase() + field.slice(1)}">${(t.customFields && t.customFields[field]) || '-'}</td>`).join('');
                     }
-                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
+                    html += `<tr class="event-item" onclick="openTaskDetails(${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
                 }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'list') {
                 html += '<ul class="module-list" style="border:none; background:transparent; padding:0;">';
-                subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item" onclick="openTaskModal(null, ${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
+                subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item" onclick="openTaskDetails(${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
             } else if (subpageViewMode === 'kanban') {
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
-                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
+                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
             html += '</div>'; dynamicArea.innerHTML = html;
         }
@@ -1454,6 +1471,60 @@
         }
         
         function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
+
+        function openTaskDetails(taskId) {
+            window.currentTaskId = taskId;
+            let task = appState.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            document.getElementById('task-details-title').textContent = task.title;
+            document.getElementById('task-details-title').style.color = getCatColor(task.category);
+            
+            let scopeSymbol = task.category === 'personal' ? '✧' : task.category === 'escolar' ? '◈' : '⌬';
+            document.getElementById('task-details-scope').textContent = `${scopeSymbol} ${getCatLabel(task.category)} - ${task.subcategory}`;
+            
+            let scheduleText = '';
+            if (task.date) {
+                let dateObj = new Date(task.date);
+                let dateStr = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                scheduleText += `📅 ${dateStr}`;
+            }
+            if (task.time) {
+                scheduleText += scheduleText ? ` a las ${task.time}` : `⏰ ${task.time}`;
+            }
+            if (task.recurring) {
+                let recType = task.recurrenceType === 'daily' ? 'Diariamente' : task.recurrenceType === 'weekly' ? 'Semanalmente' : task.recurrenceType === 'monthly' ? 'Mensualmente' : task.recurrenceType === 'yearly' ? 'Anualmente' : 'Personalizado';
+                scheduleText += scheduleText ? ` (${recType})` : recType;
+            }
+            document.getElementById('task-details-schedule').textContent = scheduleText;
+            
+            document.getElementById('task-details-notes').textContent = task.notes || 'Sin notas adicionales.';
+            
+            let modal = document.getElementById('taskDetailsModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeTaskDetailsModal() { let modal = document.getElementById('taskDetailsModal'); if(modal) modal.style.display = 'none'; }
+
+        function editTaskFromDetails() {
+            closeTaskDetailsModal();
+            // Asumiendo que editingTaskId está disponible, pero como openTaskDetails no lo setea, necesito setearlo.
+            // En openTaskDetails, agregar window.currentTaskId = taskId;
+            openTaskModal(null, window.currentTaskId);
+        }
+
+        function deleteTaskFromDetails() {
+            customConfirm("¿Eliminar esta tarea?", () => {
+                deleteTask(window.currentTaskId);
+                closeTaskDetailsModal();
+            });
+        }
+
+        function deleteTask(taskId) {
+            appState.tasks = appState.tasks.filter(t => t.id !== taskId);
+            saveToMemory();
+            renderAll();
+        }
         function updateSubcatDropdown() { 
             let cat = document.getElementById('m-category').value; 
             let dd = document.getElementById('m-subcategory'); 
@@ -1524,12 +1595,12 @@
         }
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
-        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
+        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
         
-        function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
-        function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
-        function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
+        function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
+        function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskDetails(${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
@@ -1586,7 +1657,7 @@
         function renderRecetasList(tasks, filter) {
             let filtered = filter === 'all' ? tasks : tasks.filter(t => (t.tags || []).includes(filter));
             return filtered.map(t => `
-                <div class="panel" style="cursor: pointer;" onclick="openTaskModal(null, ${t.id})">
+                <div class="panel" style="cursor: pointer;" onclick="openTaskDetails(${t.id})">
                     <h4 style="margin: 0 0 10px 0; font-family: 'Playfair Display', serif;">${t.title}</h4>
                     <div style="font-size: 0.85em; color: #888;">${(t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join('')}</div>
                     <p style="margin: 10px 0; font-size: 0.9em;">${t.notes || 'Sin descripción'}</p>
