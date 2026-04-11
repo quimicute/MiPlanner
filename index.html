@@ -81,13 +81,13 @@
         .fab:hover { transform: scale(1.15) rotate(90deg); background: var(--accent-hover); }
         .widget-iframe { width: 100%; border: none; border-radius: 4px; border: 1px solid var(--border-color);}
 
-        /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) - Ajustado a 4 columnas */
-        .top-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; width: 100%; max-width: 100%;}
+        /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
+        .top-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; width: 100%; max-width: 100%;}
         .top-gallery-card { border-radius: 10px; padding: 40px 20px; text-align: center; cursor: pointer; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; position: relative; overflow: hidden; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; min-height: 140px;}
         .top-gallery-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); transition: 0.3s; z-index: 1;}
-        .top-gallery-card:hover::after { background: rgba(0,0,0,0.15); }
+        .top-gallery-card:hover::after { background: rgba(0,0,0,0.2); }
         .top-gallery-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); border-color: var(--accent);}
-        .top-gallery-card h3 { font-family: 'Playfair Display', serif; font-size: 1.8em; margin: 0; position: relative; z-index: 2; color: white; text-shadow: 0 2px 6px rgba(0,0,0,0.6); letter-spacing: 1px;}
+        .top-gallery-card h3 { font-family: 'Playfair Display', serif; font-size: 2em; margin: 0; position: relative; z-index: 2; color: white; text-shadow: 0 2px 6px rgba(0,0,0,0.6); letter-spacing: 1px;}
         
         /* CLICK DERECHO - CONTEXT MENU */
         .context-menu { display: none; position: absolute; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 9999; flex-direction: column; padding: 8px; min-width: 180px; animation: popMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -98,7 +98,7 @@
         .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .color-dot:hover { transform: scale(1.2); }
 
-        /* MODAL */
+        /* MODAL BASE */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .modal { background: var(--panel-bg); padding: 40px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); position: relative; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         .modal h2 { background: transparent; color: var(--text-dark); padding: 0; font-size: 1.8em; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); font-family: 'Playfair Display', serif;}
@@ -109,12 +109,20 @@
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; font-weight: 300; transition: 0.2s; line-height: 1;}
         .close-modal:hover { color: var(--accent); transform: rotate(90deg);}
         
+        /* BOTONES PRIORIDAD SEMÁFORO */
         .priority-group { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 15px;}
         .prio-btn { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark); cursor: pointer; font-size: 0.85em; font-weight: 500; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .prio-btn .prio-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: 0.2s;}
+        .prio-btn:hover { border-color: #ccc; }
+        .prio-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: 0.2s;}
+        .prio-btn .prio-indicator.low { background: #10b981; opacity: 0.4;}
+        .prio-btn .prio-indicator.med { background: #f59e0b; opacity: 0.4;}
+        .prio-btn .prio-indicator.high { background: #ef4444; opacity: 0.4;}
         .prio-btn.active.low { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
+        .prio-btn.active.low .prio-indicator.low { background: #10b981; opacity: 1; box-shadow: 0 0 5px rgba(16,185,129,0.5);}
         .prio-btn.active.med { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #d97706; }
+        .prio-btn.active.med .prio-indicator.med { background: #f59e0b; opacity: 1; box-shadow: 0 0 5px rgba(245,158,11,0.5);}
         .prio-btn.active.high { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+        .prio-btn.active.high .prio-indicator.high { background: #ef4444; opacity: 1; box-shadow: 0 0 5px rgba(239,68,68,0.5);}
 
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; margin-bottom: 15px;}
         .tag-toggle { background: var(--bg-color); border: 1px solid var(--border-color); color: #888; padding: 6px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 500; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif;}
@@ -141,22 +149,22 @@
         .add-inline-btn { width: 100%; background: transparent; border: 1px dashed var(--border-color); color: #888; padding: 10px; border-radius: 4px; cursor: pointer; transition: 0.2s; font-family: inherit; font-size: 0.85em; font-weight: 600;}
 
         /* KANBAN Y TARJETAS */
-        .kanban { display: flex; gap: 20px; margin-top: 10px; overflow-x: auto; padding-bottom: 10px;}
-        .kanban-col { flex: 1; min-width: 250px; min-height: 250px; transition: 0.3s; border: 2px dashed transparent; border-radius: 6px; padding: 5px;}
+        .kanban { display: flex; gap: 20px; margin-top: 10px; }
+        .kanban-col { flex: 1; min-height: 250px; transition: 0.3s; border: 2px dashed transparent; border-radius: 6px; padding: 5px;}
         .kanban-col.drag-over { border-color: var(--accent); background: rgba(147, 112, 219, 0.05); }
-        .kanban-col h3 { text-align: left; font-family: 'Playfair Display', serif; font-size: 1.2em; font-weight: 600; color: var(--color-p5); border-bottom: 2px solid var(--color-p2); padding-bottom: 8px; margin-top: 0;}
+        .kanban-col h3 { text-align: left; font-family: 'Playfair Display', serif; font-size: 1.1em; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-top: 0;}
         .task-card { background: var(--panel-bg); padding: 15px; border-radius: 6px; margin-bottom: 12px; font-size: 0.9em; border: 1px solid var(--border-color); cursor: grab; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s;}
-        .task-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .task-card:hover { border-color: var(--accent); transform: translateY(-2px);}
         .task-title { font-weight: 500; display: block; margin-top: 10px; font-size: 1.05em; color: var(--text-dark); line-height: 1.4;}
         
         .pill { padding: 3px 10px; border-radius: 4px; font-size: 0.7em; color: #fff; font-weight: 600; display: inline-block; margin-right: 5px; margin-bottom: 5px; letter-spacing: 0.5px; border: 1px solid transparent; transition: 0.2s;}
         .pill.tag { background: var(--hover-bg); color: var(--text-dark); border-color: var(--border-color); cursor: pointer; }
         
-        .event-item { background: var(--panel-bg); padding: 15px; border-radius: 4px; margin-bottom: 10px; border: 1px solid var(--border-color); border-left: 3px solid var(--accent); font-size: 0.9em; transition: 0.2s; cursor:pointer; display: flex; align-items: center; justify-content: space-between; gap: 15px;}
+        .event-item { background: var(--panel-bg); padding: 15px; border-radius: 4px; margin-bottom: 10px; border: 1px solid var(--border-color); border-left: 3px solid var(--accent); font-size: 0.9em; transition: 0.2s; cursor:pointer;}
         .event-item:hover { transform: translateX(3px); border-color: var(--accent);}
         .icon-symbol { color: var(--accent); font-weight: bold; margin-right: 5px;}
 
-        /* GALERÍAS NORMALES INTERNAS */
+        /* TARJETAS INTERNAS */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
         .gallery-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; display: flex; flex-direction: column; border-top: 4px solid var(--border-color);}
         .gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.08);}
@@ -179,7 +187,8 @@
         .task-indicator:hover { transform: scale(1.3); }
         #cal-full .cal-day { min-height: 120px; padding: 10px; }
         #cal-full .indicator-container { flex-direction: column; align-items: flex-start; gap: 4px; }
-        .full-cal-task { font-size: 0.75em; padding: 4px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; cursor: pointer; transition: 0.2s; font-weight: 500;}
+        .full-cal-task { font-size: 0.75em; padding: 5px 8px; border-radius: 4px; width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; cursor: pointer; transition: 0.2s; font-weight: 500;}
+        .full-cal-task:hover { filter: brightness(0.9); transform: translateX(3px);}
 
         /* NOTION PROPERTIES TABLE */
         .view-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; overflow-x: auto;}
@@ -190,11 +199,10 @@
         .notion-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); vertical-align: middle;}
         .notion-table tr { transition: 0.2s; }
         .notion-table tr:hover { background: var(--hover-bg); }
-        .notion-table .title-cell { font-weight: 500; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
         
         .page-cover { width: 100%; height: 220px; object-fit: cover; background: #ddd; transition: filter 0.3s; border-radius: 8px 8px 0 0;}
         .page-icon-wrapper { margin-top: -40px; margin-left: 40px; margin-bottom: 20px; position: relative; z-index: 2;}
-        .page-icon { font-size: 3.5em; background: var(--panel-bg); border-radius: 50%; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color); color: var(--text-dark); font-family: 'Playfair Display', serif; box-shadow: 0 4px 10px rgba(0,0,0,0.08);}
+        .page-icon { font-size: 3.5em; background: var(--panel-bg); border-radius: 50%; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color); color: var(--text-dark); font-family: 'Playfair Display', serif; box-shadow: 0 4px 15px rgba(0,0,0,0.08);}
         .page-content-area { padding: 0; margin-bottom: 30px; line-height: 1.7; font-size: 0.95em; color: var(--text-dark);}
         .page-content-editor { width: 100%; min-height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.95em; line-height: 1.7; display: none; box-sizing: border-box; background: var(--bg-color); color: var(--text-dark);}
 
@@ -202,7 +210,7 @@
         .selfcare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 15px; }
         .habit-group { background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px; transition: 0.3s;}
         .habit-group:hover { border-color: var(--accent); box-shadow: 0 4px 15px rgba(147,112,219,0.05);}
-        .habit-group h4 { margin: 0 0 15px 0; font-family: 'Playfair Display', serif; font-size: 1.15em; color: var(--color-p5); border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; display:flex; justify-content:space-between; align-items:center;}
+        .habit-group h4 { margin: 0 0 15px 0; font-family: 'Playfair Display', serif; font-size: 1.15em; color: var(--accent); border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; display:flex; justify-content:space-between; align-items:center;}
         .habit-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px solid var(--border-color); transition: 0.2s;}
         .habit-item:last-child { border-bottom: none; }
         .habit-item:hover { background: var(--hover-bg); transform: translateX(3px); border-radius: 4px; padding-left: 10px;}
@@ -210,12 +218,16 @@
         .habit-left input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
         .habit-item.done .habit-left span { text-decoration: line-through; color: #888; }
         .habit-streak { font-size: 0.8em; font-weight: 600; background: rgba(147,112,219,0.1); color: var(--accent); padding: 2px 8px; border-radius: 12px; }
-        .quote-box { text-align: center; padding: 20px; font-style: italic; color: var(--color-p5); font-size: 1.1em; background: rgba(147,112,219,0.05); border-radius: 8px; border: 1px dashed var(--color-p4); margin-bottom: 25px; font-family: 'Playfair Display', serif;}
+        .quote-box { text-align: center; padding: 20px; font-style: italic; color: var(--accent); font-size: 1.1em; background: rgba(147,112,219,0.05); border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 25px; font-family: 'Playfair Display', serif;}
         
+        .progress-bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 8px;}
+        body.dark-mode .progress-bar-bg { background: #3f3f46; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--script-color)); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
         @media (max-width: 1024px) {
             .dashboard-grid, .standard-grid, .selfcare-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
-            .top-gallery { grid-template-columns: repeat(2, 1fr) !important; } 
+            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } 
             #cal-dashboard-container { grid-column: span 2 !important; }
         }
         @media (max-width: 768px) {
@@ -240,16 +252,16 @@
 <body>
 
     <div id="module-context-menu" class="context-menu">
-        <div style="font-size: 0.75em; padding: 5px 15px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight:600; margin-bottom:5px;">Personalizar Módulo</div>
+        <div style="font-size: 0.75em; padding: 5px 15px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight:600; margin-bottom:5px;">Personalizar</div>
         <button onclick="ctxChangeCover()">📷 Cambiar Portada</button>
         <button onclick="ctxChangeIcon()">✧ Cambiar Ícono</button>
         <div style="padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 8px; justify-content:center; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin: 5px 0;">
-            <div class="color-circle" style="background:var(--color-p1);" onclick="ctxSetColor('var(--color-p1)')"></div>
-            <div class="color-circle" style="background:var(--color-p2);" onclick="ctxSetColor('var(--color-p2)')"></div>
-            <div class="color-circle" style="background:var(--color-p3);" onclick="ctxSetColor('var(--color-p3)')"></div>
-            <div class="color-circle" style="background:var(--color-p4);" onclick="ctxSetColor('var(--color-p4)')"></div>
-            <div class="color-circle" style="background:var(--color-p5);" onclick="ctxSetColor('var(--color-p5)')"></div>
-            <div class="color-circle" style="background:var(--color-p6);" onclick="ctxSetColor('var(--color-p6)')"></div>
+            <div class="color-dot" style="background:var(--color-p1);" onclick="ctxSetColor('var(--color-p1)')"></div>
+            <div class="color-dot" style="background:var(--color-p2);" onclick="ctxSetColor('var(--color-p2)')"></div>
+            <div class="color-dot" style="background:var(--color-p3);" onclick="ctxSetColor('var(--color-p3)')"></div>
+            <div class="color-dot" style="background:var(--color-p4);" onclick="ctxSetColor('var(--color-p4)')"></div>
+            <div class="color-dot" style="background:var(--color-p5);" onclick="ctxSetColor('var(--color-p5)')"></div>
+            <div class="color-dot" style="background:var(--color-p6);" onclick="ctxSetColor('var(--color-p6)')"></div>
         </div>
         <button onclick="ctxDelete()" style="color:#ef4444; font-weight:600;">🗑️ Eliminar Módulo</button>
     </div>
@@ -265,7 +277,6 @@
         <button onclick="switchView('kanban-general', this); toggleMenu()">📌 Kanban Global</button>
         <button onclick="switchView('full-calendar-view', this); toggleMenu()">📅 Calendario</button>
         <button onclick="switchView('mod-personal', this); toggleMenu()">🌸 Personal</button>
-        <button onclick="switchView('mod-proyectos', this); toggleMenu()">🚀 Proyectos</button>
         <button onclick="switchView('mod-escolar', this); toggleMenu()">📚 Académico</button>
         <button onclick="switchView('mod-profesional', this); toggleMenu()">🧪 Profesional</button>
         <button onclick="switchView('master-view', this); toggleMenu()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🔍 Buscador Maestro</button>
@@ -274,10 +285,10 @@
     <header>
         <div class="header-top-row">
             <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
-                <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             </button>
             <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
-                <svg width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
             <h1 id="main-header-title">Life Planner</h1>
         </div>
@@ -290,54 +301,35 @@
         <div class="modal">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
             <h2 id="modal-title">Nuevo Registro</h2>
-            
-            <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                <select id="m-type" style="flex:1; margin:0;"><option value="task">Tarea / Acción</option><option value="event">Evento / Reunión</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option><option value="book">Libro / Artículo</option></select>
-            </div>
-            
+            <select id="m-type" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
             <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
-            
             <div style="display:flex; gap:10px;">
-                <div style="flex:1;"><label style="font-size:10px; color:#888;">CATEGORÍA</label><select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="proyectos">Proyectos</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select></div>
-                <div style="flex:1;"><label style="font-size:10px; color:#888;">MÓDULO</label><select id="m-subcategory" onchange="toggleSpecialFields()"></select></div>
+                <div style="flex:1;"><select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select></div>
+                <div style="flex:1;"><select id="m-subcategory" onchange="toggleEnmsFields()"></select></div>
             </div>
-            
             <div style="display:flex; gap:10px; margin-top: 10px;">
-                <div style="flex:1;"><label style="font-size:10px; color:#888;">FECHA</label><input type="date" id="m-date"></div>
-                <div style="flex:1;"><label style="font-size:10px; color:#888;">INICIO</label><input type="time" id="m-time"></div>
-                <div style="flex:1;"><label style="font-size:10px; color:#888;">FIN</label><input type="time" id="m-time-end"></div>
+                <div style="flex:1;"><input type="date" id="m-date"></div><div style="flex:1;"><input type="time" id="m-time"></div>
             </div>
-
-            <div class="checkbox-container" style="margin-top:15px;">
-                <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <label for="m-recurring" style="font-weight:500;">Esta actividad se repite en el tiempo</label>
+            <div class="checkbox-container">
+                <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <label for="m-recurring">Se repite</label>
             </div>
             <select id="m-recurrence-type" style="display:none; margin-top:5px;"><option value="daily">Diariamente</option><option value="weekly">Semanalmente</option><option value="monthly">Mensualmente</option><option value="yearly">Anualmente</option></select>
-
-            <div id="enms-custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(147,112,219,0.05); padding:10px; border-radius:6px; border:1px dashed var(--accent);">
+            <div id="enms-custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(147,112,219,0.05); padding:10px; border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
                 <div style="width:100%; font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase;">🧪 Datos de Laboratorio</div>
                 <input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;">
                 <input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;">
                 <input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;">
                 <input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;">
             </div>
-
-            <div id="biblio-custom-fields" style="display:none; gap:10px; margin-top:15px; flex-wrap:wrap; background: rgba(90,162,171,0.05); padding:10px; border-radius:6px; border:1px dashed var(--color-p4);">
-                <div style="width:100%; font-size:0.85em; color:var(--color-p4); font-weight:600; text-transform:uppercase;">📚 Datos de Lectura</div>
-                <input type="text" id="m-biblio-autor" placeholder="Autor o Link" style="width:100%;">
-                <select id="m-biblio-status" style="width:100%;"><option value="Por leer">Por leer</option><option value="Leyendo">Leyendo</option><option value="Terminado">Terminado</option></select>
-            </div>
-            
             <div style="font-size: 0.85em; color: #888; margin-top: 15px; font-weight: 500;">Prioridad</div>
             <div class="priority-group" id="m-priority-group">
                 <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span> Baja</button>
                 <button class="prio-btn med active" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span> Media</button>
                 <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span> Alta</button>
             </div>
-
             <div style="font-size: 0.85em; color: #888; margin-top: 10px; font-weight: 500;">Etiquetas Predeterminadas</div>
             <div class="tags-container" id="m-tags-container"></div>
-            
-            <textarea id="m-notes" placeholder="De qué trata, notas, enlaces..." rows="3" style="margin-top: 15px;"></textarea>
+            <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
         </div>
     </div>
@@ -384,13 +376,10 @@
             <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])">
                 <h3>Personal</h3>
             </div>
-            <div class="top-gallery-card proyectos" id="tg-proyectos" onclick="switchView('mod-proyectos', document.querySelectorAll('#main-nav button')[4])">
-                <h3>Proyectos</h3>
-            </div>
-            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[5])">
+            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])">
                 <h3>Académico</h3>
             </div>
-            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[6])">
+            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])">
                 <h3>Profesional</h3>
             </div>
         </div>
@@ -431,10 +420,7 @@
                     </div>
                     <div id="quick-notes-feed" style="overflow-y:auto; flex:1; padding-right:5px; display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
-                <div class="panel" style="flex:1;">
-                    <h2>📚 En Lectura</h2>
-                    <div id="library-widget" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"></div>
-                </div>
+                <div class="panel" id="recetas-widget" style="flex:1;"></div>
             </div>
 
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 20px;">
@@ -449,7 +435,7 @@
                 </div>
             </div>
 
-            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])">
+            <div class="grid-col-4 panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent);">Calendario Maestro</h2><span style="font-size:0.85em; color:var(--accent); font-weight:500;">⤢ Pantalla Completa</span>
                 </div>
@@ -478,31 +464,19 @@
                 </div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0; font-family:'Playfair Display';">Módulos Personales</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2></div>
                 <div class="gallery-grid" id="render-personal"></div>
             </div>
         </div>
     </div>
     
-    <div id="mod-proyectos" class="view-section">
-        <div class="standard-grid">
-            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--color-p4); color: white; margin-bottom: 15px;">Pipeline 🚀</h2><p style="color:#888; line-height:1.5;">Tus ideas revolucionarias, todo sobre Quimicute y la experimentación de Perfumes en un solo lugar.</p></div>
-            </div>
-            <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0; font-family:'Playfair Display';">Incubadora de Ideas</h2></div>
-                <div class="gallery-grid" id="render-proyectos"></div>
-            </div>
-        </div>
-    </div>
-
     <div id="mod-escolar" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: white; margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
+                <div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0; font-family:'Playfair Display';">Academia</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2></div>
                 <div class="gallery-grid" id="render-escolar"></div>
             </div>
         </div>
@@ -511,10 +485,10 @@
     <div id="mod-profesional" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: white; margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
+                <div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0; font-family:'Playfair Display';">Workspaces</h2></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2></div>
                 <div class="gallery-grid" id="render-profesional"></div>
             </div>
         </div>
@@ -528,8 +502,8 @@
                 <div style="position: relative;">
                     <img src="" class="page-cover" id="sp-cover" alt="Cover">
                 </div>
-                <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="ctxChangeIcon()" title="Cambiar Icono">✧</div></div>
                 
+                <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="changeCover()" title="Cambiar Icono">✧</div></div>
                 <div style="padding: 0 5vw 50px 5vw;">
                     <div id="sp-general-info-container">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
@@ -547,45 +521,45 @@
     </div>
 
     <script>
-        // --- 1. FIREBASE CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre', 'guión'];
+        const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = []; let currentModalPriority = 'medium';
 
-        // --- 2. ESTADO INICIAL (MÉXICO Y PROYECTOS) ---
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#EBBAB9', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Biblioteca', 'Recetas', 'Asuntos Sociales', 'Bitácora de Viajes'] }, 
-            proyectos: { label: 'Proyectos', color: '#5AA2AB', cover: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?auto=format&fit=crop&w=600&q=80', subcats: ['Quimicute', 'Perfumes Lab', 'Japón 15D'] },
-            escolar: { label: 'Académico', color: '#97B1A6', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Artículos'] }, 
-            profesional: { label: 'Profesional', color: '#407076', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario Químico'] } 
+            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Wishlist', 'Recetas', 'Asuntos Sociales'] }, 
+            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'] }, 
+            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'] } 
         };
         let defaultPageData = { 
-            "ENMS Labs": { icon: "🧪", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p5)", content: `<p>Panel de control para las prácticas de laboratorio en la ENMS.</p>` }, 
-            "Inventario Químico": { icon: "📋", cover: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p5)", content: `<p>Registro de reactivos inorgánicos y orgánicos.</p>` }, 
-            "Biblioteca": { icon: "📚", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p1)", content: `<p>Los libros que quiero devorar y los que ya leí.</p>` },
-            "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p2)", content: `<p>Mi recetario personal foráneo. No olvides las etiquetas de tiempos de comida.</p>` },
-            "Selfcare": { icon: "🧘‍♀️", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p1)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
-            "Quimicute": { icon: "🎥", cover: "https://images.unsplash.com/photo-1516280440502-861d8a43f87c?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p4)", content: `<p>Ideas de divulgación científica, guiones y grabación.</p>` },
-            "Perfumes Lab": { icon: "✨", cover: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p4)", content: `<p>Fórmulas y pruebas para la línea de perfumes.</p>` },
-            "Japón 15D": { icon: "🇯🇵", cover: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p4)", content: `<p>Planificación de la aventura de Juventudes. ¡A preparar el pitch!</p>` }
+            "ENMS Labs": { icon: "🧪", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
+            "Wishlist": { icon: "✨", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
+            "Recetas": { icon: "👩‍🍳", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` },
+            "Selfcare": { icon: "🧘‍♀️", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
+            "Asuntos Sociales": { icon: "🥂", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
         };
         let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
         
         let defaultTasks = [ 
             { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' },
-            { id: 101, type: 'task', title: 'Chilaquiles Verdes Económicos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Tortillas viejas, tomatillo, chile serrano, cebolla, cilantro y queso fresco.' },
+            { id: 101, type: 'task', title: 'Chilaquiles Verdes Económicos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Tortillas viejas, tomatillo de mercado, chile serrano, cebolla, cilantro y queso fresco.' },
             { id: 102, type: 'task', title: 'Enfrijoladas de Queso', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo', 'cena'], notes: 'Frijoles molidos, tortillas, queso panela y aguacate.' },
-            { id: 103, type: 'task', title: 'Sopa de Fideo con Verduras', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita.' },
-            { id: 104, type: 'book', title: 'Harry Potter y la Piedra Filosofal', category: 'personal', subcategory: 'Biblioteca', date: '', priority: 'medium', status: 'Leyendo', tags: [], notes: 'Magia pura. Voy en el capítulo 5.', autor: 'J.K. Rowling' }
+            { id: 103, type: 'task', title: 'Sopa de Fideo con Verduras', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita picada en cuadritos.' },
+            { id: 104, type: 'task', title: 'Tostadas de Atún con Elotitos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'low', status: 'todo', tags: ['cena'], notes: 'Lata de atún, mayonesa, elotitos de lata, tostadas y salsa.' },
+            { id: 105, type: 'task', title: 'Huevos a la Mexicana', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito picado.' }
         ];
-        
         let defaultHabits = [
             {id: 1, title: 'Masaje cuero cabelludo', group: 'Haircare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
-            {id: 4, title: 'Exfoliación', group: 'Skincare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
+            {id: 2, title: 'Despunte', group: 'Haircare', category: 'Bodycare', freq: 'monthly', lastDone: '', streak: 0},
+            {id: 3, title: 'Repolarización capilar', group: 'Haircare', category: 'Bodycare', freq: 'monthly', lastDone: '', streak: 0},
+            {id: 4, title: 'Exfoliación (cuerpo completo)', group: 'Skincare', category: 'Bodycare', freq: 'weekly', lastDone: '', streak: 0},
             {id: 5, title: 'Rutina cara mañana', group: 'Skincare', category: 'Bodycare', freq: 'daily', lastDone: '', streak: 0},
+            {id: 6, title: 'Rutina cara noche', group: 'Skincare', category: 'Bodycare', freq: 'daily', lastDone: '', streak: 0},
+            {id: 7, title: 'Inicio del día (Balasana)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
+            {id: 8, title: 'Fin del día (Gato enojado)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
             {id: 9, title: 'Rutina Pilates', group: 'Pilates', category: 'Fitness', freq: 'daily', link: 'https://youtube.com', lastDone: '', streak: 0},
+            {id: 10, title: 'Rutina Gym (Músculo del día)', group: 'Gym', category: 'Fitness', freq: 'daily', lastDone: '', streak: 0},
             {id: 11, title: 'Meditación (10 mins)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', lastDone: '', streak: 0},
             {id: 12, title: 'Decir a mi familia que los quiero', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', lastDone: '', streak: 0},
             {id: 13, title: 'Carta mensual para mí misma', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', lastDone: '', streak: 0}
@@ -594,7 +568,7 @@
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits };
         let taskIdCounter = 200; let habitIdCounter = 20; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
 
-        // HELPER FUNCTIONS
+        // HELPER FUNCTIONS (ANTI-BERRINCHES DE JS)
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
         function getCatLabel(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
         function getCatCover(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].cover) ? appState.categories[catKey].cover : 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80'; }
@@ -607,19 +581,37 @@
             if (doc.exists) { 
                 let data = doc.data();
                 if(data.tasks && data.tasks.length > 0) appState.tasks = data.tasks; 
-                if(data.categories) {
-                    // MIGRACIÓN: Asegurar que existe Proyectos y Biblioteca
-                    if(!data.categories.proyectos) data.categories.proyectos = defaultCategories.proyectos;
-                    if(!data.categories.personal.subcats.includes('Biblioteca')) data.categories.personal.subcats.push('Biblioteca');
-                    appState.categories = data.categories;
-                }
-                if(data.pageData) appState.pageData = {...defaultPageData, ...data.pageData}; // Merge para no perder las nuevas configuraciones
+                if(data.categories) appState.categories = data.categories;
+                if(data.pageData) appState.pageData = data.pageData;
                 appState.dashboard = data.dashboard || defaultDashboard; 
                 if(!appState.dashboard.links) appState.dashboard.links = defaultDashboard.links;
                 
+                if(!appState.categories.personal.cover) {
+                    appState.categories.personal.cover = defaultCategories.personal.cover;
+                    appState.categories.escolar.cover = defaultCategories.escolar.cover;
+                    appState.categories.profesional.cover = defaultCategories.profesional.cover;
+                }
                 appState.quickNotesList = data.quickNotesList || [];
                 appState.quickTodos = data.quickTodos || [];
-                appState.habits = data.habits && data.habits.length > 0 ? data.habits : defaultHabits;
+                
+                if(data.habits && data.habits.length > 0) {
+                    appState.habits = data.habits;
+                } else {
+                    appState.habits = defaultHabits; // Fallback
+                }
+                
+                // MIGRACIÓN MÁGICA
+                if(!appState.habits.find(h => h.group === 'Salud Emocional')) {
+                    appState.habits.push({id: habitIdCounter++, title: 'Meditación (10 mins)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', lastDone: '', streak: 0});
+                    appState.habits.push({id: habitIdCounter++, title: 'Decir a mi familia que los quiero', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', lastDone: '', streak: 0});
+                    appState.habits.push({id: habitIdCounter++, title: 'Carta mensual para mí misma', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', lastDone: '', streak: 0});
+                }
+                if(!appState.tasks.find(t => t.title.includes('Chilaquiles'))) {
+                    appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Chilaquiles Verdes Económicos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Tortillas viejas, tomatillo de mercado, chile serrano, cebolla, cilantro y queso fresco.' });
+                    appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Enfrijoladas de Queso', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo', 'cena'], notes: 'Frijoles molidos, tortillas, queso panela y aguacate.' });
+                    appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Sopa de Fideo con Verduras', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita picada en cuadritos.' });
+                    appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Huevos a la Mexicana', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito picado.' });
+                }
                 
                 taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 200; 
                 habitIdCounter = appState.habits.length > 0 ? Math.max(...appState.habits.map(h => h.id)) + 1 : 20;
@@ -627,7 +619,7 @@
             renderAll();
         }).catch((e) => {console.error(e); renderAll();});
 
-        // --- SISTEMA DE CABECERA Y NAVEGACIÓN ---
+        // --- SISTEMA DE CABECERA DINÁMICA ---
         function goToHome() { switchView('dashboard', document.querySelectorAll('#main-nav button')[0]); }
 
         function updateHeader(view, catLabel = '', subcatLabel = '') {
@@ -672,29 +664,16 @@
         function toggleQuickTodo(idx) { appState.quickTodos[idx].done = !appState.quickTodos[idx].done; saveToMemory(); renderQuickTodos(); }
         function deleteQuickTodo(idx) { appState.quickTodos.splice(idx, 1); saveToMemory(); renderQuickTodos(); }
 
-        // BIBLIOTECA WIDGET (DASHBOARD)
-        function renderLibraryWidget() {
-            const widget = document.getElementById('library-widget'); if(!widget) return;
-            let books = appState.tasks.filter(t => t.subcategory === 'Biblioteca' && t.status !== 'Terminado').slice(0,3);
-            if(books.length === 0) { widget.innerHTML = '<p style="color:#888; font-size:0.85em;">No estás leyendo nada actualmente. Ve a tu Biblioteca.</p>'; return;}
-            widget.innerHTML = books.map(b => `<div class="link-item" onclick="openTaskModal(null, ${b.id})" style="cursor:pointer; display:flex; justify-content:space-between;"><span>📚 <b>${b.title}</b></span> <span class="pill" style="background:var(--color-p4); color:white;">${b.status}</span></div>`).join('');
-        }
+        function renderRecetasWidget() { const widget = document.getElementById('recetas-widget'); if (!widget) return; const hour = new Date().getHours(); let mealTag = 'postre'; let mealName = 'un antojo'; let greeting = '🌙'; if (hour >= 6 && hour < 12) { mealTag = 'desayuno'; mealName = 'el desayuno'; greeting = '☀️'; } else if (hour >= 12 && hour < 17) { mealTag = 'almuerzo'; mealName = 'el almuerzo'; greeting = '🌤️'; } else if (hour >= 17 && hour < 22) { mealTag = 'cena'; mealName = 'la cena'; greeting = '🌙'; } let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags || []).includes(mealTag)); let suggestionHtml = ''; if (recipes.length > 0) { let randomRecipe = recipes[Math.floor(Math.random() * recipes.length)]; suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--accent); text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='rgba(147,112,219,0.1)'" onmouseout="this.style.background='var(--hover-bg)'" onclick="openTaskModal(null, ${randomRecipe.id})"><span style="font-size:1.8em;">🍽️</span><h4 style="margin:8px 0 5px 0; color:var(--text-dark); font-family:'Playfair Display', serif; font-size:1.2em;">${randomRecipe.title}</h4><p style="font-size:0.85em; color:#888; margin:0;">Sugerencia para ${mealName}</p></div>`; } else { suggestionHtml = `<div style="padding:15px; background:var(--hover-bg); border-radius:6px; border:1px dashed var(--border-color); text-align:center; font-size:0.85em; color:#888;">No tienes recetas con la etiqueta <b>#${mealTag}</b>.<br>¡Agrega una para inspirarte!</div>`; } widget.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2 style="margin:0;">${greeting} ¿Qué cocinamos?</h2><button class="add-small-btn" onclick="openSubpage('personal', 'Recetas')" style="background:var(--accent); color:white; border:none;">Ver Recetario</button></div>${suggestionHtml}`; }
 
         function updateCatColor(key, color) { appState.categories[key].color = color; saveToMemory(); renderAll(); }
         function applyDynamicColors() { 
-            document.documentElement.style.setProperty('--cat-personal', getCatColor('personal')); 
-            document.documentElement.style.setProperty('--cat-escolar', getCatColor('escolar')); 
-            document.documentElement.style.setProperty('--cat-profesional', getCatColor('profesional')); 
-            
-            let tgP = document.getElementById('tg-personal'); if(tgP) tgP.style.backgroundImage = `url('${getCatCover('personal')}')`; 
-            let tgE = document.getElementById('tg-escolar'); if(tgE) tgE.style.backgroundImage = `url('${getCatCover('escolar')}')`; 
-            let tgPr = document.getElementById('tg-profesional'); if(tgPr) tgPr.style.backgroundImage = `url('${getCatCover('profesional')}')`;
-            let tgPro = document.getElementById('tg-proyectos'); if(tgPro) tgPro.style.backgroundImage = `url('${getCatCover('proyectos')}')`;
-            
+            document.documentElement.style.setProperty('--cat-personal', getCatColor('personal')); document.documentElement.style.setProperty('--cat-escolar', getCatColor('escolar')); document.documentElement.style.setProperty('--cat-profesional', getCatColor('profesional')); 
+            let tgP = document.getElementById('tg-personal'); if(tgP) tgP.style.backgroundImage = `url('${getCatCover('personal')}')`; let tgE = document.getElementById('tg-escolar'); if(tgE) tgE.style.backgroundImage = `url('${getCatCover('escolar')}')`; let tgPr = document.getElementById('tg-profesional'); if(tgPr) tgPr.style.backgroundImage = `url('${getCatCover('profesional')}')`;
             let pgP = document.getElementById('cover-personal-page'); if(pgP) pgP.src = getCatCover('personal'); let pgE = document.getElementById('cover-escolar-page'); if(pgE) pgE.src = getCatCover('escolar'); let pgPr = document.getElementById('cover-profesional-page'); if(pgPr) pgPr.src = getCatCover('profesional');
         }
 
-        // --- SISTEMA DE HÁBITOS ---
+        // --- SISTEMA DE HÁBITOS CRUD ---
         function getTodayStr() { let d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
         function getMonthStr() { return getTodayStr().substring(0,7); }
         function isHabitDone(habit) {
@@ -740,11 +719,36 @@
             let dailyHabits = appState.habits.filter(h => h.freq === 'daily'); let doneDaily = dailyHabits.filter(h => isHabitDone(h)).length; let progress = dailyHabits.length > 0 ? Math.round((doneDaily / dailyHabits.length) * 100) : 0;
             let html = `<div style="margin-bottom:20px;"><div style="display:flex; justify-content:space-between; font-size:0.85em; color:var(--text-dark); margin-bottom:5px; font-weight:600;"><span>Progreso Diario</span><span>${progress}%</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${progress}%;"></div></div></div>`;
             let dueHabits = appState.habits.filter(h => !isHabitDone(h));
-            if(dueHabits.length === 0 && appState.habits.length > 0) { html += `<div class="quote-box" style="margin-bottom:0; font-size:0.9em; padding:10px;">¡Has completado todas tus rutinas! Toca descansar. 🌙</div>`; } else if (appState.habits.length === 0) { html += `<div class="quote-box" style="margin-bottom:0;">Ve a Selfcare para agregar tu primer hábito. 🌱</div>`; } else { html += `<div style="display:flex; flex-direction:column; gap:8px;">`; dueHabits.slice(0,4).forEach(h => { html += `<div class="habit-item" style="border:none; padding:5px 0;"><label class="habit-left"><input type="checkbox" onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label></div>`; }); if(dueHabits.length > 4) html += `<div style="font-size:0.8em; color:#888; margin-top:5px;">+ ${dueHabits.length - 4} más por hacer...</div>`; html += `</div>`; }
+            if(dueHabits.length === 0 && appState.habits.length > 0) { html += `<div class="quote-box" style="margin-bottom:0;">¡Has completado todas tus rutinas! Toca descansar. 🌙</div>`; } else if (appState.habits.length === 0) { html += `<div class="quote-box" style="margin-bottom:0;">Ve a Selfcare para agregar tu primer hábito. 🌱</div>`; } else { html += `<div style="display:flex; flex-direction:column; gap:8px;">`; dueHabits.slice(0,4).forEach(h => { html += `<div class="habit-item" style="border:none; padding:5px 0;"><label class="habit-left"><input type="checkbox" onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label></div>`; }); if(dueHabits.length > 4) html += `<div style="font-size:0.8em; color:#888; margin-top:5px;">+ ${dueHabits.length - 4} más por hacer...</div>`; html += `</div>`; }
             container.innerHTML = html;
         }
 
-        // --- SISTEMA DE MENÚ CONTEXTUAL (Avanzado) ---
+        function renderSelfcareDashboard() {
+            let area = document.getElementById('sp-dynamic-content-area'); if(!area) return;
+            let avgStreak = appState.habits.length > 0 ? appState.habits.reduce((acc, h) => acc + h.streak, 0) / appState.habits.length : 0;
+            let quote = getQuoteForStreak(Math.round(avgStreak));
+            let html = `<div class="quote-box">${quote}</div><div style="text-align:right; margin-bottom:15px;"><button class="add-small-btn" style="background:var(--accent); color:white; border:none;" onclick="openHabitModal()">+ Añadir Hábito</button></div><div class="selfcare-grid">`;
+            
+            const cats = ['Bodycare', 'Fitness', 'Mind'];
+            cats.forEach(cat => {
+                let catHabits = appState.habits.filter(h => h.category === cat);
+                if(catHabits.length > 0) {
+                    let catIcon = cat === 'Bodycare' ? '🌸' : (cat === 'Fitness' ? '💪' : '🧠');
+                    html += `<div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">${catIcon} ${cat}</h3>`;
+                    let groups = [...new Set(catHabits.map(h => h.group))];
+                    groups.forEach(g => {
+                        html += `<div class="habit-group"><h4>🌿 ${g}</h4>`;
+                        let habitsInGroup = catHabits.filter(h => h.group === g);
+                        habitsInGroup.forEach(h => {
+                            let done = isHabitDone(h); let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver">🔗</a>` : '';
+                            html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><div style="display:flex; align-items:center; gap:8px;"><span class="habit-streak">🔥 ${h.streak}</span><button class="edit-btn" onclick="openHabitModal(${h.id})">✏️</button><button class="edit-btn" style="color:#ef4444;" onclick="deleteHabit(${h.id})">🗑️</button></div></div>`;
+                        }); html += `</div>`;
+                    }); html += `</div>`;
+                }
+            }); html += `</div>`; area.innerHTML = html;
+        }
+
+        // --- SISTEMA DE MENÚ CONTEXTUAL ---
         window.contextTarget = null;
         document.addEventListener('click', (e) => { 
             let menu = document.getElementById('module-context-menu'); 
@@ -789,7 +793,7 @@
                 let cardColor = pageInfo.color ? pageInfo.color : 'var(--border-color)';
                 
                 container.innerHTML += `
-                <div class="gallery-card bouncy" oncontextmenu="showContextMenu(event, '${catKey}', '${subcat}')" onclick="openSubpage('${catKey}', '${subcat}')" style="border-top-color: ${cardColor}; border-top-width: 6px;">
+                <div class="gallery-card" oncontextmenu="showContextMenu(event, '${catKey}', '${subcat}')" onclick="openSubpage('${catKey}', '${subcat}')" style="border-top-color: ${cardColor}; border-top-width: 6px;">
                     <img src="${pageInfo.cover}" class="gallery-cover">
                     <div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;">
                         <div class="gallery-icon">${pageInfo.icon}</div>
@@ -799,31 +803,25 @@
                     </div>
                 </div>`; 
             }); 
-            container.innerHTML += `<div class="new-card bouncy" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; 
+            container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; 
         }
 
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
         function renderCalendar(containerId, filterCat) { const calGrid = document.getElementById(containerId); if(!calGrid) return; calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; for(let i=0; i<3; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; for(let day=1; day<=30; day++) { let dateStr = `2026-04-${day.toString().padStart(2, '0')}`; let dayTasks = appState.tasks.filter(t => t.date === dateStr); if (filterCat !== 'all') dayTasks = dayTasks.filter(t => t.category === filterCat); let isToday = (day === 10) ? 'today' : ''; if (containerId === 'cal-full' || containerId === 'cal-dashboard') { let taskBars = dayTasks.map(t => `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; } else { let indicators = dayTasks.map(t => { let emo = t.subcategory === 'Asuntos Sociales' ? (t.title.toLowerCase().includes('cumple')?'🎂':'🥂') : ''; return `<button class="task-indicator" style="background:${emo? 'transparent' : getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskModal(null, ${t.id}); event.stopPropagation();">${emo? emo : '•'}</button>`; }).join(''); calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; } } }
         function filterByTag(tag) { switchView('master-view', document.querySelectorAll('#main-nav button')[6]); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // --- SUBPAGINAS PERSONALIZADAS ---
+        // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); let tab = document.getElementById('tab-' + mode); if(tab) tab.classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
         
         function renderSubpageTasks(catKey, subcatName) { 
             const dynamicArea = document.getElementById('sp-dynamic-content-area'); if(!dynamicArea) return;
-            
-            // OVERRIDES ESPECIALES
-            if (subcatName === 'Selfcare') { renderSelfcareDashboard(dynamicArea); return; }
-            if (subcatName === 'Recetas') { renderRecipeBoard(dynamicArea, catKey, subcatName); return; }
-            if (subcatName === 'Biblioteca') { renderBibliotecaBoard(dynamicArea, catKey, subcatName); return; }
-            if (catKey === 'proyectos') { renderProjectBoard(dynamicArea, catKey, subcatName); return; } // Todo lo de proyectos es Kanban por defecto
+            if (subcatName === 'Selfcare') { renderSelfcareDashboard(); return; }
 
-            // OVERRIDE NORMAL
             let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcatName); 
             let html = `
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
                     <h3 style="margin:0; font-family: 'Playfair Display', serif; font-size: 1.4em; color: var(--text-dark); font-weight: 600;">Base de Datos</h3>
-                    <button class="add-small-btn bouncy" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button>
+                    <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button>
                 </div>
                 <div class="view-tabs">
                     <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">📋 Tabla</button>
@@ -835,98 +833,21 @@
             
             if (subcatName === 'ENMS Labs' && subpageViewMode === 'table') {
                 html += `<table class="notion-table"><thead><tr><th style="width:25%;">Práctica</th><th>Materia</th><th>Día / Hora</th><th>Profesor</th><th>Grupo</th><th>Estado</th></tr></thead><tbody>`;
-                subTasks.forEach(t => { html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Práctica"><div class="title-cell"><span class="icon-symbol">🧪</span><span>${t.enmsPractica || t.title}</span></div></td><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Día/Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.timeStart ? '| '+t.timeStart : ''}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td></tr>`; }); html += `</tbody></table>`;
+                subTasks.forEach(t => { html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Práctica"><div class="title-cell"><span class="icon-symbol">🧪</span><span>${t.enmsPractica || t.title}</span></div></td><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Día/Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td></tr>`; }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'table') {
-                html += `<table class="notion-table"><thead><tr><th style="width:40%;">Aa Nombre</th><th>Estado</th><th>📅 Fecha / Hora</th><th>🚩 Prioridad</th><th>🏷️ Etiquetas</th></tr></thead><tbody>`;
+                html += `<table class="notion-table"><thead><tr><th style="width:40%;">Aa Nombre</th><th>Estado</th><th>📅 Fecha</th><th>🚩 Prioridad</th><th>🏷️ Etiquetas</th></tr></thead><tbody>`;
                 subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let prioClass = t.priority === 'high' ? 'prio-high' : (t.priority === 'low' ? 'prio-low' : 'prio-med'); let prioText = t.priority === 'high' ? 'Alta' : (t.priority === 'low' ? 'Baja' : 'Media'); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○'));
-                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.timeStart ? ' '+t.timeStart : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td></tr>`;
+                    html += `<tr class="event-item" onclick="openTaskModal(null, ${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="in-progress" ${t.status==='in-progress'?'selected':''}>En Progreso</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td></tr>`;
                 }); html += `</tbody></table>`;
             } else if (subpageViewMode === 'list') {
                 html += '<ul class="module-list" style="border:none; background:transparent; padding:0;">';
-                subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item bouncy" onclick="openTaskModal(null, ${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
+                subTasks.forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○')); html += `<li class="event-item" onclick="openTaskModal(null, ${t.id})" style="cursor:pointer;"><div class="module-list-header"><span style="display:flex; align-items:center; gap:8px; flex:1;"><span class="icon-symbol">${icon}</span> <span class="task-title" style="margin:0;">${t.title}</span></span> <select class="status-select" onclick="event.stopPropagation();" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></div>${t.notes?`<div style="background:var(--hover-bg); padding:10px; border-radius:4px; margin-top:10px; font-size:0.9em; white-space:pre-wrap;">${t.notes}</div>`:''}<div class="module-list-meta" style="margin-top:10px;">${t.date?`<span>📅 ${t.date}</span>`:''}${tagsHTML}</div></li>`; }); html += '</ul>';
             } else if (subpageViewMode === 'kanban') {
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
-                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card bouncy" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
+                setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
             html += '</div>'; dynamicArea.innerHTML = html;
         }
-
-        // --- SUBPAGINAS SUPER PERSONALIZADAS ---
-        function renderRecipeBoard(area, catKey, subcatName) {
-            let groups = ['desayuno', 'almuerzo', 'cena', 'snack'];
-            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4em; margin:0;">Organizador de Menús 🍽️</h3>
-                            <button class="add-small-btn bouncy" style="background:var(--color-p2); color:white; border:none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nueva Receta</button>
-                        </div>
-                        <div class="recipe-kanban">`;
-            groups.forEach(g => {
-                html += `<div class="recipe-col"><h4>${g}</h4>`;
-                let recipes = appState.tasks.filter(t => t.subcategory === 'Recetas' && (t.tags||[]).includes(g));
-                recipes.forEach(r => html += `<div class="task-card bouncy" onclick="openTaskModal(null,${r.id})"><b>${r.title}</b><div style="font-size:11px; color:#aaa; margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${r.notes || ''}</div></div>`);
-                html += `</div>`;
-            });
-            area.innerHTML = html + `</div>`;
-        }
-
-        function renderBibliotecaBoard(area, catKey, subcatName) {
-            let books = appState.tasks.filter(t => t.subcategory === subcatName);
-            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4em; margin:0;">Mi Biblioteca 📚</h3>
-                            <button class="add-small-btn bouncy" style="background:var(--color-p1); color:white; border:none;" onclick="openTaskModal('book', null, '${catKey}', '${subcatName}')">+ Añadir Libro/Artículo</button>
-                        </div>
-                        <table class="notion-table" style="margin-top:15px;"><thead><tr><th style="width:30%;">Título</th><th>Autor / Link</th><th>Resumen</th><th>Estado</th></tr></thead><tbody>`;
-            books.forEach(b => {
-                let statColor = b.status==='Terminado' ? '#10b981' : (b.status==='Leyendo' ? 'var(--color-p4)' : '#aaa');
-                html += `<tr class="event-item" onclick="openTaskModal(null, ${b.id})">
-                            <td><b>${b.title}</b><br><span style="font-size:10px; color:#aaa; text-transform:uppercase;">${b.type}</span></td>
-                            <td>${b.autor || '-'}</td>
-                            <td style="font-size:0.9em; color:#666;">${b.notes || '-'}</td>
-                            <td onclick="event.stopPropagation();"><select class="status-select" style="color:${statColor}; font-weight:600; border-color:${statColor};" onchange="updateTaskStatus(${b.id}, this.value)"><option value="Por leer" ${b.status==='Por leer'?'selected':''}>Por leer</option><option value="Leyendo" ${b.status==='Leyendo'?'selected':''}>Leyendo</option><option value="Terminado" ${b.status==='Terminado'?'selected':''}>Terminado</option></select></td>
-                        </tr>`;
-            });
-            area.innerHTML = html + `</tbody></table>`;
-        }
-
-        function renderProjectBoard(area, catKey, subcatName) {
-            let tasks = appState.tasks.filter(t => t.subcategory === subcatName);
-            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
-                            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.4em; margin:0;">Pipeline de Proyecto 🚀</h3>
-                            <button class="add-small-btn bouncy" style="background:var(--color-p4); color:white; border:none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nueva Idea</button>
-                        </div>
-                        <div class="kanban" style="margin-top:15px;">
-                            <div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>💡 Ideas / Backlog</h3></div>
-                            <div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>⚙️ En Desarrollo</h3></div>
-                            <div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>✅ Terminado</h3></div>
-                        </div>`;
-            area.innerHTML = html;
-            setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; tasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card bouncy" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 4px solid var(--color-p4)"><span class="task-title">${t.title}</span><div style="font-size:11px; color:#888; margin:5px 0;">${t.notes||''}</div><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
-        }
-
-        function renderSelfcareDashboard() {
-            let area = document.getElementById('sp-dynamic-content-area'); if(!area) return;
-            let avgStreak = appState.habits.length > 0 ? appState.habits.reduce((acc, h) => acc + h.streak, 0) / appState.habits.length : 0;
-            let quote = getQuoteForStreak(Math.round(avgStreak));
-            let html = `<div class="quote-box">${quote}</div><div style="text-align:right; margin-bottom:15px;"><button class="add-small-btn bouncy" style="background:var(--accent); color:white; border:none;" onclick="openHabitModal()">+ Añadir Hábito</button></div><div class="selfcare-grid">`;
-            
-            const cats = ['Bodycare', 'Fitness', 'Mind'];
-            cats.forEach(cat => {
-                let catHabits = appState.habits.filter(h => h.category === cat);
-                if(catHabits.length > 0) {
-                    let catIcon = cat === 'Bodycare' ? '🌸' : (cat === 'Fitness' ? '💪' : '🧠');
-                    html += `<div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">${catIcon} ${cat}</h3>`;
-                    let groups = [...new Set(catHabits.map(h => h.group))];
-                    groups.forEach(g => {
-                        html += `<div class="habit-group"><h4>🌿 ${g}</h4>`;
-                        let habitsInGroup = catHabits.filter(h => h.group === g);
-                        habitsInGroup.forEach(h => {
-                            let done = isHabitDone(h); let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver">🔗</a>` : '';
-                            html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><div style="display:flex; align-items:center; gap:8px;"><span class="habit-streak">🔥 ${h.streak}</span><button class="edit-btn" onclick="openHabitModal(${h.id})">✏️</button><button class="edit-btn" style="color:#ef4444;" onclick="deleteHabit(${h.id})">🗑️</button></div></div>`;
-                        }); html += `</div>`;
-                    }); html += `</div>`;
-                }
-            }); html += `</div>`; area.innerHTML = html;
-        }
-
 
         function switchView(viewId, btn) { 
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
@@ -937,10 +858,38 @@
             if(viewId === 'subpage-view') return; 
             
             if(viewId === 'dashboard') updateHeader('dashboard');
-            else if(viewId.startsWith('mod-')) updateHeader('category', getCatLabel(viewId.replace('mod-','')));
+            else if(viewId === 'mod-personal') updateHeader('category', getCatLabel('personal'));
+            else if(viewId === 'mod-escolar') updateHeader('category', getCatLabel('escolar'));
+            else if(viewId === 'mod-profesional') updateHeader('category', getCatLabel('profesional'));
             else updateHeader(viewId);
         }
 
+        function openSubpage(catKey, subcatName) { 
+            currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
+            let pageInfo = appState.pageData[subcatName] || { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
+            
+            updateHeader('subpage', getCatLabel(catKey), subcatName);
+            
+            let iEl = document.getElementById('sp-icon'); if(iEl) iEl.innerText = pageInfo.icon; 
+            let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
+            
+            let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
+            if(contentDiv) contentDiv.innerHTML = pageInfo.content; 
+            if(editorDiv) editorDiv.value = pageInfo.content; 
+            if(contentDiv) contentDiv.style.display = 'block'; 
+            if(editorDiv) editorDiv.style.display = 'none'; 
+            let btnEdit = document.getElementById('btn-edit-page'); if(btnEdit) btnEdit.innerText = "[Editar Contenido]"; 
+            
+            try { renderSubpageTasks(catKey, subcatName); } catch(e) { console.error("Error al pintar subpágina:", e); }
+            
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
+            document.getElementById('subpage-view').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
+        }
+
+        function goBackFromSubpage() { if(currentParentView) { switchView(currentParentView, document.querySelector(`#main-nav button[onclick*="${currentParentView}"]`)); } else goToHome(); }
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
         function togglePageEdit() { let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); let btn = document.getElementById('btn-edit-page'); if (editorDiv.style.display === 'none') { contentDiv.style.display = 'none'; editorDiv.style.display = 'block'; btn.innerText = "[Guardar Cambios]"; } else { let newHtml = editorDiv.value; contentDiv.innerHTML = newHtml; contentDiv.style.display = 'block'; editorDiv.style.display = 'none'; btn.innerText = "[Editar Contenido]"; if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { icon: "📄", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; appState.pageData[currentSubcatOpened].content = newHtml; saveToMemory(); if(window.MathJax) MathJax.typesetPromise(); } }
 
@@ -948,31 +897,24 @@
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
         function toggleRecurrence() { let isRec = document.getElementById('m-recurring').checked; let typeEl = document.getElementById('m-recurrence-type'); if(typeEl) typeEl.style.display = isRec ? 'block' : 'none'; }
-        
-        function toggleEnmsFields() { 
-            let subcat = document.getElementById('m-subcategory').value; 
-            let enmsEl = document.getElementById('enms-custom-fields'); if(enmsEl) enmsEl.style.display = (subcat === 'ENMS Labs') ? 'flex' : 'none'; 
-            let biblioEl = document.getElementById('biblio-custom-fields'); if(biblioEl) biblioEl.style.display = (subcat === 'Biblioteca') ? 'flex' : 'none';
-        }
+        function toggleEnmsFields() { let subcat = document.getElementById('m-subcategory').value; let enmsEl = document.getElementById('enms-custom-fields'); if(enmsEl) enmsEl.style.display = (subcat === 'ENMS Labs') ? 'flex' : 'none'; }
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.timeStart || ''; document.getElementById('m-time-end').value = task.timeEnd || ''; document.getElementById('m-notes').value = task.notes || ''; 
+                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
                 currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) document.getElementById('m-recurrence-type').value = task.recurrenceType;
                 document.getElementById('m-enms-materia').value = task.enmsMateria || ''; document.getElementById('m-enms-profesor').value = task.enmsProfesor || ''; document.getElementById('m-enms-grupo').value = task.enmsGrupo || ''; document.getElementById('m-enms-practica').value = task.enmsPractica || '';
-                document.getElementById('m-biblio-autor').value = task.autor || ''; document.getElementById('m-biblio-status').value = task.status || 'Por leer';
             } else { 
-                document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-time-end').value = ''; document.getElementById('m-notes').value = ''; 
+                document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
                 if(forceType) document.getElementById('m-type').value = forceType; 
                 if(forceCat) { document.getElementById('m-category').value = forceCat; updateSubcatDropdown(); if(forceSubCat) document.getElementById('m-subcategory').value = forceSubCat; } else updateSubcatDropdown(); 
                 currentModalTags = []; setModalPriority('medium');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
-                document.getElementById('m-biblio-autor').value = ''; document.getElementById('m-biblio-status').value = 'Por leer';
             } 
             toggleEnmsFields(); window.currentEditId = taskId; renderModalTags();
         }
@@ -983,21 +925,18 @@
         function saveTask() { 
             let title = document.getElementById('m-title').value; if(!title) return; 
             let isRecurring = document.getElementById('m-recurring').checked;
-            let taskData = { type: document.getElementById('m-type').value, title: title, category: document.getElementById('m-category').value, subcategory: document.getElementById('m-subcategory').value, date: document.getElementById('m-date').value, timeStart: document.getElementById('m-time').value, timeEnd: document.getElementById('m-time-end').value, notes: document.getElementById('m-notes').value, priority: currentModalPriority, tags: currentModalTags, recurring: isRecurring, recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null }; 
-            
+            let taskData = { type: document.getElementById('m-type').value, title: title, category: document.getElementById('m-category').value, subcategory: document.getElementById('m-subcategory').value, date: document.getElementById('m-date').value, time: document.getElementById('m-time').value, notes: document.getElementById('m-notes').value, priority: currentModalPriority, tags: currentModalTags, recurring: isRecurring, recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null }; 
             if(taskData.subcategory === 'ENMS Labs') { taskData.enmsMateria = document.getElementById('m-enms-materia').value; taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; taskData.enmsPractica = document.getElementById('m-enms-practica').value; }
-            if(taskData.subcategory === 'Biblioteca') { taskData.autor = document.getElementById('m-biblio-autor').value; taskData.status = document.getElementById('m-biblio-status').value; }
-
-            if (window.currentEditId) { let index = appState.tasks.findIndex(t => t.id === window.currentEditId); appState.tasks[index] = { ...appState.tasks[index], ...taskData }; } else { taskData.id = taskIdCounter++; if(taskData.subcategory !== 'Biblioteca') taskData.status = 'todo'; appState.tasks.push(taskData); } 
+            if (window.currentEditId) { let index = appState.tasks.findIndex(t => t.id === window.currentEditId); appState.tasks[index] = { ...appState.tasks[index], ...taskData }; } else { taskData.id = taskIdCounter++; taskData.status = 'todo'; appState.tasks.push(taskData); } 
             saveToMemory(); closeTaskModal(); renderAll(); 
             let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(taskData.category, taskData.subcategory); 
         }
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item bouncy" onclick="openTaskModal(null, ${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
-        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card bouncy" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
-        function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item bouncy" onclick="openTaskModal(null, ${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.timeStart ? ' | '+ev.timeStart : ''}</div></div>`; }); }
-        function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item bouncy" onclick="openTaskModal(null, ${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
+        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
+        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskModal(null, ${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
+        function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskModal(null, ${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
@@ -1011,7 +950,6 @@
             safeRender(renderRecetasWidget); 
             safeRender(renderHabitsWidget);
             safeRender(() => renderModule('personal', 'render-personal')); 
-            safeRender(() => renderModule('proyectos', 'render-proyectos')); 
             safeRender(() => renderModule('escolar', 'render-escolar')); 
             safeRender(() => renderModule('profesional', 'render-profesional')); 
             safeRender(renderKanban); 
