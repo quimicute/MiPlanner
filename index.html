@@ -45,13 +45,13 @@
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); z-index: 1000; backdrop-filter: blur(2px); }
         .menu-overlay.open { display: block; }
 
-        /* CABECERA DINÁMICA CON BOTONES */
+        /* CABECERA DINÁMICA ESTÉTICA */
         header { text-align: center; padding: 20px 0 10px 0; display: flex; flex-direction: column; align-items: center; justify-content: center;}
         .header-top-row { display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; flex-wrap: wrap; margin-bottom: 5px;}
-        header h1 { font-family: 'Playfair Display', serif; color: var(--text-dark); font-size: 3em; margin: 0; font-weight: 600; letter-spacing: -0.5px;}
+        header h1 { font-family: 'Playfair Display', serif; color: var(--text-dark); font-size: 3em; margin: 0; font-weight: 600; letter-spacing: -0.5px; display:flex; align-items:center; flex-wrap:wrap; justify-content:center;}
         .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 2.2em; margin: 0;}
         
-        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); }
+        .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); margin: 0 5px;}
         .nav-icon-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
 
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -84,11 +84,12 @@
         .btn-edit-cover { position: absolute; top: 10px; right: 10px; z-index: 3; background: rgba(255,255,255,0.7); border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; cursor: pointer; opacity: 0; transition: 0.2s; color: #333; }
         .top-gallery-card:hover .btn-edit-cover { opacity: 1; }
 
-        /* MODAL */
+        /* MODALES */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
         .modal { background: var(--panel-bg); padding: 40px; border-radius: 8px; width: 90%; max-width: 550px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto;}
         .modal h2 { background: transparent; color: var(--text-dark); padding: 0; font-size: 1.8em; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); font-family: 'Playfair Display', serif;}
         .modal input[type="text"], .modal input[type="date"], .modal input[type="time"], .modal select, .modal textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; font-size: 0.9em; box-sizing: border-box; outline: none; background: var(--bg-color); color: var(--text-dark); transition: 0.2s;}
+        .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);}
         .modal-btn { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: 600; cursor: pointer; margin-top: 25px; font-size: 1em; transition: 0.2s;}
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; font-weight: 300; transition: 0.2s;}
         
@@ -186,6 +187,10 @@
         .habit-item.done .habit-left span { text-decoration: line-through; color: #888; }
         .habit-streak { font-size: 0.8em; font-weight: 600; background: rgba(147,112,219,0.1); color: var(--accent); padding: 2px 8px; border-radius: 12px; }
         .quote-box { text-align: center; padding: 15px; font-style: italic; color: #888; font-size: 0.95em; background: var(--hover-bg); border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 20px;}
+        
+        .progress-bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 8px; overflow: hidden; margin-top: 5px;}
+        body.dark-mode .progress-bar-bg { background: #3f3f46; }
+        .progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.5s ease; }
 
         @media (max-width: 1024px) {
             .dashboard-grid, .standard-grid, .selfcare-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -228,7 +233,7 @@
     <header>
         <div class="header-top-row">
             <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
-                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M12 3l10 9h-3v9h-14v-9h-3z"/></svg>
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             </button>
             <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
                 <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
@@ -274,6 +279,43 @@
             <div class="tags-container" id="m-tags-container"></div>
             <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="habitModal">
+        <div class="modal">
+            <span class="close-modal" onclick="closeHabitModal()">×</span>
+            <h2 id="habit-modal-title">Añadir Hábito</h2>
+            <input type="text" id="h-title" placeholder="Nombre del hábito (ej. Tomar agua)..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.8em; color:#888;">Categoría</label>
+                    <select id="h-category">
+                        <option value="Bodycare">Bodycare</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Mind">Mind & Otros</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:0.8em; color:#888;">Sub-grupo</label>
+                    <input type="text" id="h-group" placeholder="Ej. Skincare, Pilates...">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.8em; color:#888;">Frecuencia</label>
+                    <select id="h-freq">
+                        <option value="daily">Diario</option>
+                        <option value="weekly">Semanal</option>
+                        <option value="monthly">Mensual</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label style="font-size:0.8em; color:#888;">Link de YouTube/Guía</label>
+                    <input type="text" id="h-link" placeholder="(Opcional)">
+                </div>
+            </div>
+            <button class="modal-btn" onclick="saveHabit()">Guardar Hábito</button>
         </div>
     </div>
 
@@ -407,7 +449,7 @@
                 <div style="position: relative;">
                     <img src="" class="page-cover" id="sp-cover" alt="Cover">
                     <button class="edit-btn" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.9); padding:8px 15px; border-radius:4px; font-weight:600; color:#333; box-shadow:0 2px 5px rgba(0,0,0,0.1);" onclick="changeCover()">📷 Cambiar Portada</button>
-                    <button class="edit-btn" style="position:absolute; top:20px; left:20px; background:rgba(220, 38, 38, 0.9); color:white; padding:8px 15px; border-radius:4px; font-weight:600; box-shadow:0 2px 5px rgba(0,0,0,0.1);" onclick="deleteCurrentSubpage()">🗑️ Eliminar</button>
+                    <button class="edit-btn" style="position:absolute; top:20px; left:20px; background:rgba(220, 38, 38, 0.9); color:white; padding:8px 15px; border-radius:4px; font-weight:600; box-shadow:0 2px 5px rgba(0,0,0,0.1);" onclick="deleteCurrentSubpage()">🗑️ Eliminar Módulo</button>
                 </div>
                 
                 <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="changeCover()" title="Cambiar Icono">✧</div></div>
@@ -423,6 +465,7 @@
                     </div>
                     
                     <div id="sp-dynamic-content-area"></div>
+                    
                 </div>
             </div>
         </div>
@@ -463,7 +506,7 @@
         ];
 
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits };
-        let taskIdCounter = 2; let editingTaskId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
+        let taskIdCounter = 2; let habitIdCounter = 11; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
 
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
         function getCatLabel(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
@@ -489,9 +532,10 @@
                 appState.habits = data.habits || defaultHabits;
                 
                 taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 1; 
+                habitIdCounter = appState.habits.length > 0 ? Math.max(...appState.habits.map(h => h.id)) + 1 : 11;
             } else saveToMemory();
             renderAll();
-        }).catch(() => renderAll());
+        }).catch((e) => {console.error(e); renderAll();});
 
         // --- SISTEMA DE CABECERA DINÁMICA ---
         function goToHome() { switchView('dashboard', document.querySelectorAll('#main-nav button')[0]); }
@@ -553,7 +597,7 @@
             let pgP = document.getElementById('cover-personal-page'); if(pgP) pgP.src = appState.categories.personal.cover; let pgE = document.getElementById('cover-escolar-page'); if(pgE) pgE.src = appState.categories.escolar.cover; let pgPr = document.getElementById('cover-profesional-page'); if(pgPr) pgPr.src = appState.categories.profesional.cover;
         }
 
-        // --- SISTEMA DE HÁBITOS ---
+        // --- SISTEMA DE HÁBITOS CRUD (Crear, Leer, Actualizar, Borrar) ---
         function getTodayStr() { let d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
         function getMonthStr() { return getTodayStr().substring(0,7); }
         function isHabitDone(habit) {
@@ -561,21 +605,50 @@
             let today = getTodayStr();
             if(habit.freq === 'daily') return habit.lastDone === today;
             if(habit.freq === 'monthly') return habit.lastDone.startsWith(getMonthStr());
-            if(habit.freq === 'weekly') {
-                let diff = (new Date(today) - new Date(habit.lastDone)) / (1000 * 60 * 60 * 24);
-                return diff < 7;
-            }
+            if(habit.freq === 'weekly') { let diff = (new Date(today) - new Date(habit.lastDone)) / (1000 * 60 * 60 * 24); return diff < 7; }
             return false;
         }
 
         function toggleHabit(id) {
-            let h = appState.habits.find(x => x.id === id);
-            if(!h) return;
+            let h = appState.habits.find(x => x.id === id); if(!h) return;
             let done = isHabitDone(h);
             if(done) { h.lastDone = ''; h.streak = Math.max(0, h.streak - 1); } 
             else { h.lastDone = getTodayStr(); h.streak++; } 
             saveToMemory(); renderAll();
             let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
+        }
+
+        function openHabitModal(id = null) {
+            currentEditHabitId = id; let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'flex';
+            if(id) {
+                let h = appState.habits.find(x => x.id === id);
+                document.getElementById('h-title').value = h.title; document.getElementById('h-category').value = h.category; document.getElementById('h-group').value = h.group; document.getElementById('h-freq').value = h.freq; document.getElementById('h-link').value = h.link || '';
+            } else {
+                document.getElementById('h-title').value = ''; document.getElementById('h-category').value = 'Bodycare'; document.getElementById('h-group').value = ''; document.getElementById('h-freq').value = 'daily'; document.getElementById('h-link').value = '';
+            }
+        }
+        function closeHabitModal() { let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'none'; }
+        function saveHabit() {
+            let title = document.getElementById('h-title').value.trim();
+            if(!title) return;
+            let hData = { title: title, category: document.getElementById('h-category').value, group: document.getElementById('h-group').value.trim() || 'General', freq: document.getElementById('h-freq').value, link: document.getElementById('h-link').value.trim(), lastDone: '', streak: 0 };
+            
+            if(currentEditHabitId) {
+                let idx = appState.habits.findIndex(x => x.id === currentEditHabitId);
+                hData.lastDone = appState.habits[idx].lastDone; hData.streak = appState.habits[idx].streak;
+                appState.habits[idx] = { ...appState.habits[idx], ...hData };
+            } else {
+                hData.id = habitIdCounter++; appState.habits.push(hData);
+            }
+            saveToMemory(); closeHabitModal(); renderAll();
+            let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
+        }
+        function deleteHabit(id) {
+            if(confirm('¿Seguro que quieres borrar este hábito? perderás la racha.')) {
+                appState.habits = appState.habits.filter(h => h.id !== id);
+                saveToMemory(); renderAll();
+                let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
+            }
         }
 
         function getQuoteForStreak(streak) {
@@ -587,14 +660,28 @@
 
         function renderHabitsWidget() {
             let container = document.getElementById('personal-habits-summary'); if(!container) return;
-            let today = getTodayStr();
-            let dueHabits = appState.habits.filter(h => !isHabitDone(h));
             
-            let html = '';
-            if(dueHabits.length === 0) {
-                html = `<div class="quote-box" style="margin-bottom:0;">¡Has completado todas tus rutinas! Toca descansar. 🌙</div>`;
+            // Barra de progreso diaria
+            let dailyHabits = appState.habits.filter(h => h.freq === 'daily');
+            let doneDaily = dailyHabits.filter(h => isHabitDone(h)).length;
+            let progress = dailyHabits.length > 0 ? Math.round((doneDaily / dailyHabits.length) * 100) : 0;
+
+            let html = `
+                <div style="margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.85em; color:var(--text-dark); margin-bottom:5px; font-weight:600;">
+                        <span>Progreso Diario</span><span>${progress}%</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${progress}%;"></div></div>
+                </div>
+            `;
+
+            let dueHabits = appState.habits.filter(h => !isHabitDone(h));
+            if(dueHabits.length === 0 && appState.habits.length > 0) {
+                html += `<div class="quote-box" style="margin-bottom:0;">¡Has completado todas tus rutinas! Toca descansar. 🌙</div>`;
+            } else if (appState.habits.length === 0) {
+                html += `<div class="quote-box" style="margin-bottom:0;">Ve a Selfcare para agregar tu primer hábito. 🌱</div>`;
             } else {
-                html = `<div style="display:flex; flex-direction:column; gap:8px;">`;
+                html += `<div style="display:flex; flex-direction:column; gap:8px;">`;
                 dueHabits.slice(0,4).forEach(h => {
                     html += `<div class="habit-item" style="border:none; padding:5px 0;"><label class="habit-left"><input type="checkbox" onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label></div>`;
                 });
@@ -606,30 +693,45 @@
 
         function renderSelfcareDashboard() {
             let area = document.getElementById('sp-dynamic-content-area'); if(!area) return;
-            let avgStreak = appState.habits.reduce((acc, h) => acc + h.streak, 0) / (appState.habits.length || 1);
+            let avgStreak = appState.habits.length > 0 ? appState.habits.reduce((acc, h) => acc + h.streak, 0) / appState.habits.length : 0;
             let quote = getQuoteForStreak(Math.round(avgStreak));
 
-            let html = `<div class="quote-box">${quote}</div><div class="selfcare-grid"><div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">🌸 Bodycare</h3>`;
-            let hair = appState.habits.filter(h => h.group === 'Haircare');
-            html += `<div class="habit-group"><h4>💇‍♀️ Haircare</h4>`;
-            hair.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
-            html += `</div>`;
-
-            let skin = appState.habits.filter(h => h.group === 'Skincare');
-            html += `<div class="habit-group"><h4>🫧 Skincare</h4>`;
-            skin.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
-            html += `</div></div><div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">💪 Fitness</h3>`;
+            let html = `<div class="quote-box">${quote}</div>
+                        <div style="text-align:right; margin-bottom:15px;">
+                            <button class="add-small-btn" style="background:var(--accent); color:white; border:none;" onclick="openHabitModal()">+ Añadir Hábito</button>
+                        </div>
+                        <div class="selfcare-grid">`;
             
-            let est = appState.habits.filter(h => h.group === 'Estiramientos');
-            html += `<div class="habit-group"><h4>🧘‍♀️ Estiramientos</h4>`;
-            est.forEach(h => { let done = isHabitDone(h); html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
+            // Agrupación Dinámica
+            const cats = ['Bodycare', 'Fitness', 'Mind'];
+            cats.forEach(cat => {
+                let catHabits = appState.habits.filter(h => h.category === cat);
+                if(catHabits.length > 0) {
+                    let catIcon = cat === 'Bodycare' ? '🌸' : (cat === 'Fitness' ? '💪' : '🧠');
+                    html += `<div><h3 style="font-family: 'Playfair Display', serif; font-size: 1.5em; color: var(--text-dark); margin-bottom: 15px;">${catIcon} ${cat}</h3>`;
+                    
+                    let groups = [...new Set(catHabits.map(h => h.group))];
+                    groups.forEach(g => {
+                        html += `<div class="habit-group"><h4>🌿 ${g}</h4>`;
+                        let habitsInGroup = catHabits.filter(h => h.group === g);
+                        habitsInGroup.forEach(h => {
+                            let done = isHabitDone(h);
+                            let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver">🔗</a>` : '';
+                            html += `<div class="habit-item ${done ? 'done' : ''}">
+                                <label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="habit-streak">🔥 ${h.streak}</span>
+                                    <button class="edit-btn" onclick="openHabitModal(${h.id})">✏️</button>
+                                    <button class="edit-btn" style="color:#ef4444;" onclick="deleteHabit(${h.id})">🗑️</button>
+                                </div>
+                            </div>`;
+                        });
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                }
+            });
             html += `</div>`;
-
-            let gym = appState.habits.filter(h => h.group === 'Pilates' || h.group === 'Gym');
-            html += `<div class="habit-group"><h4>🏋️‍♀️ Rutinas Activas</h4>`;
-            gym.forEach(h => { let done = isHabitDone(h); let linkHtml = h.link ? `<a href="${h.link}" target="_blank" style="margin-left:5px; text-decoration:none;" title="Ver rutina">🔗</a>` : ''; html += `<div class="habit-item ${done ? 'done' : ''}"><label class="habit-left"><input type="checkbox" ${done?'checked':''} onchange="toggleHabit(${h.id})"> <span>${h.title} ${linkHtml}</span></label><span class="habit-streak">🔥 ${h.streak}</span></div>`; });
-            html += `</div></div></div>`;
-
             area.innerHTML = html;
         }
 
@@ -640,7 +742,7 @@
             if(btn) { document.querySelectorAll('#main-nav button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
 
-            if(viewId === 'subpage-view') return; // Se encarga openSubpage
+            if(viewId === 'subpage-view') return; 
             
             if(viewId === 'dashboard') updateHeader('dashboard');
             else if(viewId === 'mod-personal') updateHeader('category', getCatLabel('personal'));
@@ -685,7 +787,6 @@
         
         function renderSubpageTasks(catKey, subcatName) { 
             const dynamicArea = document.getElementById('sp-dynamic-content-area'); if(!dynamicArea) return;
-            
             if (subcatName === 'Selfcare') { renderSelfcareDashboard(); return; }
 
             let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcatName); 
@@ -698,9 +799,7 @@
                     <button id="tab-table" class="view-tab ${subpageViewMode==='table'?'active':''}" onclick="setSubpageView('table')">📋 Tabla</button>
                     <button id="tab-kanban" class="view-tab ${subpageViewMode==='kanban'?'active':''}" onclick="setSubpageView('kanban')">📌 Kanban</button>
                     <button id="tab-list" class="view-tab ${subpageViewMode==='list'?'active':''}" onclick="setSubpageView('list')">📄 Lista</button>
-                </div>
-                <div id="sp-content-inner">
-            `;
+                </div><div id="sp-content-inner">`;
             
             if(subTasks.length === 0) { html += '<p style="color: #888; font-size: 0.9em;">No hay registros. Crea uno nuevo para empezar.</p></div>'; dynamicArea.innerHTML = html; return; } 
             
@@ -719,8 +818,7 @@
                 html += `<div class="kanban"><div class="kanban-col" id="todo-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Pendiente</h3></div><div class="kanban-col" id="in-progress-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>En Progreso</h3></div><div class="kanban-col" id="done-sub" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Terminado</h3></div></div>`;
                 setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskModal(null, ${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
-            html += '</div>';
-            dynamicArea.innerHTML = html;
+            html += '</div>'; dynamicArea.innerHTML = html;
         }
 
         function changeCover() { let cI = document.getElementById('sp-icon').innerText; let cC = document.getElementById('sp-cover').src; let nI = prompt("Icono (ej. 💻, 🔬, 📚):", cI); let nC = prompt("URL de portada (Copy Image Address):", cC); if (nI !== null && nC !== null) { if(!appState.pageData[currentSubcatOpened]) appState.pageData[currentSubcatOpened] = { content: "" }; appState.pageData[currentSubcatOpened].icon = nI; appState.pageData[currentSubcatOpened].cover = nC; saveToMemory(); openSubpage(currentParentView.replace('mod-', ''), currentSubcatOpened); renderAll(); } }
