@@ -66,6 +66,8 @@
         .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); margin: 0 5px;}
         .nav-icon-btn:hover { transform: scale(1.15); background: var(--accent-hover); }
 
+        .header-compact { padding: 10px 40px; }
+
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .view-section.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -93,8 +95,8 @@
 
         /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
         .top-gallery { display: flex; gap: 15px; margin: 0; max-width: 60%; flex-wrap: wrap; justify-content: flex-end; }
-        .top-gallery-card { border-radius: 30px; padding: 10px 20px; text-align: center; cursor: pointer; min-height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background-blend-mode: overlay; background-color: rgba(57, 69, 85, 0.7); }
-        .top-gallery-card h3 { font-size: 1.1em; font-weight: 400; text-shadow: none; }
+        .top-gallery-card { border-radius: 30px; padding: 10px 20px; text-align: center; cursor: pointer; min-height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80&blur=80') center/cover; }
+        .top-gallery-card h3 { font-size: 1.1em; font-weight: 400; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
         .top-gallery-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
 
         .item-row { padding: 5px 0; font-size: 0.9em; color: var(--text-dark); }
@@ -445,9 +447,10 @@
                 </div>
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:0.8em; color:#888;">Módulo</label>
-                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags();"></select>
+                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags(); showSocialTip();"></select>
                 </div>
             </div>
+            <div id="social-tip" style="display:none; margin-top:10px; font-size:0.8em; color:#888;">Tip: Escribe 'Cumple' o 'Salida' para ver el icono especial.</div>
             <div style="display:flex; gap:10px; margin-top: 10px;">
                 <div style="flex:1;"><input type="date" id="m-date"></div><div style="flex:1;"><input type="time" id="m-time"></div>
             </div>
@@ -1385,10 +1388,31 @@
                     }).join(''); 
                     calGrid.innerHTML += `<div class="cal-day ${isToday}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
                 } else { 
-                    let indicators = dayTasks.map(t => { 
-                        let icon = iconMap[t.category] || iconMap['default']; 
-                        return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon}</button>`; 
-                    }).join(''); 
+                    let indicators = '';
+                    if (containerId === 'cal-personal') {
+                        indicators = dayTasks.map(t => {
+                            let titleLower = t.title.toLowerCase();
+                            let icon, color = 'var(--color-p3)';
+                            if (titleLower.includes('cumple') || titleLower.includes('cumpleaños')) {
+                                icon = '🎂';
+                            } else if (titleLower.includes('salida') || titleLower.includes('fiesta') || titleLower.includes('reunión')) {
+                                icon = '🥂';
+                            } else {
+                                icon = '👥';
+                            }
+                            return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
+                                        <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
+                                        <div class="aesthetic-tooltip">
+                                            <b style="color: ${color};">${t.title}</b>
+                                        </div>
+                                    </div>`;
+                        }).join('');
+                    } else {
+                        indicators = dayTasks.map(t => { 
+                            let icon = iconMap[t.category] || iconMap['default']; 
+                            return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon}</button>`; 
+                        }).join('');
+                    }
                     calGrid.innerHTML += `<div class="cal-day ${isToday}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
                 } 
             } 
@@ -1482,8 +1506,8 @@
             let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
             
             let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
-            if(contentDiv) contentDiv.innerHTML = pageInfo.content; 
-            if(editorDiv) editorDiv.value = pageInfo.content; 
+            if(contentDiv) contentDiv.innerHTML = pageInfo.content || '<p style="color:#888; font-style:italic;">Tu espacio para crear...</p>'; 
+            if(editorDiv) editorDiv.value = pageInfo.content || ''; 
             if(contentDiv) contentDiv.style.display = 'block'; 
             if(editorDiv) editorDiv.style.display = 'none'; 
             let btnEdit = document.getElementById('btn-edit-page'); if(btnEdit) btnEdit.innerText = "[Editar Contenido]"; 
@@ -1580,7 +1604,7 @@
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
+                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; showSocialTip(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
                 currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) {
@@ -1618,6 +1642,7 @@
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
                 if(forceType) document.getElementById('m-type').value = forceType; 
                 if(forceCat) { document.getElementById('m-category').value = forceCat; updateSubcatDropdown(); if(forceSubCat) document.getElementById('m-subcategory').value = forceSubCat; } else updateSubcatDropdown(); 
+                showSocialTip(); 
                 currentModalTags = []; setModalPriority('medium');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 // Clear custom fields
@@ -1826,18 +1851,13 @@
             let tags = (task.tags || []).map(tag => tag.toLowerCase());
             let icon = tags.includes('desayuno') ? '🥐' : tags.includes('almuerzo') ? '🍲' : tags.includes('cena') ? '🍛' : tags.includes('snack') || tags.includes('postre') ? '🍰' : '🍽️';
             return `
-                <div class="recipe-card" onclick="openTaskDetails(${task.id})">
-                    <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
-                        <div style="flex:1; min-width:0;">
-                            <h4>${task.title}</h4>
-                            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
-                                <span class="recipe-pill">${getRecipeDifficultyLabel(task)}</span>
-                                <span class="recipe-pill">${getRecipePrepTime(task)}</span>
-                            </div>
-                        </div>
-                        <span style="font-size:1.6em; margin-top:4px;">${icon}</span>
+                <div class="task-card bouncy" style="border-left: 4px solid var(--color-p2); cursor: pointer;" onclick="openTaskModal(null, ${task.id})">
+                    <b style="color: var(--text-dark); font-size: 1.1em; display:block; margin-bottom: 8px;">${task.title}</b>
+                    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                        <span style="font-size: 10px; background: rgba(0,0,0,0.04); padding: 3px 8px; border-radius: 12px; color: #666; font-weight: 600;">📊 ${getRecipeDifficultyLabel(task) || 'Fácil'}</span>
+                        <span style="font-size: 10px; background: rgba(0,0,0,0.04); padding: 3px 8px; border-radius: 12px; color: #666; font-weight: 600;">⏱️ ${getRecipePrepTime(task) || '-'}</span>
                     </div>
-                    <p>${(task.notes || 'Sin descripción').slice(0, 120)}</p>
+                    <div style="font-size: 11px; color: #888; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${task.notes || ''}</div>
                 </div>
             `;
         }
@@ -1856,6 +1876,10 @@
             ];
 
             let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 style="margin:0; font-family:'Playfair Display', serif; font-size:1.8em; color:var(--text-dark);">Menús 🍽️</h2>
+                    <button class="btn-primary bouncy" style="width:auto; background:var(--color-p2); color:var(--text-dark);" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Añadir Receta</button>
+                </div>
                 <div class="recipe-board-grid">
                     <div class="recipe-suggestion glass-panel">
                         <span class="subpanel-label">Sugerencia</span>
@@ -1979,11 +2003,23 @@
             }
         }
 
-        function removeBibliotecaLink(subcatName, idx) {
-            appState.pageData[subcatName].links.splice(idx, 1);
-            saveToMemory();
-            renderBibliotecaSubpage('personal', subcatName);
+        function showSocialTip() {
+            let tip = document.getElementById('social-tip');
+            if (document.getElementById('m-subcategory').value === 'Asuntos Sociales') {
+                tip.style.display = 'block';
+            } else {
+                tip.style.display = 'none';
+            }
         }
+
+        window.onscroll = function() {
+            let header = document.querySelector('header');
+            if (window.pageYOffset > 50) {
+                header.classList.add('header-compact');
+            } else {
+                header.classList.remove('header-compact');
+            }
+        };
     </script>
 </body>
 </html>
