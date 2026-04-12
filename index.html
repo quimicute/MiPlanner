@@ -65,7 +65,10 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(180px, auto); gap: 15px; width: 100%; max-width: 100%; margin: auto; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(180px, auto); gap: 15px; width: 100%; max-width: 100%; margin: auto; }
+        #quick-capture-section { grid-column: 1 / -1; margin-bottom: 20px; }
+        #clock-widget { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2em; text-align: center; }
+        #lyric-quote { font-family: 'Playfair Display', serif; font-size: 1em; text-align: center; margin-top: 10px; color: var(--script-color); }
         #cal-dashboard { padding: 8px; }
         #cal-dashboard td { padding: 4px 2px; font-size: 0.75em; }
         #dash-links-list { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -76,7 +79,7 @@
         .span-row-2 { grid-row: span 2; }
         .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
-        .panel { background: rgba(255, 255, 255, 0.4); border-radius: 22px; padding: 18px; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); box-shadow: 0 30px 80px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.3); border-top: 4px solid var(--color-p3); color: var(--text-dark); transition: 0.3s ease; }
+        .panel { background: rgba(255, 255, 255, 0.4); border-radius: 22px; padding: 12px; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); box-shadow: 0 30px 80px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.3); border-top: 4px solid var(--color-p3); color: var(--text-dark); transition: 0.3s ease; }
         .panel h2 { background: transparent; color: var(--color-p6); border-bottom: 3px double rgba(147,112,219,0.3); padding: 0 0 5px 0; font-weight: 700; font-size: 1.55em; margin-bottom: 14px; font-family: 'Playfair Display', serif; }
         
         .highlight { background: linear-gradient(180deg, transparent 60%, var(--color-p1) 40%); display: inline; padding: 0 4px; }
@@ -683,29 +686,25 @@
     </div>
 
     <div id="dashboard" class="view-section active">
+        <div id="quick-capture-section" class="panel">
+            <input type='text' id='inbox-input' placeholder='✨ Anota algo rápido y presiona Enter...' style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-dark); outline: none; font-family: inherit; font-size: 1em;" onkeydown="if(event.key==='Enter') addInboxTask()">
+        </div>
         <div class="dashboard-grid">
-            <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
-                    <h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
-                    <div style="margin-top: 25px;"></div>
-                    <h2>Ambiente</h2><iframe style="border-radius:4px; border: 1px solid var(--border-color); margin-bottom: 20px;" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                    <iframe src="https://notion-quotes-asnhvg7g6-hiscodesmells.vercel.app/quote?theme=light&fontSize=heading-2&quoteType=random" width="100%" height="150" style="border:none; border-radius:6px;"></iframe>
-            </div>
-            
-            <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="text-align: center; padding: 10px;">
+                    <div id="clock-widget"></div>
+                    <div id="lyric-quote"></div>
+                </div>
                 <div class="panel" style="flex:1;">
                     <h2>Próximas Acciones</h2><div id="upcoming-tasks-container"></div>
                 </div>
-                <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
-                    <h2>Pendientes Sueltos</h2>
-                    <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                        <input type="text" id="quick-todo-input" placeholder="Ej. Comprar verdura, lavar trastes..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
-                        <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
-                    </div>
-                    <div id="quick-todo-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
+                <div class="panel" style="flex:1; display: flex; flex-direction: column;">
+                    <h2>Inbox</h2>
+                    <div id="inbox-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
                 </div>
             </div>
             
-            <div class="panel span-col-2 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="panel span-col-1 span-row-2">
                 <div class="panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                         <div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;">
@@ -723,32 +722,22 @@
                     </div>
                     <div class="calendar-grid" id="cal-dashboard" style="gap:3px;"></div>
                 </div>
-                <div class="panel" id="recetas-widget" style="flex:1;"></div>
-                <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
-                    <h2>Notas Rápidas</h2>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
-                        <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" id="quick-note-img" placeholder="URL de imagen (opcional)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; box-sizing:border-box; background:var(--bg-color); color:var(--text-dark);">
-                            <button class="add-small-btn" onclick="addQuickNote()" style="background:var(--accent); color:white; border:none;">Guardar</button>
-                        </div>
+            </div>
+            
+            <div class="panel span-col-1 span-row-1" style="display: flex; flex-direction: column;">
+                <h2>Notas Rápidas</h2>
+                <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                    <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="quick-note-img" placeholder="URL de imagen (opcional)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; box-sizing:border-box; background:var(--bg-color); color:var(--text-dark);">
+                        <button class="add-small-btn" onclick="addQuickNote()" style="background:var(--accent); color:white; border:none;">Guardar</button>
                     </div>
-                    <div id="quick-notes-feed" style="flex: 1; overflow-y: auto; padding-right: 10px; display:flex; flex-direction:column; gap:12px;"></div>
                 </div>
+                <div id="quick-notes-feed" style="flex: 1; overflow-y: auto; padding-right: 10px; display:flex; flex-direction:column; gap:12px;"></div>
             </div>
 
-            <div class="panel span-col-2 span-row-1" id="biblioteca-panel">
-                <h2>Biblioteca</h2>
-                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
-                    <input type="text" id="new-biblio-title" placeholder="Título (Ej. Libro PDF)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
-                    <input type="text" id="new-biblio-url" placeholder="URL" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
-                    <button class="add-small-btn" onclick="addBibliotecaLink()" style="background:var(--accent); color:white; border:none;">Agregar</button>
-                </div>
-                <div id="biblioteca-list" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
-            </div>
-
-            <div class="panel span-col-2 span-row-1" id="dash-links-panel" style="flex:1;">
-                <h2>Archivos & Links</h2>
+            <div class="panel span-col-1 span-row-1" id="dash-links-panel" style="flex:1;">
+                <h2>Links Favoritos</h2>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
                     <input type="text" id="new-link-title" placeholder="Nombre (ej. Tesis)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
                     <input type="text" id="new-link-url" placeholder="URL del link" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
@@ -865,7 +854,7 @@
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         // --- CONFIGURACIÓN DE GOOGLE API ---
 const GOOGLE_CONFIG = {
-    CLIENT_ID: '951986170132-fe2gmakj5a3h91aeprjjm6dqc1oi3uam.apps.googleusercontent.com',
+    CLIENT_ID: '951986170132-ohf4kbg05ut7iii51s0844l2gk5mse59.apps.googleusercontent.com',
     API_KEY: 'AIzaSyAFeDcf-dVB-eLLz8GmheNhtMIaU6O7xRQ',
     DISCOVERY_DOCS: [
         "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
@@ -947,7 +936,7 @@ async function addEventToGoogle(task) {
         function nextMonth() { monthOffset++; renderAll(); }
 
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
+            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness', 'Inbox'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
             escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Química'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
             profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: ['proyecto', 'cliente', 'departamento'] } 
         };
@@ -958,6 +947,7 @@ async function addEventToGoogle(task) {
             "Selfcare": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
             "Mindfulness": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p1)", content: `<p>Un espacio para tu práctica diaria de atención plena y bienestar mental.</p>` },
             "Biblioteca": { icon: "¶", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi biblioteca personal. Agrega links de libros, artículos o recursos que quieres leer.</p>`, links: [] },
+            "Inbox": { icon: "📥", cover: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi bandeja de entrada para ideas rápidas y tareas pendientes.</p>` },
             "Asuntos Sociales": { icon: "❦", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
         };
         let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
@@ -2416,8 +2406,70 @@ async function addEventToGoogle(task) {
             safeRender(() => renderCalendar('cal-escolar', 'escolar')); 
             safeRender(() => renderCalendar('cal-profesional', 'profesional')); 
             safeRender(updateMonthLabels);
+            safeRender(updateClock);
+            safeRender(updateLyric);
+            safeRender(renderInbox);
             if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
+
+        const lyricQuotes = [
+            "I've got soul, but I'm not a soldier. (The Killers)",
+            "Ayer me dijo un ave que volara... (Caifanes)",
+            "Flores en mi piel, todo lo que soñé. (Kenia Os)",
+            "Je ne regrette rien. (Para la motivación a Francia 🇫🇷)"
+        ];
+        let currentLyricIndex = 0;
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('clock-widget').textContent = timeString;
+        }
+
+        function updateLyric() {
+            document.getElementById('lyric-quote').textContent = lyricQuotes[currentLyricIndex];
+            currentLyricIndex = (currentLyricIndex + 1) % lyricQuotes.length;
+        }
+
+        function addInboxTask() {
+            let input = document.getElementById('inbox-input');
+            let text = input.value.trim();
+            if(text) {
+                let taskData = {
+                    id: taskIdCounter++,
+                    type: 'task',
+                    title: text,
+                    category: 'personal',
+                    subcategory: 'Inbox',
+                    date: '',
+                    priority: 'medium',
+                    status: 'todo',
+                    tags: [],
+                    notes: ''
+                };
+                appState.tasks.push(taskData);
+                input.value = '';
+                saveToMemory();
+                renderInbox();
+                renderAll();
+            }
+        }
+
+        function renderInbox() {
+            const container = document.getElementById('inbox-list');
+            if(!container) return;
+            container.innerHTML = '';
+            let inboxTasks = appState.tasks.filter(t => t.subcategory === 'Inbox' && t.status !== 'done');
+            inboxTasks.forEach(t => {
+                container.innerHTML += `<div class="task-item" style="padding:8px; margin-bottom:5px; background: var(--hover-bg); border-radius:4px; cursor:pointer;" onclick="openTaskDetails(${t.id})">${t.title}</div>`;
+            });
+        }
+
+        // Inicializar reloj y lyric
+        updateClock();
+        updateLyric();
+        setInterval(updateClock, 1000);
+        setInterval(updateLyric, 300000);
 
         function getCurrentMealSlot() {
             let hour = new Date().getHours();
