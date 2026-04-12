@@ -94,6 +94,13 @@
         .widget-iframe { width: 100%; border: none; border-radius: 4px; border: 1px solid var(--border-color);}
 
         /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
+        /* PESTAÑAS PRINCIPALES EN HEADER */
+        .header-tabs { display: flex; gap: 5px; margin-left: 30px; }
+        .header-tab { padding: 10px 20px; border: none; background: transparent; color: var(--text-dark); cursor: pointer; font-family: 'Playfair Display', serif; font-size: 1.05em; font-weight: 500; position: relative; transition: 0.3s; border-bottom: 2px solid transparent; }
+        .header-tab:hover { color: var(--accent); }
+        .header-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+        
+        /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
         .top-gallery { display: flex; gap: 15px; margin: 0; max-width: 60%; flex-wrap: wrap; justify-content: flex-end; }
         .top-gallery-card { border-radius: 30px; padding: 10px 20px; text-align: center; cursor: pointer; min-height: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80&blur=80') center/cover; }
         .top-gallery-card h3 { font-size: 1.1em; font-weight: 400; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
@@ -421,16 +428,10 @@
                 <h1 id="main-header-title">Life Planner</h1>
                 <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
             </div>
-        </div>
-        <div class="top-gallery">
-            <div class="top-gallery-card personal" id="tg-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])">
-                <h3>Personal</h3>
-            </div>
-            <div class="top-gallery-card escolar" id="tg-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])">
-                <h3>Académico</h3>
-            </div>
-            <div class="top-gallery-card profesional" id="tg-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])">
-                <h3>Profesional</h3>
+            <div class="header-tabs">
+                <button class="header-tab" id="tab-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3]); updateHeaderTabs('tab-personal')">🌸 Personal</button>
+                <button class="header-tab" id="tab-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4]); updateHeaderTabs('tab-escolar')">📚 Académico</button>
+                <button class="header-tab" id="tab-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5]); updateHeaderTabs('tab-profesional')">💼 Profesional</button>
             </div>
         </div>
     </header>
@@ -450,7 +451,7 @@
                 </div>
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:0.8em; color:#888;">Módulo</label>
-                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags(); showSocialTip();"></select>
+                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags(); showSocialTip(); renderSubcategoryCustomFields();"></select>
                 </div>
             </div>
             <div id="social-tip" style="display:none; margin-top:10px; font-size:0.8em; color:#888;">Tip: Escribe 'Cumple' o 'Salida' para ver el icono especial.</div>
@@ -516,6 +517,7 @@
             </div>
             <div style="font-size: 0.85em; color: #888; margin-top: 10px; font-weight: 500;">Etiquetas Predeterminadas</div>
             <div class="tags-container" id="m-tags-container"></div>
+            <div id="subcategory-custom-fields" style="margin-top: 15px;"></div>
             <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
         </div>
@@ -1411,14 +1413,16 @@
                     let indicators = '';
                     if (containerId === 'cal-personal') {
                         indicators = dayTasks.map(t => {
-                            let titleLower = t.title.toLowerCase();
-                            let icon, color = 'var(--color-p3)';
-                            if (titleLower.includes('cumple') || titleLower.includes('cumpleaños')) {
-                                icon = '🎂';
-                            } else if (titleLower.includes('salida') || titleLower.includes('fiesta') || titleLower.includes('reunión')) {
-                                icon = '🥂';
+                            let icon = '👥', color = 'var(--color-p3)';
+                            if (t.customData && t.customData.eventType) {
+                                let et = t.customData.eventType;
+                                if (et === 'Cumpleaños') icon = '🎂';
+                                else if (et === 'Salida' || et === 'Reunión') icon = '🥂';
+                                else if (et === 'Fiesta') icon = '🎉';
                             } else {
-                                icon = '👥';
+                                let titleLower = t.title.toLowerCase();
+                                if (titleLower.includes('cumple') || titleLower.includes('cumpleaños')) icon = '🎂';
+                                else if (titleLower.includes('salida') || titleLower.includes('fiesta') || titleLower.includes('reunión')) icon = '🥂';
                             }
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
@@ -1494,6 +1498,24 @@
             html += '</div>'; dynamicArea.innerHTML = html;
         }
 
+        function initializeHeaderTabs() {
+            let activeTab = null;
+            if (document.getElementById('mod-personal').classList.contains('active')) {
+                activeTab = 'tab-personal';
+            } else if (document.getElementById('mod-escolar').classList.contains('active')) {
+                activeTab = 'tab-escolar';
+            } else if (document.getElementById('mod-profesional').classList.contains('active')) {
+                activeTab = 'tab-profesional';
+            }
+            if (activeTab) updateHeaderTabs(activeTab);
+        }
+
+        function updateHeaderTabs(activeTabId) {
+            document.querySelectorAll('.header-tab').forEach(tab => tab.classList.remove('active'));
+            let activeTab = document.getElementById(activeTabId);
+            if (activeTab) activeTab.classList.add('active');
+        }
+
         function switchView(viewId, btn) { 
             document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
             let target = document.getElementById(viewId); if(target) target.classList.add('active'); 
@@ -1503,9 +1525,9 @@
             if(viewId === 'subpage-view') return; 
             
             if(viewId === 'dashboard') updateHeader('dashboard');
-            else if(viewId === 'mod-personal') updateHeader('category', getCatLabel('personal'));
-            else if(viewId === 'mod-escolar') updateHeader('category', getCatLabel('escolar'));
-            else if(viewId === 'mod-profesional') updateHeader('category', getCatLabel('profesional'));
+            else if(viewId === 'mod-personal') { updateHeader('category', getCatLabel('personal')); updateHeaderTabs('tab-personal'); }
+            else if(viewId === 'mod-escolar') { updateHeader('category', getCatLabel('escolar')); updateHeaderTabs('tab-escolar'); }
+            else if(viewId === 'mod-profesional') { updateHeader('category', getCatLabel('profesional')); updateHeaderTabs('tab-profesional'); }
             else updateHeader(viewId);
         }
 
@@ -1571,6 +1593,60 @@
 
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
         function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
+        const subcategoryCustomFields = {
+            "Recetas": [
+                { name: "difficulty", label: "Dificultad", type: "select", options: ["Fácil", "Medio", "Difícil"] },
+                { name: "prepTime", label: "Tiempo de preparación", type: "text", placeholder: "ej: 30 min" },
+                { name: "ingredients", label: "Ingredientes", type: "textarea", placeholder: "Lista de ingredientes..." }
+            ],
+            "Asuntos Sociales": [
+                { name: "eventType", label: "Tipo de evento", type: "select", options: ["Cumpleaños", "Salida", "Reunión", "Otro"] },
+                { name: "location", label: "Ubicación", type: "text", placeholder: "Dónde se realiza" },
+                { name: "attendees", label: "Asistentes", type: "text", placeholder: "Quiénes van" }
+            ],
+            "Biblioteca": [
+                { name: "author", label: "Autor", type: "text", placeholder: "Nombre del autor" },
+                { name: "url", label: "Enlace", type: "text", placeholder: "URL del recurso" },
+                { name: "type", label: "Tipo", type: "select", options: ["Libro", "Artículo", "Video", "Otro"] }
+            ],
+            "Selfcare": [
+                { name: "careType", label: "Tipo de cuidado", type: "select", options: ["Skincare", "Haircare", "Gym", "Meditación", "Otro"] },
+                { name: "duration", label: "Duración", type: "text", placeholder: "ej: 20 min" }
+            ],
+            "Mindfulness": [
+                { name: "practiceType", label: "Tipo de práctica", type: "select", options: ["Meditación", "Yoga", "Respiración", "Otro"] },
+                { name: "duration", label: "Duración", type: "text", placeholder: "ej: 10 min" }
+            ]
+        };
+
+        function renderSubcategoryCustomFields() {
+            let subcat = document.getElementById('m-subcategory').value;
+            let container = document.getElementById('subcategory-custom-fields');
+            if (!container) return;
+            let fields = subcategoryCustomFields[subcat] || [];
+            if (fields.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
+            fields.forEach(field => {
+                html += '<div style="margin-bottom: 10px;">';
+                html += `<label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
+                if (field.type === 'select') {
+                    html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
+                    html += `<option value="">Seleccionar...</option>`;
+                    field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+                    html += '</select>';
+                } else if (field.type === 'textarea') {
+                    html += `<textarea id="m-custom-${field.name}" placeholder="${field.placeholder}" rows="2" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"></textarea>`;
+                } else {
+                    html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
+                }
+                html += '</div>';
+            });
+            container.innerHTML = html;
+        }
+
         function toggleRecurrence() { 
             let isRec = document.getElementById('m-recurring').checked; 
             let typeEl = document.getElementById('m-recurrence-type'); 
@@ -1624,7 +1700,7 @@
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; showSocialTip(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
+                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
                 currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) {
@@ -1656,13 +1732,20 @@
                         if(el) el.value = task.customFields[field] || '';
                     });
                 }
+                // Populate subcategory custom fields
+                if(task.customData) {
+                    Object.keys(task.customData).forEach(field => {
+                        let el = document.getElementById('m-custom-' + field);
+                        if(el) el.value = task.customData[field] || '';
+                    });
+                }
                 // Legacy ENMS
                 document.getElementById('m-enms-materia').value = task.enmsMateria || ''; document.getElementById('m-enms-profesor').value = task.enmsProfesor || ''; document.getElementById('m-enms-grupo').value = task.enmsGrupo || ''; document.getElementById('m-enms-practica').value = task.enmsPractica || '';
             } else { 
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
                 if(forceType) document.getElementById('m-type').value = forceType; 
                 if(forceCat) { document.getElementById('m-category').value = forceCat; updateSubcatDropdown(); if(forceSubCat) document.getElementById('m-subcategory').value = forceSubCat; } else updateSubcatDropdown(); 
-                showSocialTip(); 
+                showSocialTip(); renderSubcategoryCustomFields(); 
                 currentModalTags = []; setModalPriority('medium');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 // Clear custom fields
@@ -1800,6 +1883,16 @@
                     if(el) taskData.customFields[field] = el.value;
                 });
             }
+            // Subcategory custom fields
+            let subcat = taskData.subcategory;
+            let subFields = subcategoryCustomFields[subcat];
+            if(subFields) {
+                taskData.customData = {};
+                subFields.forEach(field => {
+                    let el = document.getElementById('m-custom-' + field.name);
+                    if(el) taskData.customData[field.name] = el.value;
+                });
+            }
             // Legacy ENMS
             if(taskData.subcategory === 'ENMS Labs') { taskData.enmsMateria = document.getElementById('m-enms-materia').value; taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; taskData.enmsPractica = document.getElementById('m-enms-practica').value; }
             if (window.currentEditId) { let index = appState.tasks.findIndex(t => t.id === window.currentEditId); appState.tasks[index] = { ...appState.tasks[index], ...taskData }; } else { taskData.id = taskIdCounter++; taskData.status = 'todo'; appState.tasks.push(taskData); } 
@@ -1822,6 +1915,7 @@
         function renderAll() { 
             safeRender(applyDynamicColors); 
             safeRender(applyGlobalBackground); 
+            safeRender(initializeHeaderTabs);
             safeRender(renderDashboardLinks); 
             safeRender(renderQuickNotes); 
             safeRender(renderQuickTodos); 
@@ -1852,6 +1946,12 @@
         }
 
         function getRecipeDifficultyLabel(task) {
+            if (task.customData && task.customData.difficulty) {
+                let diff = task.customData.difficulty;
+                if (diff === 'Fácil') return '🟢 Fácil';
+                if (diff === 'Difícil') return '🔴 Difícil';
+                if (diff === 'Medio') return '🟡 Medio';
+            }
             let text = ((task.tags || []).join(' ') + ' ' + (task.notes || '')).toLowerCase();
             if (/fácil|facil|easy|🟢/.test(text)) return '🟢 Fácil';
             if (/difícil|dificil|hard|🔴/.test(text)) return '🔴 Difícil';
@@ -1861,6 +1961,9 @@
         }
 
         function getRecipePrepTime(task) {
+            if (task.customData && task.customData.prepTime) {
+                return `⏱️ ${task.customData.prepTime}`;
+            }
             let match = (task.notes || '').match(/(\d{1,3})\s*(min|mins|m)/i);
             if (match) return `⏱️ ${match[1]} min`;
             if (task.priority === 'high') return '⏱️ 45 min';
