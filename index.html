@@ -388,6 +388,7 @@
             <div class="color-dot" style="background:var(--color-p5);" onclick="ctxSetColor('var(--color-p5)')"></div>
             <div class="color-dot" style="background:var(--color-p6);" onclick="ctxSetColor('var(--color-p6)')"></div>
         </div>
+        <button onclick="toggleArchiveModule(window.contextTarget.cat, window.contextTarget.subcat)">📦 Archivar/Desarchivar</button>
         <button onclick="ctxDelete()" style="color:#ef4444; font-weight:600;">🗑️ Eliminar Módulo</button>
     </div>
 
@@ -690,6 +691,16 @@
                 </div>
             </div>
 
+            <div class="panel span-col-2 span-row-1" id="biblioteca-panel">
+                <h2>Biblioteca</h2>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
+                    <input type="text" id="new-biblio-title" placeholder="Título (Ej. Libro PDF)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
+                    <input type="text" id="new-biblio-url" placeholder="URL" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
+                    <button class="add-small-btn" onclick="addBibliotecaLink()" style="background:var(--accent); color:white; border:none;">Agregar</button>
+                </div>
+                <div id="biblioteca-list" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+
             <div class="panel span-col-2 span-row-1" id="dash-links-panel" style="flex:1;">
                 <h2>Archivos & Links</h2>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
@@ -818,7 +829,7 @@
 
         let defaultCategories = { 
             personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
-            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
+            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Química'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
             profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: ['proyecto', 'cliente', 'departamento'] } 
         };
         let defaultPageData = { 
@@ -875,6 +886,7 @@
                 if(data.pageData) appState.pageData = data.pageData;
                 appState.dashboard = data.dashboard || defaultDashboard; 
                 if(!appState.dashboard.links) appState.dashboard.links = defaultDashboard.links;
+                if(!appState.dashboard.biblioteca) appState.dashboard.biblioteca = [];
                 
                 if(!appState.categories.personal.cover) {
                     appState.categories.personal.cover = defaultCategories.personal.cover;
@@ -949,6 +961,49 @@
         function toggleMenu() { let nav = document.getElementById('main-nav'); let overlay = document.getElementById('menu-overlay'); if(nav && overlay) { nav.classList.toggle('open'); overlay.classList.toggle('open'); } }
         
         function renderDashboardLinks() { const list = document.getElementById('dash-links-list'); if(!list) return; list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
+        function addBibliotecaLink(subcatName) { 
+            if(subcatName) {
+                // For subpage
+                let t = document.getElementById('acad-link-title').value.trim(); 
+                let u = document.getElementById('acad-link-url').value.trim(); 
+                if(t && u) { 
+                    if(!u.startsWith('http')) u = 'https://' + u; 
+                    if(!appState.pageData[subcatName]) appState.pageData[subcatName] = {}; 
+                    if(!appState.pageData[subcatName].links) appState.pageData[subcatName].links = []; 
+                    appState.pageData[subcatName].links.push({title: t, url: u}); 
+                    document.getElementById('acad-link-title').value = ''; 
+                    document.getElementById('acad-link-url').value = ''; 
+                    saveToMemory(); 
+                    renderBibliotecaListForSubpage(subcatName); 
+                }
+            } else {
+                // For dashboard
+                let t = document.getElementById('new-biblio-title').value.trim(); 
+                let u = document.getElementById('new-biblio-url').value.trim(); 
+                if(t && u) { 
+                    if(!u.startsWith('http')) u = 'https://' + u; 
+                    if(!appState.dashboard.biblioteca) appState.dashboard.biblioteca = []; 
+                    appState.dashboard.biblioteca.push({title: t, url: u}); 
+                    document.getElementById('new-biblio-title').value = ''; 
+                    document.getElementById('new-biblio-url').value = ''; 
+                    saveToMemory(); 
+                    renderBibliotecaList(); 
+                }
+            }
+        }
+        function renderBibliotecaList() { const list = document.getElementById('biblioteca-list'); if(!list) return; list.innerHTML = (appState.dashboard.biblioteca || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteBibliotecaLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
+        function renderBibliotecaListForSubpage(subcatName) { const list = document.getElementById('acad-biblioteca-list'); if(!list) return; list.innerHTML = (appState.pageData[subcatName].links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteBibliotecaLink('${subcatName}', ${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
+        function deleteBibliotecaLink(subcatName, idx) { 
+            if(subcatName) {
+                appState.pageData[subcatName].links.splice(idx,1); 
+                saveToMemory(); 
+                renderBibliotecaListForSubpage(subcatName); 
+            } else {
+                appState.dashboard.biblioteca.splice(idx,1); 
+                saveToMemory(); 
+                renderBibliotecaList(); 
+            }
+        }
         function addDashLink() { let t = document.getElementById('new-link-title').value.trim(); let u = document.getElementById('new-link-url').value.trim(); if(t && u) { if(!u.startsWith('http')) u = 'https://' + u; if(!appState.dashboard.links) appState.dashboard.links = []; appState.dashboard.links.push({title: t, url: u}); document.getElementById('new-link-title').value = ''; document.getElementById('new-link-url').value = ''; saveToMemory(); renderDashboardLinks(); } }
         function deleteDashLink(idx) { customConfirm("¿Borrar link?", () => { appState.dashboard.links.splice(idx,1); saveToMemory(); renderDashboardLinks(); }); }
 
@@ -1388,12 +1443,21 @@
             });
         }
 
+        function toggleArchiveModule(catKey, subcatName) {
+            if(!appState.pageData[subcatName]) appState.pageData[subcatName] = {};
+            appState.pageData[subcatName].archived = !appState.pageData[subcatName].archived;
+            saveToMemory(); switchView('mod-' + catKey); renderAll();
+        }
+
         function addNewSubcatInline(catKey) { let name = prompt("Nombre de la nueva página:"); if (name && name.trim() !== '') { name = name.trim(); if (!appState.categories[catKey].subcats.includes(name)) { appState.categories[catKey].subcats.push(name); saveToMemory(); renderAll(); } else alert("Ya existe."); } }
 
         function renderModule(catKey, containerId) { 
             const container = document.getElementById(containerId); if(!container) return; container.innerHTML = ''; 
             if (!appState.categories[catKey] || !appState.categories[catKey].subcats) return; 
-            appState.categories[catKey].subcats.forEach(subcat => { 
+            let activeSubcats = appState.categories[catKey].subcats.filter(subcat => !(appState.pageData[subcat] && appState.pageData[subcat].archived));
+            let archivedSubcats = appState.categories[catKey].subcats.filter(subcat => appState.pageData[subcat] && appState.pageData[subcat].archived);
+            
+            activeSubcats.forEach(subcat => { 
                 let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
                 let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); 
                 let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); 
@@ -1413,6 +1477,31 @@
                     </div>
                 </div>`; 
             }); 
+            
+            if(archivedSubcats.length > 0) {
+                container.innerHTML += `<h3 style="margin-top:30px; font-size:1.1em; color:#888; border-bottom:1px solid var(--border-color);">Archivados</h3>`;
+                archivedSubcats.forEach(subcat => { 
+                    let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
+                    let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); 
+                    let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); 
+                    if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; 
+                    if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; 
+                    
+                    let cardColor = pageInfo.color ? pageInfo.color : 'var(--border-color)';
+                    
+                    container.innerHTML += `
+                    <div class="gallery-card" oncontextmenu="showContextMenu(event, '${catKey}', '${subcat}')" onclick="openSubpage('${catKey}', '${subcat}')" style="border-top-color: ${cardColor}; border-top-width: 6px; opacity: 0.6; filter: grayscale(100%);">
+                        <img src="${pageInfo.cover}" class="gallery-cover">
+                        <div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;">
+                            <div class="gallery-icon">${pageInfo.icon}</div>
+                            <h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3>
+                            <div style="flex:1; min-height: 60px;">${taskPreview}</div>
+                            <button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button>
+                        </div>
+                    </div>`; 
+                }); 
+            }
+            
             container.innerHTML += `<div class="new-card" onclick="addNewSubcatInline('${catKey}')">+ Nueva Página</div>`; 
         }
 
@@ -1506,6 +1595,26 @@
             if (subcatName === 'Mindfulness') { renderMindfulnessBoard(catKey, subcatName); return; }
             if (subcatName === 'Biblioteca') { renderBibliotecaSubpage(catKey, subcatName); return; }
 
+            if (catKey === 'escolar') {
+                html += `
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px;">
+    <div class="panel" style="padding: 15px;">
+        <h4 style="margin:0 0 10px 0; color:var(--accent); font-family:'Playfair Display', serif;">📚 Recursos y Bibliografía</h4>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <input type="text" id="acad-link-title" placeholder="Título (Ej. Libro PDF, Zoom)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
+            <input type="text" id="acad-link-url" placeholder="URL" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
+            <button class="add-small-btn" style="background:var(--accent); color:white;" onclick="addBibliotecaLink('${subcatName}')">+</button>
+        </div>
+        <div id="acad-biblioteca-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto;">
+        </div>
+    </div>
+    <div class="panel" style="padding: 15px; background: rgba(255,255,255,0.7);">
+        <h4 style="margin:0 0 10px 0; color:var(--text-dark);">✍️ Notas Rápidas de la Materia</h4>
+        <textarea placeholder="Apunta ideas de clase aquí..." style="width:100%; height:120px; border:none; background:transparent; resize:none; font-family:inherit; outline:none; color:var(--text-dark);"></textarea>
+    </div>
+</div>`;
+            }
+
             let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcatName); 
             let html = `
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
@@ -1556,6 +1665,7 @@
                 setTimeout(() => { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s + '-sub'); if(!col) return; subTasks.filter(t=>t.status===s).forEach(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }, 0);
             }
             html += '</div>'; dynamicArea.innerHTML = html;
+            if (catKey === 'escolar') renderBibliotecaListForSubpage(subcatName);
         }
 
         function initializeHeaderTabs() {
@@ -1970,10 +2080,10 @@
                 });
             }
             // Subcategory custom fields
-            let subcat = taskData.subcategory;
-            if (appState.pageData[subcat] && appState.pageData[subcat].customFields) {
+            let subcatName = taskData.subcategory;
+            if (appState.pageData[subcatName] && appState.pageData[subcatName].customFields) {
                 if (!taskData.customFields) taskData.customFields = {};
-                appState.pageData[subcat].customFields.forEach(field => {
+                appState.pageData[subcatName].customFields.forEach(field => {
                     let el = document.getElementById('m-custom-' + field);
                     if(el) taskData.customFields[field] = el.value;
                 });
@@ -2010,6 +2120,7 @@
             safeRender(applyGlobalBackground); 
             safeRender(initializeHeaderTabs);
             safeRender(renderDashboardLinks); 
+            safeRender(renderBibliotecaList); 
             safeRender(renderQuickNotes); 
             safeRender(renderQuickTodos); 
             safeRender(renderRecetasWidget); 
