@@ -630,18 +630,18 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="categoryConfigModal">
+    <div class="modal-overlay" id="subcatConfigModal">
         <div class="modal" style="max-width: 450px;">
-            <span class="close-modal" onclick="closeCategoryConfigModal()">×</span>
-            <h2 id="config-modal-title">Configurar Etiquetas</h2>
+            <span class="close-modal" onclick="closeSubcatConfigModal()">×</span>
+            <h2 id="subcat-config-modal-title">Configurar Campos Personalizados</h2>
             <div style="margin-bottom: 20px;">
-                <input type="text" id="new-tag-input" placeholder="Nueva etiqueta..." style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark);">
-                <button class="add-small-btn" onclick="addNewTag()" style="margin-top: 10px; background: var(--accent); color: white; border: none;">+ Agregar</button>
+                <input type="text" id="new-field-input" placeholder="Nuevo campo (ej. Proyecto)" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark);">
+                <button class="add-small-btn" onclick="addNewField()" style="margin-top: 10px; background: var(--accent); color: white; border: none;">+ Agregar</button>
             </div>
-            <div id="tags-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-color);">
-                <!-- Tags will be rendered here -->
+            <div id="fields-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-color);">
+                <!-- Fields will be rendered here -->
             </div>
-            <button class="modal-btn" onclick="saveCategoryConfig()">Guardar Cambios</button>
+            <button class="modal-btn" onclick="saveSubcatConfig()">Guardar Cambios</button>
         </div>
     </div>
 
@@ -789,7 +789,10 @@
                     <div id="sp-general-info-container">
                         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
                             <h3 style="margin:0; font-family: 'Playfair Display', serif; font-size: 1.4em; color: var(--text-dark); font-weight: 600;">Información General</h3>
-                            <button class="edit-btn" id="btn-edit-page" onclick="togglePageEdit()">[Editar Contenido]</button>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="edit-btn" onclick="openSubcatConfig()">⚙️ Configurar Campos</button>
+                                <button class="edit-btn" id="btn-edit-page" onclick="togglePageEdit()">[Editar Contenido]</button>
+                            </div>
                         </div>
                         <div id="sp-page-content" class="page-content-area"></div>
                         <textarea id="sp-page-editor" class="page-content-editor"></textarea>
@@ -1205,6 +1208,45 @@
             renderAll();
         }
 
+        let currentConfigSubcat = null;
+        function openSubcatConfig() {
+            currentConfigSubcat = currentSubcatOpened;
+            let modal = document.getElementById('subcatConfigModal');
+            if(modal) modal.style.display = 'flex';
+            document.getElementById('subcat-config-modal-title').innerText = 'Configurar Campos - ' + currentConfigSubcat;
+            renderFieldsList();
+        }
+        function closeSubcatConfigModal() { let modal = document.getElementById('subcatConfigModal'); if(modal) modal.style.display = 'none'; currentConfigSubcat = null; }
+        function renderFieldsList() {
+            let list = document.getElementById('fields-list');
+            if(!list || !currentConfigSubcat) return;
+            if(!appState.pageData[currentConfigSubcat]) appState.pageData[currentConfigSubcat] = {};
+            let fields = appState.pageData[currentConfigSubcat].customFields || [];
+            list.innerHTML = fields.map(field => `<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border-color);"><span>${field}</span><button class="edit-btn" onclick="removeField('${field}')" style="color:#ef4444;">×</button></div>`).join('');
+        }
+        function addNewField() {
+            let input = document.getElementById('new-field-input');
+            let field = input.value.trim().toLowerCase();
+            if(field) {
+                if(!appState.pageData[currentConfigSubcat]) appState.pageData[currentConfigSubcat] = {};
+                if(!appState.pageData[currentConfigSubcat].customFields) appState.pageData[currentConfigSubcat].customFields = [];
+                if(!appState.pageData[currentConfigSubcat].customFields.includes(field)) {
+                    appState.pageData[currentConfigSubcat].customFields.push(field);
+                    input.value = '';
+                    renderFieldsList();
+                }
+            }
+        }
+        function removeField(field) {
+            appState.pageData[currentConfigSubcat].customFields = appState.pageData[currentConfigSubcat].customFields.filter(f => f !== field);
+            renderFieldsList();
+        }
+        function saveSubcatConfig() {
+            saveToMemory();
+            closeSubcatConfigModal();
+            renderAll();
+        }
+
         function getQuoteForStreak(streak) { if(streak === 0) return "El mejor momento para empezar es hoy. 🌱"; if(streak < 3) return "¡Un día a la vez, lo estás haciendo genial! ✨"; if(streak < 7) return "¡Mírate brillar! La constancia da frutos. 🌸"; return "¡Imparable! Tienes el control total de tu vida. 🔥"; }
 
         function renderHabitsWidget() {
@@ -1477,8 +1519,15 @@
             } else if (subpageViewMode === 'table') {
                 let customization = appState.categories[catKey];
                 let customHeaders = '';
+                let allCustomFields = [];
                 if(customization && customization.customFields) {
-                    customHeaders = customization.customFields.map(field => `<th>${field.charAt(0).toUpperCase() + field.slice(1)}</th>`).join('');
+                    allCustomFields = allCustomFields.concat(customization.customFields);
+                }
+                if(appState.pageData[subcatName] && appState.pageData[subcatName].customFields) {
+                    allCustomFields = allCustomFields.concat(appState.pageData[subcatName].customFields);
+                }
+                if(allCustomFields.length > 0) {
+                    customHeaders = allCustomFields.map(field => `<th>${field.charAt(0).toUpperCase() + field.slice(1)}</th>`).join('');
                 }
                 html += `<table class="notion-table"><thead><tr><th style="width:40%;">Aa Nombre</th><th>Estado</th><th>📅 Fecha</th><th>🚩 Prioridad</th><th>🏷️ Etiquetas</th>${customHeaders}</tr></thead><tbody>`;
                 subTasks.forEach(t => { 
@@ -1487,8 +1536,8 @@
                     let prioText = t.priority === 'high' ? 'Alta' : (t.priority === 'low' ? 'Baja' : 'Media'); 
                     let icon = t.type === 'routine' ? '🔄' : (t.type === 'product' ? '🛍️' : (t.type === 'event' ? '◈' : '○'));
                     let customCols = '';
-                    if(customization && customization.customFields) {
-                        customCols = customization.customFields.map(field => `<td data-label="${field.charAt(0).toUpperCase() + field.slice(1)}">${(t.customFields && t.customFields[field]) || '-'}</td>`).join('');
+                    if(allCustomFields.length > 0) {
+                        customCols = allCustomFields.map(field => `<td data-label="${field.charAt(0).toUpperCase() + field.slice(1)}">${(t.customFields && t.customFields[field]) || '-'}</td>`).join('');
                     }
                     html += `<tr class="event-item" onclick="openTaskDetails(${t.id})"><td data-label="Nombre"><div class="title-cell"><span class="icon-symbol">${icon}</span><span style="flex:1;">${t.title}</span>${t.recurring? '🔄':''}</div></td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Listo</option></select></td><td data-label="Fecha" style="color:var(--text-dark); font-size:0.9em;">${t.date ? t.date + (t.time ? ' '+t.time : '') : '-'}</td><td data-label="Prioridad"><span class="pill ${prioClass}">${prioText}</span></td><td data-label="Etiquetas">${tagsHTML || '-'}</td>${customCols}</tr>`;
                 }); html += `</tbody></table>`;
@@ -1627,7 +1676,12 @@
             let subcat = document.getElementById('m-subcategory').value;
             let container = document.getElementById('subcategory-custom-fields');
             if (!container) return;
-            let fields = subcategoryCustomFields[subcat] || [];
+            let fields = [];
+            if (appState.pageData[subcat] && appState.pageData[subcat].customFields) {
+                fields = appState.pageData[subcat].customFields.map(field => ({ name: field, label: field.charAt(0).toUpperCase() + field.slice(1), type: 'text', placeholder: '' }));
+            } else {
+                fields = subcategoryCustomFields[subcat] || [];
+            }
             if (fields.length === 0) {
                 container.innerHTML = '';
                 return;
@@ -1889,6 +1943,13 @@
             }
             // Subcategory custom fields
             let subcat = taskData.subcategory;
+            if (appState.pageData[subcat] && appState.pageData[subcat].customFields) {
+                if (!taskData.customFields) taskData.customFields = {};
+                appState.pageData[subcat].customFields.forEach(field => {
+                    let el = document.getElementById('m-custom-' + field);
+                    if(el) taskData.customFields[field] = el.value;
+                });
+            }
             let subFields = subcategoryCustomFields[subcat];
             if(subFields) {
                 taskData.customData = {};
