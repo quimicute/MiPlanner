@@ -2433,44 +2433,49 @@
             if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
-        const MIS_LYRICS = [
-            // --- THE KILLERS ---
-            { texto: "I got soul, but I'm not a soldier 🎸", autor: "All These Things That I've Done, The Killers" },
-            { texto: "Destiny is calling me ⚡", autor: "Mr. Brightside, The Killers" },
-            { texto: "Open up your eager eyes...", autor: "Mr. Brightside, The Killers" },
-            { texto: "I'm coming out of my cage and I've been doing just fine", autor: "Mr. Brightside, The Killers" },
-            { texto: "Are we human, or are we dancer? 💃", autor: "Human, The Killers" },
-            { texto: "He doesn't look a thing like Jesus, but he talks like a gentleman", autor: "When You Were Young, The Killers" },
-            { texto: "Smile like you mean it 😄", autor: "Smile Like You Mean It, The Killers" },
-            { texto: "I've got a lot to learn and I'm looking for a sign 📖", autor: "Read My Mind, The Killers" },
+       const MIS_LYRICS = [
+    // --- THE KILLERS (Los clásicos) ---
+    { texto: "I got soul, but I'm not a soldier 🎸", autor: "All These Things That I've Done, The Killers" },
+    { texto: "Destiny is calling me ⚡", autor: "Mr. Brightside, The Killers" },
+    { texto: "Are we human, or are we dancer? 💃", autor: "Human, The Killers" },
+    { texto: "I've got a lot to learn and I'm looking for a sign 📖", autor: "Read My Mind, The Killers" },
+    { texto: "Don't give up on me now ⚓", autor: "Shot at the Night, The Killers" },
 
-            // --- CAIFANES ---
-            { texto: "Ayer me dijo un ave que volara... 🕊️", autor: "Ayer me dijo un ave, Caifanes" },
-            { texto: "No dejes que nos coma el diablo, amor 👹", autor: "No dejes que..., Caifanes" },
-            { texto: "Viento, amárranos 🌬️", autor: "Viento, Caifanes" },
-            { texto: "Afuera, tú no existes, solo adentro ⛩️", autor: "Afuera, Caifanes" },
-            { texto: "Hay veces que no sé qué me pasa, que me siento como una célula que explota", autor: "La célula que explota, Caifanes" },
-            { texto: "Vamos a dar una vuelta al cielo para ver lo que es de verdad 🌌", autor: "Nubes, Caifanes" },
-            { texto: "Antes de que nos olviden, haremos historia 🕯️", autor: "Antes de que nos olviden, Caifanes" },
+    // --- CAIFANES (Inspo en español) ---
+    { texto: "Ayer me dijo un ave que volara... 🕊️", autor: "Ayer me dijo un ave, Caifanes" },
+    { texto: "Viento, amárranos 🌬️", autor: "Viento, Caifanes" },
+    { texto: "Afuera, tú no existes, solo adentro ⛩️", autor: "Afuera, Caifanes" },
+    { texto: "Antes de que nos olviden, haremos historia 🕯️", autor: "Antes de que nos olviden, Caifanes" },
 
-            // --- KENIA OS ---
-            { texto: "Flores en mi piel, todo lo que soñé 🌸", autor: "Flores, Kenia Os" },
-            { texto: "Soy una mala decisión que quieres tomar 🍷", autor: "Malas Decisiones, Kenia Os" },
-            { texto: "Joder, qué bien te ves 🥂", autor: "Llévatelo, Kenia Os" },
-            { texto: "Yo no soy de nadie, yo soy mía 👑", autor: "La Invitación, Kenia Os" },
-            { texto: "Todo fluye, nada influye 🌊", autor: "Mood, Kenia Os" },
-            { texto: "No me busques, yo ya me encontré 🕵️‍♀️", autor: "Buscando, Kenia Os" },
+    // --- MY CHEMICAL ROMANCE (Para el modo enfocado/emo) ---
+    { texto: "I am not afraid to keep on living 🖤", autor: "Famous Last Words, MCR" },
+    { texto: "We'll carry on, we'll carry on! 🥁", autor: "Welcome to the Black Parade, MCR" },
+    { texto: "The world is ugly, but you are beautiful to me ✨", autor: "The World Is Ugly, MCR" },
+    { texto: "Sing it out for the ones that'll hate your guts 🎤", autor: "SING, MCR" },
+    { texto: "Keep running... 🏃‍♀️", autor: "Na Na Na, MCR" },
 
-            // --- FRANCIA 🇫🇷 ---
-            { texto: "Non, je ne regrette rien 🇫🇷", autor: "Édith Piaf, Motivación Estrasburgo 🥨" },
-            { texto: "La vie est belle 🌿", autor: "Inspo, Objetivo Francia 🇫🇷" },
-            { texto: "Petit à petit, l'oiseau fait son nid 🐣", autor: "Proverbio, Paso a paso" },
-            { texto: "Impossible n'est pas français 🇫🇷 💪", autor: "Napoleón, Determinación" },
-            { texto: "Paris est toujours une bonne idée 🥐", autor: "Audrey Hepburn, Inspo" },
-            { texto: "Savoir, c'est pouvoir 📖", autor: "Francis Bacon, Éxito académico" },
-            { texto: "Fais de ta vie un rêve 🌙", autor: "Saint-Exupéry, Inspo" }
-        ];
-        
+    // --- ONE DIRECTION (Good vibes only) ---
+    { texto: "Does it ever drive you crazy just how fast the night changes? 🌙", autor: "Night Changes, One Direction" },
+    { texto: "You'll never feel like you're alone, I'll make this feel like home 🏡", autor: "Home, One Direction" },
+    { texto: "Right now I'm looking at you and I can't believe... ✨", autor: "You & I, One Direction" },
+    { texto: "Everything that you've ever dreamed of... ☁️", autor: "Clouds, One Direction" },
+    { texto: "Midnight memories... oh! 🌃", autor: "Midnight Memories, One Direction" },
+
+    // --- QUÍMICA & CIENCIA (La motivación de Estrasburgo 🥨) ---
+    { texto: "The science of today is the technology of tomorrow 🧪", autor: "Edward Teller" },
+    { texto: "Nothing in life is to be feared, it is only to be understood 🧠", autor: "Marie Curie" },
+    { texto: "La energía no se crea ni se destruye, solo se transforma. ¡Transfórmate! ⚡", autor: "Ley de la Termodinámica" },
+    { texto: "Be a catalyst: make things happen faster ✨", autor: "Quimicute Inspo" },
+    { texto: "Success is like a chemical reaction: you need the right conditions and a lot of energy 🔬", autor: "Laboratorio de Vida" },
+    { texto: "If you're not part of the solution, you're part of the precipitate ⚗️", autor: "Humor Químico" },
+    { texto: "The meeting of two personalities is like the contact of two chemical substances: if there is any reaction, both are transformed.", autor: "C.G. Jung" },
+    { texto: "En el laboratorio de la vida, la perseverancia es el mejor reactivo 🧪", autor: "Motivación Estrasburgo" },
+
+    // --- FRANCIA 🇫🇷 ---
+    { texto: "Non, je ne regrette rien 🇫🇷", autor: "Édith Piaf, Motivación Estrasburgo 🥨" },
+    { texto: "Petit à petit, l'oiseau fait son nid 🐣", autor: "Proverbio (Paso a paso)" },
+    { texto: "Impossible n'est pas français 🇫🇷 💪", autor: "Napoleón (Determinación)" }
+];
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
