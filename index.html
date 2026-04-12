@@ -48,26 +48,27 @@
         .menu-overlay.open { display: block; }
 
         /* CABECERA PRINCIPAL */
-        header { display: flex; justify-content: flex-start; align-items: center; padding: 12px 30px; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.6); position: sticky; top: 0; z-index: 100; flex-wrap: nowrap; gap: 15px; transition: padding 0.3s ease; }
-        header.header-compact { padding: 8px 20px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
+        header { display: flex; justify-content: flex-start; align-items: center; padding: 12px 20px; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.6); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 12px; transition: padding 0.3s ease; }
+        header.header-compact { padding: 8px 15px; }
+        .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .header-top-row { display: flex; align-items: center; gap: 8px; }
-        .header-title-group { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; white-space: nowrap; }
-        .header-right { display: flex; justify-content: flex-end; align-items: flex-end; width: 100%; max-width: 420px; }
+        .header-title-group { display: flex; flex-direction: row; align-items: center; gap: 0; white-space: nowrap; }
+        .header-title-group > * { margin: 0; }
+        .header-right { display: none; justify-content: flex-end; align-items: flex-end; width: 100%; max-width: 420px; }
         .header-quote { font-family: 'Great Vibes', cursive; color: #888; font-size: 1.05em; text-align: right; margin: 0; line-height: 1.4; }
-        header h1 { margin: 0; display:flex; align-items:center; flex-wrap:nowrap; justify-content:flex-start; font-size: 1.5em; }
+        header h1 { margin: 0; display:flex; align-items:center; flex-wrap:nowrap; justify-content:flex-start; font-size: 1.3em; gap: 15px; }
         
-        .bc-main { font-family: 'Playfair Display', serif; font-size: 1.3em; font-weight: 600; cursor: pointer; transition: 0.2s;}
-        .bc-cat { font-family: 'Playfair Display', serif; font-size: 1em; color: #888; cursor: pointer; }
-        .bc-sub { font-family: 'Playfair Display', serif; font-size: 1.1em; color: #aaa; }
-        .bc-sep { font-family: 'Inter', sans-serif; font-size: 1.2em; font-weight: 300; color: #ccc; margin: 0 10px; }
+        .bc-main { font-family: 'Playfair Display', serif; font-size: 1.1em; font-weight: 600; cursor: pointer; transition: 0.2s;}
+        .bc-cat { font-family: 'Playfair Display', serif; font-size: 0.85em; color: #888; cursor: pointer; }
+        .bc-sub { font-family: 'Playfair Display', serif; font-size: 0.9em; color: #aaa; }
+        .bc-sep { font-family: 'Inter', sans-serif; font-size: 1em; font-weight: 300; color: #ccc; margin: 0 6px; }
         
         .welcome-script { font-family: 'Great Vibes', cursive; color: var(--script-color); font-size: 1.4em; margin-top: 2px;}
         
         .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); margin: 0 5px;}
         .nav-icon-btn:hover { transform: scale(1.15); background: var(--accent-hover); }
 
-        .header-compact { padding: 10px 40px; }
+
 
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .view-section.active { display: block; }
@@ -96,13 +97,13 @@
 
         /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
         /* PESTAÑAS PRINCIPALES EN HEADER */
-        .header-tabs { display: flex; gap: 2px; margin-left: auto; margin-right: 0; }
-        .header-tab { padding: 6px 12px; border: none; background: transparent; color: var(--text-dark); cursor: pointer; font-family: 'Playfair Display', serif; font-size: 0.95em; font-weight: 500; position: relative; transition: 0.3s; border-bottom: 2px solid transparent; white-space: nowrap; }
-        .header-tab:hover { color: var(--accent); }
-        .header-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
-        .header-tab.compact-mode { font-size: 0; padding: 4px 8px; }
-        .header-tab.compact-mode::before { font-size: 1.1em; }
-        .header-tab.compact-mode .tab-text { display: none; }
+        .header-tabs { display: flex; gap: 1px; margin: 0; }
+        .header-tab { padding: 4px 10px; border: none; background: transparent; color: var(--text-dark); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8em; font-weight: 500; position: relative; transition: 0.3s; border: 1px solid transparent; border-radius: 4px; white-space: nowrap; }
+        .header-tab:hover { color: var(--accent); background: rgba(147,112,219,0.05); }
+        .header-tab.active { color: var(--accent); border-color: rgba(147,112,219,0.3); background: rgba(147,112,219,0.08); }
+        header.header-compact .header-tab .tab-label { display: none; }
+        header.header-compact .header-tab { padding: 4px 6px; }
+        header.header-compact .header-tab::before { content: attr(data-icon); font-size: 1.1em; }
         
         /* GALERÍA DE MÓDULOS (TOP PANORÁMICO Y TARJETAS) */
         .top-gallery { display: flex; gap: 15px; margin: 0; max-width: 60%; flex-wrap: wrap; justify-content: flex-end; }
@@ -430,12 +431,11 @@
             </div>
             <div class="header-title-group">
                 <h1 id="main-header-title">Life Planner</h1>
-                <p class="welcome-script" id="main-header-subtitle">welcome home, Quimicute</p>
-            </div>
-            <div class="header-tabs">
-                <button class="header-tab" id="tab-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3]); updateHeaderTabs('tab-personal')">🌸 Personal</button>
-                <button class="header-tab" id="tab-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4]); updateHeaderTabs('tab-escolar')">📚 Académico</button>
-                <button class="header-tab" id="tab-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5]); updateHeaderTabs('tab-profesional')">💼 Profesional</button>
+                <div class="header-tabs">
+                    <button class="header-tab" id="tab-personal" data-icon="🌸" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3]); updateHeaderTabs('tab-personal')"><span class="tab-label">Personal</span></button>
+                    <button class="header-tab" id="tab-escolar" data-icon="📚" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4]); updateHeaderTabs('tab-escolar')"><span class="tab-label">Académico</span></button>
+                    <button class="header-tab" id="tab-profesional" data-icon="💼" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5]); updateHeaderTabs('tab-profesional')"><span class="tab-label">Profesional</span></button>
+                </div>
             </div>
         </div>
     </header>
