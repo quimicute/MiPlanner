@@ -93,13 +93,37 @@
             position: sticky; top: 0; z-index: 100; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); 
         }
-        .header-nav-pills { display: flex; gap: 12px; align-items: center; }
+        .header-nav-pills { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         .nav-pill { background: rgba(57, 69, 85, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); color: #ffffff; padding: 6px 16px; border-radius: 30px; font-family: 'Playfair Display', serif; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .nav-pill:hover { background: rgba(57, 69, 85, 0.85); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         .nav-pill.active { background: rgba(147, 112, 219, 0.8); color: #ffffff; }
 
         .header-top-row { display: flex; align-items: center; gap: 10px; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1;
+            min-width: 0;
+        }
+        .header-title-group { 
+            display: flex; 
+            align-items: baseline; 
+            gap: 8px; 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+        .header-title-group h1, 
+        .header-title-group span, 
+        .header-title-group p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: baseline;
+        }
         .bc-main { font-size: 1.4em; }
         .welcome-script { font-size: 1.1em; }
 
