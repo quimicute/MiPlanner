@@ -1592,6 +1592,7 @@
         }
 
         function openSubpage(catKey, subcatName) { 
+            switchView('subpage-view');
             currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
             let pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
             
