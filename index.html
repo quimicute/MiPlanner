@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -467,6 +468,9 @@
             </div>
         </div>
         <div class="header-nav-pills">
+            <button class="nav-pill" id="btn-google-auth" onclick="conectarGoogle()" style="background: rgba(255,255,255,0.15); border: 1px dashed var(--accent);">
+                <span class="icon">🔗</span><span class="text"> Conectar Google</span>
+            </button>
             <button class="nav-pill" id="nav-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])"><span class="icon">✧</span><span class="text"> Personal</span></button>
             <button class="nav-pill" id="nav-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])"><span class="icon">⌬</span><span class="text"> Académico</span></button>
             <button class="nav-pill" id="nav-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])"><span class="icon">◈</span><span class="text"> Profesional</span></button>
@@ -859,7 +863,83 @@
     <script>
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
+        // --- CONFIGURACIÓN DE GOOGLE API ---
+const GOOGLE_CONFIG = {
+    CLIENT_ID: '951986170132-ohf4kbg05ut7iii51s0844l2gk5mse59.apps.googleusercontent.com',
+    API_KEY: 'AIzaSyAFeDcf-dVB-eLLz8GmheNhtMIaU6O7xRQ',
+    DISCOVERY_DOCS: [
+        "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+        "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"
+    ],
+    SCOPES: "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks"
+};
 
+let tokenClient;
+let gapiInited = false;
+let gisInited = false;
+/** --- FUNCIONES DE INTEGRACIÓN GOOGLE --- **/
+function gapiLoaded() { gapi.load('client', initializeGapiClient); }
+
+async function initializeGapiClient() {
+    await gapi.client.init({
+        apiKey: GOOGLE_CONFIG.API_KEY,
+        discoveryDocs: GOOGLE_CONFIG.DISCOVERY_DOCS,
+    });
+    gapiInited = true;
+}
+
+function gisLoaded() {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CONFIG.CLIENT_ID,
+        scope: GOOGLE_CONFIG.SCOPES,
+        callback: '', // Se define al pedir el token
+    });
+    gisInited = true;
+}
+
+function conectarGoogle() {
+    tokenClient.callback = async (resp) => {
+        if (resp.error !== undefined) throw (resp);
+        document.getElementById('btn-google-auth').innerHTML = '🟢 Conectado';
+        document.getElementById('btn-google-auth').style.background = 'rgba(16, 185, 129, 0.2)';
+        document.getElementById('btn-google-auth').style.color = '#10b981';
+    };
+
+    if (gapi.client.getToken() === null) {
+        tokenClient.requestAccessToken({prompt: 'consent'});
+    } else {
+        tokenClient.requestAccessToken({prompt: ''});
+    }
+}
+
+async function addEventToGoogle(task) {
+    // Si no hay token de Google, no intentamos subirlo
+    if (!gapi.client.calendar || !gapi.client.getToken()) return;
+
+    const event = {
+        'summary': task.title,
+        'location': task.customData?.location || 'Life Planner',
+        'description': `Módulo: ${task.subcategory}\nPrioridad: ${task.priority}\nNotas: ${task.notes || ''}`,
+        'start': {
+            'dateTime': task.date + (task.time ? 'T' + task.time + ':00' : 'T09:00:00'),
+            'timeZone': 'America/Mexico_City'
+        },
+        'end': {
+            'dateTime': task.date + (task.time ? 'T' + task.time + ':00' : 'T10:00:00'),
+            'timeZone': 'America/Mexico_City'
+        }
+    };
+
+    try {
+        await gapi.client.calendar.events.insert({
+            'calendarId': 'primary',
+            'resource': event,
+        });
+        console.log('✅ Evento sincronizado con Google Calendar');
+    } catch (err) {
+        console.error('❌ Error al sincronizar con Google:', err);
+    }
+}
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = []; let currentModalPriority = 'medium';
         let monthOffset = 0;
@@ -2214,8 +2294,10 @@
         
         function saveTask() { 
             let title = document.getElementById('m-title').value; if(!title) return; 
-            let cat = document.getElementById('m-category').value || document.getElementById('m-category').options[document.getElementById('m-category').selectedIndex].value;
-            let subcat = document.getElementById('m-subcategory').value || document.getElementById('m-subcategory').options[document.getElementById('m-subcategory').selectedIndex].value;
+            let cat = document.getElementById('m-category').value;
+            let subcat = document.getElementById('m-subcategory').value;
+            let isRecurring = document.getElementById('m-recurring').checked; // Corregimos esta línea
+            
             let taskData = { 
                 type: document.getElementById('m-type').value, 
                 title: title, 
@@ -2230,6 +2312,7 @@
                 recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null,
                 recurrenceStart: isRecurring ? document.getElementById('m-recurrence-start').value : null
             }; 
+
             if(isRecurring) {
                 if(taskData.recurrenceType === 'weekly') {
                     let selectedDay = document.querySelector('input[name="weekly-day"]:checked');
@@ -2279,7 +2362,20 @@
             }
             // Legacy ENMS
             if(taskData.subcategory === 'ENMS Labs') { taskData.enmsMateria = document.getElementById('m-enms-materia').value; taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; taskData.enmsPractica = document.getElementById('m-enms-practica').value; }
-            if (window.currentEditId) { let index = appState.tasks.findIndex(t => t.id === window.currentEditId); appState.tasks[index] = { ...appState.tasks[index], ...taskData }; } else { taskData.id = taskIdCounter++; taskData.status = 'todo'; appState.tasks.push(taskData); } 
+            
+            // --- NUEVO: Sincronización con Google ---
+            if (taskData.type === 'event' && taskData.date) {
+                addEventToGoogle(taskData);
+            }
+
+            if (window.currentEditId) { 
+                let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
+                appState.tasks[index] = { ...appState.tasks[index], ...taskData }; 
+            } else { 
+                taskData.id = taskIdCounter++; 
+                taskData.status = 'todo'; 
+                appState.tasks.push(taskData); 
+            } 
             saveToMemory(); closeTaskModal(); renderAll(); 
             let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(taskData.category, taskData.subcategory); 
         }
