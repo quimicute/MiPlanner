@@ -649,9 +649,9 @@
                     <h2>Próximas Acciones</h2><div id="upcoming-tasks-container"></div>
                 </div>
                 <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
-                    <h2>Quick To-Do</h2>
+                    <h2>Pendientes Sueltos</h2>
                     <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                        <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
+                        <input type="text" id="quick-todo-input" placeholder="Ej. Comprar verdura, lavar trastes..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
                         <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
                     </div>
                     <div id="quick-todo-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
@@ -726,24 +726,29 @@
     </div>
     
     <div id="mod-personal" class="view-section">
-        <div class="standard-grid">
+        <div class="standard-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
                 <div class="panel" id="habits-widget-container">
                     <h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">Hábitos de Hoy</h2>
                     <div id="personal-habits-summary"></div>
                     <button class="add-inline-btn" style="margin-top:15px;" onclick="openSubpage('personal', 'Selfcare')">Ir a Selfcare →</button>
                 </div>
-                <div class="panel clickable-panel" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])">
+            </div>
+            <div class="grid-col-1">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;">
+                    <h2 style="background: transparent; color: var(--text-dark); font-size: 1.5em; margin: 0;">Módulos Personales</h2>
+                    <button class="edit-btn" onclick="openCategoryConfig('personal')" title="Configurar Etiquetas">⚙️</button>
+                </div>
+                <div class="gallery-grid" id="render-personal" style="grid-template-columns: 1fr;"></div>
+            </div>
+            <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
+                <div class="panel clickable-panel" onclick="switchView('full-calendar-view', document.querySelectorAll('.nav-pill')[0])">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">Social & Cumpleaños</h2>
+                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">Social & Eventos</h2>
                     </div>
                     <button class="add-small-btn" onclick="event.stopPropagation(); openTaskModal('event', null, 'personal', 'Asuntos Sociales')" style="width:100%; border: 1px dashed var(--border-color); color:#888; margin-bottom:10px;">+ Añadir Cumpleaños/Salida</button>
                     <div class="calendar-grid" id="cal-personal" style="gap:2px;"></div>
                 </div>
-            </div>
-            <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2><button class="edit-btn" onclick="openCategoryConfig('personal')" title="Configurar Etiquetas">⚙️</button></div>
-                <div class="gallery-grid" id="render-personal"></div>
             </div>
         </div>
     </div>
@@ -751,7 +756,7 @@
     <div id="mod-escolar" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
+                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div><button class="add-small-btn" onclick="openTaskModal(null, null, 'escolar')">+ Nuevo</button></div><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><button class="edit-btn" onclick="openCategoryConfig('escolar')" title="Configurar Etiquetas">⚙️</button></div>
@@ -763,7 +768,7 @@
     <div id="mod-profesional" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
+                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div><button class="add-small-btn" onclick="openTaskModal(null, null, 'profesional')">+ Nuevo</button></div><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><button class="edit-btn" onclick="openCategoryConfig('profesional')" title="Configurar Etiquetas">⚙️</button></div>
@@ -1804,8 +1809,28 @@
                 document.getElementById('m-enms-materia').value = task.enmsMateria || ''; document.getElementById('m-enms-profesor').value = task.enmsProfesor || ''; document.getElementById('m-enms-grupo').value = task.enmsGrupo || ''; document.getElementById('m-enms-practica').value = task.enmsPractica || '';
             } else { 
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; 
-                if(forceType) document.getElementById('m-type').value = forceType; 
-                if(forceCat) { document.getElementById('m-category').value = forceCat; updateSubcatDropdown(); if(forceSubCat) document.getElementById('m-subcategory').value = forceSubCat; } else updateSubcatDropdown(); 
+                if(forceType) {
+                    document.getElementById('m-type').value = forceType;
+                    document.getElementById('m-type').disabled = true;
+                } else {
+                    document.getElementById('m-type').disabled = false;
+                }
+
+                if(forceCat) { 
+                    document.getElementById('m-category').value = forceCat; 
+                    document.getElementById('m-category').disabled = true;
+                    updateSubcatDropdown(); 
+                    if(forceSubCat) {
+                        document.getElementById('m-subcategory').value = forceSubCat;
+                        document.getElementById('m-subcategory').disabled = true;
+                    } else {
+                        document.getElementById('m-subcategory').disabled = false;
+                    }
+                } else { 
+                    document.getElementById('m-category').disabled = false;
+                    document.getElementById('m-subcategory').disabled = false;
+                    updateSubcatDropdown(); 
+                }
                 showSocialTip(); renderSubcategoryCustomFields(); 
                 currentModalTags = []; setModalPriority('medium');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
@@ -1898,13 +1923,13 @@
         
         function saveTask() { 
             let title = document.getElementById('m-title').value; if(!title) return; 
-            let isRecurring = document.getElementById('m-recurring').checked;
-            let cat = document.getElementById('m-category').value;
+            let cat = document.getElementById('m-category').value || document.getElementById('m-category').options[document.getElementById('m-category').selectedIndex].value;
+            let subcat = document.getElementById('m-subcategory').value || document.getElementById('m-subcategory').options[document.getElementById('m-subcategory').selectedIndex].value;
             let taskData = { 
                 type: document.getElementById('m-type').value, 
                 title: title, 
                 category: cat, 
-                subcategory: document.getElementById('m-subcategory').value, 
+                subcategory: subcat, 
                 date: document.getElementById('m-date').value, 
                 time: document.getElementById('m-time').value, 
                 notes: document.getElementById('m-notes').value, 
