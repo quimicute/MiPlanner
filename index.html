@@ -2329,28 +2329,68 @@
             safeRender(() => renderCalendar('cal-profesional', 'profesional')); 
             safeRender(updateMonthLabels);
             safeRender(updateClock);
-            safeRender(updateLyric);
+            safeRender(mostrarFraseAleatoria);
             safeRender(renderInbox);
             if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
-        const lyricQuotes = [
-            "I've got soul, but I'm not a soldier. (The Killers)",
-            "Ayer me dijo un ave que volara... (Caifanes)",
-            "Flores en mi piel, todo lo que soñé. (Kenia Os)",
-            "Je ne regrette rien. (Para la motivación a Francia 🇫🇷)"
-        ];
-        let currentLyricIndex = 0;
+        const MIS_LYRICS = [
+            // --- THE KILLERS ---
+            { texto: "I got soul, but I'm not a soldier 🎸", autor: "All These Things That I've Done, The Killers" },
+            { texto: "Destiny is calling me ⚡", autor: "Mr. Brightside, The Killers" },
+            { texto: "Open up your eager eyes...", autor: "Mr. Brightside, The Killers" },
+            { texto: "I'm coming out of my cage and I've been doing just fine", autor: "Mr. Brightside, The Killers" },
+            { texto: "Are we human, or are we dancer? 💃", autor: "Human, The Killers" },
+            { texto: "He doesn't look a thing like Jesus, but he talks like a gentleman", autor: "When You Were Young, The Killers" },
+            { texto: "Smile like you mean it 😄", autor: "Smile Like You Mean It, The Killers" },
+            { texto: "I've got a lot to learn and I'm looking for a sign 📖", autor: "Read My Mind, The Killers" },
 
+            // --- CAIFANES ---
+            { texto: "Ayer me dijo un ave que volara... 🕊️", autor: "Ayer me dijo un ave, Caifanes" },
+            { texto: "No dejes que nos coma el diablo, amor 👹", autor: "No dejes que..., Caifanes" },
+            { texto: "Viento, amárranos 🌬️", autor: "Viento, Caifanes" },
+            { texto: "Afuera, tú no existes, solo adentro ⛩️", autor: "Afuera, Caifanes" },
+            { texto: "Hay veces que no sé qué me pasa, que me siento como una célula que explota", autor: "La célula que explota, Caifanes" },
+            { texto: "Vamos a dar una vuelta al cielo para ver lo que es de verdad 🌌", autor: "Nubes, Caifanes" },
+            { texto: "Antes de que nos olviden, haremos historia 🕯️", autor: "Antes de que nos olviden, Caifanes" },
+
+            // --- KENIA OS ---
+            { texto: "Flores en mi piel, todo lo que soñé 🌸", autor: "Flores, Kenia Os" },
+            { texto: "Soy una mala decisión que quieres tomar 🍷", autor: "Malas Decisiones, Kenia Os" },
+            { texto: "Joder, qué bien te ves 🥂", autor: "Llévatelo, Kenia Os" },
+            { texto: "Yo no soy de nadie, yo soy mía 👑", autor: "La Invitación, Kenia Os" },
+            { texto: "Todo fluye, nada influye 🌊", autor: "Mood, Kenia Os" },
+            { texto: "No me busques, yo ya me encontré 🕵️‍♀️", autor: "Buscando, Kenia Os" },
+
+            // --- FRANCIA 🇫🇷 ---
+            { texto: "Non, je ne regrette rien 🇫🇷", autor: "Édith Piaf, Motivación Estrasburgo 🥨" },
+            { texto: "La vie est belle 🌿", autor: "Inspo, Objetivo Francia 🇫🇷" },
+            { texto: "Petit à petit, l'oiseau fait son nid 🐣", autor: "Proverbio, Paso a paso" },
+            { texto: "Impossible n'est pas français 🇫🇷 💪", autor: "Napoleón, Determinación" },
+            { texto: "Paris est toujours une bonne idée 🥐", autor: "Audrey Hepburn, Inspo" },
+            { texto: "Savoir, c'est pouvoir 📖", autor: "Francis Bacon, Éxito académico" },
+            { texto: "Fais de ta vie un rêve 🌙", autor: "Saint-Exupéry, Inspo" }
+        ];
+        
         function updateClock() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             document.getElementById('clock-widget').textContent = timeString;
         }
 
-        function updateLyric() {
-            document.getElementById('lyric-quote').textContent = lyricQuotes[currentLyricIndex];
-            currentLyricIndex = (currentLyricIndex + 1) % lyricQuotes.length;
+        function mostrarFraseAleatoria() {
+            const quoteEl = document.getElementById('lyric-quote');
+            if (quoteEl) {
+                const item = MIS_LYRICS[Math.floor(Math.random() * MIS_LYRICS.length)];
+                quoteEl.innerHTML = `
+                    <div style="font-family: 'Playfair Display', serif; font-size: 1.2em; color: var(--text-dark); line-height: 1.4;">
+                        "${item.texto}"
+                    </div>
+                    <div style="text-align: right; margin-top: 8px; font-size: 0.85em; color: var(--accent); font-weight: 500; font-family: 'Inter', sans-serif;">
+                        — ${item.autor}
+                    </div>
+                `;
+            }
         }
 
         function addInboxTask() {
@@ -2389,9 +2429,9 @@
 
         // Inicializar reloj y lyric
         updateClock();
-        updateLyric();
+        mostrarFraseAleatoria();
         setInterval(updateClock, 1000);
-        setInterval(updateLyric, 300000);
+        setInterval(mostrarFraseAleatoria, 300000);
 
         function getCurrentMealSlot() {
             let hour = new Date().getHours();
@@ -2620,6 +2660,18 @@
                 }).catch(err => console.log('Error al registrar Service Worker', err));
             });
         }
+
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                if (hash.startsWith('subpage-')) {
+                    const subcat = hash.replace('subpage-', '');
+                    openSubpage('personal', subcat);
+                } else {
+                    switchView(hash);
+                }
+            }
+        });
     </script>
 </body>
 </html>
