@@ -67,7 +67,20 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(180px, auto); gap: 15px; width: 100%; max-width: 100%; margin: auto; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 100%;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            box-sizing: border-box;
+        }
         #quick-capture-section { grid-column: 1 / -1; margin-bottom: 20px; }
         #clock-widget { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2em; text-align: center; }
         #lyric-quote { font-family: 'Playfair Display', serif; font-size: 1em; text-align: center; margin-top: 10px; color: var(--script-color); }
@@ -81,7 +94,25 @@
         .span-row-2 { grid-row: span 2; }
         .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
-        .panel { background: rgba(255, 255, 255, 0.4); border-radius: 22px; padding: 12px; backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); box-shadow: 0 30px 80px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.3); border-top: 4px solid var(--color-p3); color: var(--text-dark); transition: 0.3s ease; }
+        .panel {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 22px;
+            padding: 20px;
+            min-height: 200px;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-top: 4px solid var(--color-p3);
+            color: var(--text-dark);
+            transition: 0.3s ease;
+        }
+        #weekly-agenda {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(150px, 1fr));
+            gap: 10px;
+            overflow-x: hidden;
+        }
         .panel h2 { background: transparent; color: var(--color-p6); border-bottom: 3px double rgba(147,112,219,0.3); padding: 0 0 5px 0; font-weight: 700; font-size: 1.55em; margin-bottom: 14px; font-family: 'Playfair Display', serif; }
         
         .highlight { background: linear-gradient(180deg, transparent 60%, var(--color-p1) 40%); display: inline; padding: 0 4px; }
@@ -359,18 +390,23 @@
         
         .progress-bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 8px;}
         body.dark-mode .progress-bar-bg { background: #3f3f46; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--script-color)); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .past { opacity: 0.5; }
+        .past .weekly-task { text-decoration: line-through; }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1023px) {
             .dashboard-grid, .standard-grid, .selfcare-grid { grid-template-columns: repeat(2, 1fr) !important; }
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
             .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } 
             #cal-dashboard-container { grid-column: span 2 !important; }
         }
+        @media (min-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 0.8fr 2fr 1.2fr; }
+        }
         @media (max-width: 768px) {
             .dashboard-grid, .standard-grid, .top-gallery, .selfcare-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important;}
             .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; width: 100% !important; }
             #cal-dashboard-container { grid-column: span 1 !important; }
+            #weekly-agenda { overflow-x: auto; }
             .notion-table thead { display: none; }
             .notion-table, .notion-table tbody, .notion-table tr, .notion-table td { display: block; width: 100%; box-sizing: border-box;}
             .notion-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--panel-bg);}
@@ -693,40 +729,29 @@
             <input type='text' id='inbox-input' placeholder='✨ Anota algo rápido y presiona Enter...' style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-dark); outline: none; font-family: inherit; font-size: 1em;" onkeydown="if(event.key==='Enter') addInboxTask()">
         </div>
         <div class="dashboard-grid">
-            <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 15px;">
-                <div style="text-align: center; padding: 10px;">
-                    <div id="clock-widget"></div>
-                    <div id="lyric-quote"></div>
-                </div>
-                <div class="panel" style="flex:1;">
-                    <h2>Próximas Acciones</h2><div id="upcoming-tasks-container"></div>
-                </div>
-                <div class="panel" style="flex:1; display: flex; flex-direction: column;">
-                    <h2>Inbox</h2>
-                    <div id="inbox-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
-                </div>
+            <div class="panel" style="text-align: center; padding: 20px; grid-column: 1; grid-row: 1;">
+                <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 2em; color: #6b21a8;"></div>
+                <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 1em; color: #6b21a8; margin-top: 10px;"></div>
             </div>
             
-            <div class="panel span-col-1 span-row-2">
-                <div class="panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                        <div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;">
-                            <h2 style="margin:0; background:transparent; padding:0; border:none;">Calendario</h2>
-                            <div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;">
-                                <button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button>
-                                <span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span>
-                                <button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <button id="btn-quick-kanban" class="add-small-btn" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; padding: 0; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onclick="openFocusKanban(); event.stopPropagation();" title="Vista de Enfoque Kanban">◫</button>
-                            <span style="font-size:0.8em; color:var(--accent); font-weight:500;">⤢ Ver</span>
-                        </div>
-                    </div>
-                    <div class="calendar-grid" id="cal-dashboard" style="gap:3px;"></div>
-                </div>
+            <div class="panel" style="padding: 20px; text-align: center; grid-column: 1; grid-row: 2;">
+                <div id="lyric-quote"></div>
             </div>
             
+            <div class="panel" style="grid-column: 2; grid-row: 1 / span 2;">
+<div class="panel" style="grid-column: 2; grid-row: 1 / span 2;">
+                <h2>Agenda Semanal</h2>
+                <div id="weekly-agenda"></div>
+                </div>
+
+<div class="panel" style="grid-column: 3; grid-row: 1 / span 2;">
+    <h2>Kanban General</h2>
+    <div class="kanban" id="dashboard-kanban">
+        <div class="kanban-col" id="dashboard-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To Do</h3></div>
+        <div class="kanban-col" id="dashboard-doing" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Doing</h3></div>
+        <div class="kanban-col" id="dashboard-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Done</h3></div>
+    </div>
+</div>
             <div class="panel span-col-1 span-row-1" style="display: flex; flex-direction: column;">
                 <h2>Notas Rápidas</h2>
                 <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
@@ -747,6 +772,16 @@
                     <button class="add-small-btn" onclick="addDashLink()" style="background:var(--accent); color:white; border:none;">Agregar Link</button>
                 </div>
                 <div id="dash-links-list" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+
+            <div class="panel" style="grid-column: 1 / -1;">
+                <h2>Calendario de Comidas</h2>
+                <div id="meal-calendar" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; font-size: 0.9em;"></div>
+            </div>
+
+            <div class="panel" style="grid-column: 1 / -1;">
+                <h2>Calendario Global de Símbolos</h2>
+                <div id="cal-global" class="calendar-grid"></div>
             </div>
         </div>
     </div>
@@ -2301,9 +2336,65 @@
         function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
         
         function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        
+        function renderDashboardKanban() { ['dashboard-todo', 'dashboard-doing', 'dashboard-done'].forEach(colId => { let s = colId.replace('dashboard-', ''); let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To Do':(s==='doing'?'Doing':'Done')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task' && (!t.date || t.date === '')).forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        
+        function renderWeeklyAgenda() {
+            const container = document.getElementById('weekly-agenda');
+            if(!container) return;
+            container.innerHTML = '';
+            let today = new Date();
+            let startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Monday
+            for(let i = 0; i < 7; i++) {
+                let day = new Date(startOfWeek);
+                day.setDate(startOfWeek.getDate() + i);
+                let dayStr = day.toISOString().split('T')[0];
+                let isPast = day < new Date(new Date().toDateString());
+                let tasks = appState.tasks.filter(t => (t.category === 'escolar' || t.category === 'profesional') && t.date === dayStr);
+                let dayName = day.toLocaleDateString('es-ES', { weekday: 'short' });
+                let dayNum = day.getDate();
+                let html = `<div class="weekly-day ${isPast ? 'past' : ''}" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--panel-bg);"><h4 style="margin: 0 0 8px 0; font-size: 0.9em; text-align: center;">${dayName} ${dayNum}</h4>`;
+                tasks.forEach(t => {
+                    if(isPast && t.status !== 'done') {
+                        t.status = 'done';
+                        saveToMemory();
+                    }
+                    html += `<div class="weekly-task" style="margin-bottom: 4px;"><input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onchange="updateTaskStatus(${t.id}, this.checked)" style="margin-right: 4px;">${t.title}</div>`;
+                });
+                html += '</div>';
+                container.innerHTML += html;
+            }
+        }
+
+        function renderMealCalendar() {
+            const container = document.getElementById('meal-calendar');
+            if(!container) return;
+            appState.meals = appState.meals || {};
+            let days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+            let meals = ['Desayuno', 'Comida', 'Cena'];
+            let html = '<div style="grid-column: 1; font-weight: bold;">Comida</div>';
+            days.forEach(d => html += `<div style="text-align: center; font-weight: bold;">${d}</div>`);
+            meals.forEach(meal => {
+                html += `<div style="font-weight: bold;">${meal}</div>`;
+                days.forEach((d, i) => {
+                    let key = `${i}-${meal.toLowerCase()}`;
+                    let value = appState.meals[key] || '';
+                    html += `<input type="text" value="${value}" onchange="updateMeal('${key}', this.value)" style="width: 100%; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-dark); font-size: 0.8em;">`;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        function updateMeal(key, value) {
+            appState.meals[key] = value;
+            saveToMemory();
+        }
+        
+        function updateTaskStatus(taskId, checked) { let task = appState.tasks.find(t => t.id === taskId); if(task) { task.status = checked ? 'done' : 'todo'; saveToMemory(); renderAll(); } }
         function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
         function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskDetails(${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
-        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
+        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let statusMap = { 'todo': 'todo', 'in-progress': 'in-progress', 'done': 'done', 'dashboard-todo': 'todo', 'dashboard-doing': 'in-progress', 'dashboard-done': 'done', 'focus-todo': 'todo', 'focus-in-progress': 'in-progress', 'focus-done': 'done' }; let status = statusMap[targetId] || targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
         function safeRender(fn) { try { fn(); } catch(e) { console.error("Error visual en: " + fn.name, e); } }
@@ -2323,6 +2414,9 @@
             safeRender(() => renderModule('profesional', 'render-profesional')); 
             safeRender(renderKanban); 
             safeRender(renderFocusKanban); 
+            safeRender(renderDashboardKanban);
+            safeRender(renderWeeklyAgenda); 
+            safeRender(renderMealCalendar);
             safeRender(renderMasterEvents); 
             safeRender(renderUpcomingTasks); 
             safeRender(renderMasterView); 
@@ -2331,6 +2425,7 @@
             safeRender(() => renderCalendar('cal-personal', 'personal')); 
             safeRender(() => renderCalendar('cal-escolar', 'escolar')); 
             safeRender(() => renderCalendar('cal-profesional', 'profesional')); 
+            safeRender(() => renderCalendar('cal-global', 'all')); 
             safeRender(updateMonthLabels);
             safeRender(updateClock);
             safeRender(mostrarFraseAleatoria);
@@ -2380,6 +2475,8 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             document.getElementById('clock-widget').textContent = timeString;
+            const dateString = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('date-widget').textContent = dateString;
         }
 
         function mostrarFraseAleatoria() {
