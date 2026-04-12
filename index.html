@@ -240,9 +240,9 @@
         .new-card { display:flex; align-items:center; justify-content:center; min-height:180px; background:transparent; border: 2px dashed var(--border-color); box-shadow:none; cursor:pointer; color:#888; font-weight:600; font-size:1.1em; transition: 0.2s; border-radius: 10px;}
 
         /* CALENDARIOS */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; font-family: 'Inter', sans-serif;}
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; font-family: 'Inter', sans-serif; width: 100%; box-sizing: border-box;}
         .day-name { font-size: 0.75em; font-weight: 600; color: #666; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;}
-        .cal-day { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 6px; min-height: 50px; padding: 5px; display: flex; flex-direction: column; transition: 0.2s;}
+        .cal-day { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 6px; min-height: 50px; padding: 5px; display: flex; flex-direction: column; transition: 0.2s; min-width: 0;}
         .cal-day:hover { border-color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.05); transform: translateY(-2px);}
         .cal-day.empty { background: transparent; border: none; box-shadow: none; transform: none;}
         .cal-day.today { border: 1px solid var(--accent); background: rgba(147, 112, 219, 0.05); }
@@ -404,6 +404,10 @@
             .modal h2 { font-size: 1.3em; }
             
             .recipe-kanban { grid-template-columns: 1fr; }
+
+            /* Calendario móvil */
+            #cal-full .cal-day { aspect-ratio: 1 / 1; padding: 2px; min-height: auto; }
+            .full-cal-task { font-size: 0; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin: 2px; }
         }
 
 .kitchen-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
