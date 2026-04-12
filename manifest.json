@@ -11,5 +11,28 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "✨ Anotar Rápido",
+      "short_name": "Anotar",
+      "description": "Abrir el capturador rápido de tareas",
+      "url": "./#dashboard",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2613/2613149.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "📅 Calendario Maestro",
+      "short_name": "Calendario",
+      "description": "Ver todos mis eventos del mes",
+      "url": "./#full-calendar-view",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2613/2613149.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "🌸 Mi Selfcare",
+      "short_name": "Selfcare",
+      "description": "Ir directo a mis rutinas de cuidado",
+      "url": "./#subpage-Selfcare",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/512/2613/2613149.png", "sizes": "512x512" }]
+    }
   ]
 }
