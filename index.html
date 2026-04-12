@@ -85,7 +85,16 @@
         .widget-iframe { width: 100%; border: none; border-radius: 4px; border: 1px solid var(--border-color);}
 
         #main-top-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); transition: padding 0.3s ease; }
-        #main-top-header.header-compact { padding: 8px 30px; }
+        #main-top-header.header-compact { padding: 5px 20px; min-height: 50px; }
+        #main-top-header.header-compact .bc-main,
+        #main-top-header.header-compact .welcome-script { display: none; }
+        #main-top-header.header-compact .nav-pill .text { display: none; }
+        #main-top-header.header-compact .nav-pill { width: 38px; height: 38px; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2em; border: 1px solid transparent; }
+        #main-top-header.header-compact #btn-home { display: flex !important; }
+        #main-top-header.header-compact .bc-sep,
+        #main-top-header.header-compact .bc-cat,
+        #main-top-header.header-compact .bc-sub { font-size: 0.8em; }
+        #main-top-header.header-compact .header-title-group { transform: scale(0.9); transform-origin: left center; transition: 0.3s ease; }
         .header-nav-pills { display: flex; gap: 12px; align-items: center; }
         .nav-pill { background: rgba(57, 69, 85, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); color: #ffffff; padding: 8px 20px; border-radius: 30px; font-family: 'Playfair Display', serif; font-size: 1.05em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .nav-pill:hover { background: rgba(57, 69, 85, 0.85); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
@@ -415,9 +424,9 @@
             </div>
         </div>
         <div class="header-nav-pills">
-            <button class="nav-pill" id="nav-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])">✧ Personal</button>
-            <button class="nav-pill" id="nav-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])">◈ Académico</button>
-            <button class="nav-pill" id="nav-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])">⌬ Profesional</button>
+            <button class="nav-pill" id="nav-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])"><span class="icon">✧</span><span class="text"> Personal</span></button>
+            <button class="nav-pill" id="nav-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])"><span class="icon">⌬</span><span class="text"> Académico</span></button>
+            <button class="nav-pill" id="nav-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])"><span class="icon">◈</span><span class="text"> Profesional</span></button>
         </div>
     </header>
 
@@ -652,7 +661,14 @@
             <div class="panel span-col-2 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent); font-size: 1.1em;">Calendario</h2>
+                        <div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;">
+                            <h2 style="margin:0; background:transparent; padding:0; border:none;">Calendario</h2>
+                            <div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;">
+                                <button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button>
+                                <span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span>
+                                <button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button>
+                            </div>
+                        </div>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <button id="btn-quick-kanban" class="add-small-btn" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; padding: 0; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onclick="openFocusKanban(); event.stopPropagation();" title="Vista de Enfoque Kanban">◫</button>
                             <span style="font-size:0.8em; color:var(--accent); font-weight:500;">⤢ Ver</span>
@@ -686,7 +702,7 @@
         </div>
     </div>
 
-    <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><h2 style="margin:0; font-size: 2em; background:transparent; color:var(--text-dark); padding:0;">Calendario Maestro</h2><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
+    <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background:transparent; padding:0; border:none;">Calendario Maestro</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
     <div id="kanban-general" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
     
     <div id="focus-kanban-view" class="view-section">
@@ -735,7 +751,7 @@
     <div id="mod-escolar" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
+                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><button class="edit-btn" onclick="openCategoryConfig('escolar')" title="Configurar Etiquetas">⚙️</button></div>
@@ -747,7 +763,7 @@
     <div id="mod-profesional" class="view-section">
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
+                <div class="panel"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); padding:0; border:none;">Calendario</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
             </div>
             <div class="grid-col-2">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><button class="edit-btn" onclick="openCategoryConfig('profesional')" title="Configurar Etiquetas">⚙️</button></div>
@@ -792,6 +808,8 @@
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = []; let currentModalPriority = 'medium';
         let monthOffset = 0;
+        function prevMonth() { monthOffset--; renderAll(); }
+        function nextMonth() { monthOffset++; renderAll(); }
 
         let defaultCategories = { 
             personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
@@ -1396,7 +1414,10 @@
         // --- CALENDARIOS, GALERÍA Y FILTROS ---
         function getCalendarMonthDate() { return new Date(2026, 3 + monthOffset, 1); }
         function getMonthLabel() { let date = getCalendarMonthDate(); return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }); }
-        function updateMonthLabels() { document.querySelectorAll('#month-label').forEach(el => el.textContent = getMonthLabel()); }
+        function updateMonthLabels() { 
+            let label = getMonthLabel();
+            document.querySelectorAll('.month-display').forEach(el => el.textContent = label); 
+        }
 
         function renderCalendar(containerId, filterCat) { 
             const calGrid = document.getElementById(containerId); 
@@ -1407,7 +1428,7 @@
             const month = monthDate.getMonth();
             const totalDays = new Date(year, month + 1, 0).getDate();
             const startWeekday = new Date(year, month, 1).getDay();
-            const iconMap = { 'personal': '✧', 'escolar': '◈', 'profesional': '⌬', 'default': '•' };
+            const iconMap = { 'personal': '✧', 'escolar': '⌬', 'profesional': '◈', 'default': '•' };
             calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
             for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
             for(let day=1; day<=totalDays; day++) { 
@@ -1422,7 +1443,7 @@
                 if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
                     let taskBars = dayTasks.map(t => { 
                         if (containerId === 'cal-dashboard') {
-                            let sym = t.category === 'personal' ? '✧' : t.category === 'escolar' ? '◈' : t.category === 'profesional' ? '⌬' : '✦';
+                            let sym = t.category === 'personal' ? '✧' : t.category === 'escolar' ? '⌬' : t.category === 'profesional' ? '◈' : '✦';
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
@@ -1816,7 +1837,7 @@
             document.getElementById('task-details-title').textContent = task.title;
             document.getElementById('task-details-title').style.color = getCatColor(task.category);
             
-            let scopeSymbol = task.category === 'personal' ? '✧' : task.category === 'escolar' ? '◈' : '⌬';
+            let scopeSymbol = task.category === 'personal' ? '✧' : task.category === 'escolar' ? '⌬' : '◈';
             document.getElementById('task-details-scope').textContent = `${scopeSymbol} ${getCatLabel(task.category)} - ${task.subcategory}`;
             
             let scheduleText = '';
