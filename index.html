@@ -67,33 +67,108 @@
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        #dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px 20px;
+            box-sizing: border-box;
+        }
+        #quick-capture-area {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255, 245, 243, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #quick-capture-area input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 1em;
+            padding: 12px 14px;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr;
             gap: 20px;
-            padding: 25px;
             width: 100%;
-            max-width: 100%;
-            margin: auto;
-            background-color: rgba(255, 255, 255, 0.35);
+            box-sizing: border-box;
+            grid-template-columns: 1fr;
+        }
+        .dashboard-grid .col-left,
+        .dashboard-grid .col-center,
+        .dashboard-grid .col-right,
+        #bottom-full-width {
+            display: grid;
+            gap: 20px;
+        }
+        .col-left,
+        .col-center,
+        .col-right,
+        #bottom-full-width .panel {
+            overflow: hidden;
+        }
+        .panel {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.8);
+            padding: 20px;
+            min-height: 200px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+        .panel h2 {
+            color: #4a148c;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.5em;
+        }
+        .panel small {
+            color: #4a148c;
+        }
+        #weekly-agenda {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(130px, 1fr));
+            gap: 12px;
+            overflow-x: hidden;
+        }
+        #bottom-full-width {
+            width: 100%;
+        }
+        #bottom-full-width .panel {
+            width: 100%;
+        }
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+        @media (max-width: 1023px) {
+            #weekly-agenda {
+                overflow-x: auto;
+            }
+        }
+        #main-top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            background: rgba(255,255,255,0.9);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px;
-            box-sizing: border-box;
-            align-items: start;
         }
-        #quick-capture-section { grid-column: 1 / -1; margin-bottom: 20px; }
-        #clock-widget { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 2em; text-align: center; }
-        #lyric-quote { font-family: 'Playfair Display', serif; font-size: 1em; text-align: center; margin-top: 15px; color: var(--script-color); }
-        #cal-dashboard { padding: 8px; }
-        #cal-dashboard td { padding: 4px 2px; font-size: 0.75em; }
-        #dash-links-list { display: flex; flex-wrap: wrap; gap: 10px; }
-        .grid-col-1 { grid-column: span 1; } .grid-col-2 { grid-column: span 2; } .grid-col-3 { grid-column: span 3; } .grid-col-4 { grid-column: span 4; }
-        .span-col-1 { grid-column: span 1; }
-        .span-col-2 { grid-column: span 2; }
-        .span-row-1 { grid-row: span 1; }
-        .span-row-2 { grid-row: span 2; }
-        .standard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; max-width: 1200px; margin: auto; }
         
         .panel {
             background: rgba(255, 255, 255, 0.4);
@@ -726,20 +801,32 @@
     </div>
 
     <div id="dashboard" class="view-section active">
-        <div id="quick-capture-section" class="panel">
-            <input type='text' id='inbox-input' placeholder='✨ Anota algo rápido y presiona Enter...' style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-dark); outline: none; font-family: inherit; font-size: 1em;" onkeydown="if(event.key==='Enter') addInboxTask()">
-        </div>
-        <div class="dashboard-grid">
-            <div class="panel" style="display: flex; flex-direction: column; gap: 18px; text-align: center;">
-                <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 2.1em; color: #6b21a8;"></div>
-                <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 1em; color: #6b21a8; margin-top: 0;"></div>
-                <div id="lyric-quote" style="margin-top: 12px;"></div>
+        <div id="dashboard-container">
+            <div id="quick-capture-area">
+                <input type='text' id='inbox-input' placeholder='✨ Anota algo rápido y presiona Enter...' onkeydown="if(event.key==='Enter') addInboxTask()">
             </div>
-            <div style="grid-column: 2; display: flex; flex-direction: column; gap: 20px;">
-                <div class="panel">
-                    <h2>Agenda Semanal</h2>
-                    <div id="weekly-agenda"></div>
+            <div class="dashboard-grid">
+                <div class="col-left">
+                    <div class="panel" style="display:flex; flex-direction:column; gap: 16px; align-items:center; text-align:center;">
+                        <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 2.3em; color: #4a148c;"></div>
+                        <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 1em; color: #4a148c;"></div>
+                        <div id="lyric-quote" style="font-size: 1em; color: #4a148c; line-height: 1.5; padding: 0 5px;"></div>
+                    </div>
                 </div>
+                <div class="col-center">
+                    <div class="panel">
+                        <h2>Agenda Semanal</h2>
+                        <div id="weekly-agenda"></div>
+                    </div>
+                </div>
+                <div class="col-right">
+                    <div class="panel">
+                        <h2>Próximas Acciones</h2>
+                        <div id="master-events-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="bottom-full-width">
                 <div class="panel">
                     <h2>Kanban General</h2>
                     <div class="kanban" id="dashboard-kanban">
@@ -748,18 +835,14 @@
                         <div class="kanban-col" id="dashboard-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Done</h3></div>
                     </div>
                 </div>
-            </div>
-            <div class="panel">
-                <h2>Próximas Acciones</h2>
-                <div id="master-events-list"></div>
-            </div>
-            <div class="panel" style="grid-column: 1 / -1;">
-                <h2>Calendario de Comidas</h2>
-                <div id="meal-calendar"></div>
-            </div>
-            <div class="panel" style="grid-column: 1 / -1;">
-                <h2>Calendario Global de Símbolos</h2>
-                <div id="cal-global" class="calendar-grid"></div>
+                <div class="panel">
+                    <h2>Calendario de Comidas</h2>
+                    <div id="meal-calendar"></div>
+                </div>
+                <div class="panel">
+                    <h2>Calendario Global de Símbolos</h2>
+                    <div id="cal-global" class="calendar-grid"></div>
+                </div>
             </div>
         </div>
     </div>
