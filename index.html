@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Planner</title>
+    <title>Lucía · Life Planner ✦</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -22,9 +22,14 @@
             --accent: #C8A2A1; --accent-hover: #7b68ee; --script-color: #da70d6; 
             --panel-bg: rgba(255, 255, 255, 0.65); --border-color: rgba(255, 255, 255, 0.5); --hover-bg: #fafafa;
             
-            /* PALETA DE LA USUARIA */
+            /* PALETA DE LUCÍA */
             --color-p1: #F6D7DC; --color-p2: #DAC0C1; --color-p3: #C8A2A1; 
             --color-p4: #394555; --color-p5: #797A7C; --color-p6: #3B1723;
+
+            /* COLORES POR MÓDULO */
+            --cat-personal: #f9c6d0; --cat-escolar: #c8b4e8; --cat-profesional: #a8c8e8;
+            --cat-selfcare: #f6d7dc; --cat-recetas: #fde8c8; --cat-mindfulness: #d4e8d4;
+            --cat-enms: #c8dce8; --cat-japon: #e8d4c8; --cat-maestria: #d4c8e8;
         }
 
         body.dark-mode {
@@ -134,13 +139,129 @@
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; font-weight: 300; transition: 0.2s; line-height: 1;}
         .close-modal:hover { color: var(--accent); transform: rotate(90deg);}
 
-        /* SCROLLBAR PERSONALIZADO */
+        /* ── AMBIENT BACKGROUNDS POR MÓDULO ── */
+        #mod-personal { background: radial-gradient(ellipse at 20% 30%, rgba(246,215,220,0.35) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(218,192,193,0.25) 0%, transparent 55%); }
+        #mod-escolar  { background: radial-gradient(ellipse at 15% 25%, rgba(200,180,232,0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 75%, rgba(147,112,219,0.15) 0%, transparent 50%); }
+        #mod-profesional { background: radial-gradient(ellipse at 10% 20%, rgba(168,200,232,0.3) 0%, transparent 55%), radial-gradient(ellipse at 90% 80%, rgba(57,69,85,0.1) 0%, transparent 50%); }
+        #subpage-view { transition: background 0.6s ease; }
+
+        /* ── TARJETAS DE MÓDULO MEJORADAS ── */
+        .gallery-card { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s, border-color 0.3s; }
+        .gallery-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 45px rgba(0,0,0,0.12); }
+        .gallery-cover { transition: transform 0.5s ease, filter 0.3s; }
+        .gallery-card:hover .gallery-cover { transform: scale(1.08); filter: brightness(1.05) saturate(1.1); }
+
+        /* ── TASK CARDS MEJORADAS ── */
+        .task-card { transition: transform 0.25s ease, box-shadow 0.25s, border-color 0.2s; }
+        .task-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+        /* ── EVENT ITEMS ── */
+        .event-item { transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s; }
+        .event-item:hover { transform: translateX(5px); box-shadow: 3px 0 12px rgba(200,162,161,0.2); }
+
+        /* ── PANEL GLOW ON HOVER ── */
+        .panel { transition: box-shadow 0.3s ease, border-color 0.3s; }
+        .panel:hover { box-shadow: 0 35px 90px rgba(0,0,0,0.14); }
+
+        /* ── QUOTE BOX ── */
+        .quote-box { background: linear-gradient(135deg, rgba(246,215,220,0.5), rgba(218,192,193,0.3)); border-left: 3px solid var(--color-p3); border-radius: 8px; padding: 14px 18px; font-style: italic; font-size: 0.9em; color: var(--text-dark); line-height: 1.6; }
+
+        /* ── HABIT ITEM ── */
+        .habit-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); transition: 0.2s; }
+        .habit-item:hover { background: rgba(255,255,255,0.8); transform: translateX(3px); }
+        .habit-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+
+        /* ── PRIORITY PILLS ── */
+        .prio-high { background: rgba(239,68,68,0.12); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+        .prio-med  { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.3); }
+        .prio-low  { background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.3); }
+
+        /* ── MÓDULO PERSONAL: SELFCARE BENTO ── */
+        .bento-fitness { background: linear-gradient(135deg, rgba(246,215,220,0.6), rgba(218,192,193,0.4)); border: 1px solid rgba(255,255,255,0.7); }
+        .bento-bodycare { background: linear-gradient(135deg, rgba(255,240,245,0.7), rgba(246,215,220,0.4)); border: 1px solid rgba(255,255,255,0.7); }
+        .bento-tracker  { background: linear-gradient(135deg, rgba(218,192,193,0.4), rgba(200,162,161,0.2)); border: 1px solid rgba(255,255,255,0.7); }
+
+        /* ── MÓDULO ACADÉMICO: COLORES ── */
+        .escolar-accent { color: #7b5ea7; }
+        .escolar-bg { background: linear-gradient(135deg, rgba(200,180,232,0.3), rgba(147,112,219,0.1)); }
+
+        /* ── MÓDULO PROFESIONAL: COLORES ── */
+        .profesional-accent { color: #2d6a9f; }
+        .profesional-bg { background: linear-gradient(135deg, rgba(168,200,232,0.3), rgba(57,69,85,0.08)); }
+
+        /* ── ANIMACIONES EXTRA ── */
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        @keyframes pop-effect { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+        .pop-effect { animation: pop-effect 0.4s ease; }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+
+        /* ── DARK MODE REFINEMENTS ── */
+        body.dark-mode .bento-widget { background: rgba(40,40,50,0.85); border-color: rgba(255,255,255,0.08); }
+        body.dark-mode .gallery-card { background: rgba(34,34,40,0.9); }
+        body.dark-mode .task-card { background: rgba(34,34,40,0.85); }
+        body.dark-mode .quote-box { background: rgba(246,215,220,0.08); }
+        body.dark-mode .habit-item { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+
+        /* ── DARK MODE TOGGLE BTN ── */
+        #dark-mode-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); border-radius: 20px; padding: 5px 12px; font-size: 0.8em; cursor: pointer; transition: 0.2s; font-family: 'Inter', sans-serif; }
+        #dark-mode-btn:hover { background: var(--hover-bg); border-color: var(--accent); }
+
+        /* ── MONTH NAV ── */
+        .month-nav { display: flex; align-items: center; gap: 10px; }
+        .month-nav button { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 0.85em; transition: 0.2s; }
+        .month-nav button:hover { border-color: var(--accent); color: var(--accent); }
+        #month-label { font-size: 0.9em; font-weight: 600; color: var(--text-dark); min-width: 130px; text-align: center; text-transform: capitalize; }
+
+        /* ── RECETAS WIDGET ── */
+        #recetas-widget { background: linear-gradient(135deg, rgba(253,232,200,0.5), rgba(246,215,220,0.3)); }
+
+        /* ── SUBPAGE COVER OVERLAY ── */
+        .page-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.35) 100%); border-radius: 8px 8px 0 0; pointer-events: none; }
+
+        /* ── SCROLLBAR ── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
 
-        /* CONFIRM MODAL PERSONALIZADO */
+        @media (max-width: 1024px) {
+            .dashboard-grid, .standard-grid, .selfcare-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
+            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } 
+            #cal-dashboard-container { grid-column: span 2 !important; }
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid, .standard-grid, .top-gallery, .selfcare-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important;}
+            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; width: 100% !important; }
+            #cal-dashboard-container { grid-column: span 1 !important; }
+            .notion-table thead { display: none; }
+            .notion-table, .notion-table tbody, .notion-table tr, .notion-table td { display: block; width: 100%; box-sizing: border-box;}
+            .notion-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--panel-bg);}
+            .notion-table td { padding: 8px 5px; border: none; display: flex; align-items: center; gap: 10px;}
+            .notion-table td::before { content: attr(data-label); font-weight: 600; color: #888; width: 90px; flex-shrink: 0; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.5px;}
+            .notion-table .title-cell::before { content: none; }
+            .bc-main { font-size: 1.8em; }
+            .bc-cat { font-size: 1.4em; }
+            .bc-sub { font-size: 1.2em; }
+            .welcome-script { font-size: 1.5em; }
+        }
+        @media (max-width: 600px) {
+            .menu-btn { width: 45px; height: 45px; bottom: 20px; left: 20px; font-size: 16px; }
+            .fab { width: 45px; height: 45px; bottom: 20px; right: 20px; font-size: 20px; }
+            .top-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .grid-col-1, .grid-col-2, .grid-col-4 { grid-column: span 1; }
+            .header-top-row { gap: 8px; }
+            .header-right { justify-content: flex-start; max-width: 100%; }
+            .header-quote { text-align: left; font-size: 1em; }
+            .bc-main { font-size: 1.5em; }
+            .bc-cat { font-size: 1.1em; }
+            .bc-sub { font-size: 1em; }
+            .modal { padding: 20px; width: 95%; }
+            .modal h2 { font-size: 1.3em; }
+            .recipe-kanban { grid-template-columns: 1fr; }
+        }
         #confirmModalOverlay .modal { max-width: 420px; padding: 25px 25px 20px; border-radius: 12px; width: 90%; }
         #confirmModalOverlay .modal h2 { font-size: 1.7em; margin-bottom: 12px; font-family: 'Playfair Display', serif; }
         #confirmModalOverlay .confirm-message { color: var(--text-dark); font-size: 1em; line-height: 1.6; margin-bottom: 20px; }
@@ -336,51 +457,6 @@
         .progress-bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 10px; overflow: hidden; margin-top: 8px;}
         body.dark-mode .progress-bar-bg { background: #3f3f46; }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--script-color)); transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        @media (max-width: 1024px) {
-            .dashboard-grid, .standard-grid, .selfcare-grid { grid-template-columns: repeat(2, 1fr) !important; }
-            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; }
-            .top-gallery { grid-template-columns: repeat(3, 1fr) !important; } 
-            #cal-dashboard-container { grid-column: span 2 !important; }
-        }
-        @media (max-width: 768px) {
-            .dashboard-grid, .standard-grid, .top-gallery, .selfcare-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important;}
-            .grid-col-1, .grid-col-2, .grid-col-3, .grid-col-4 { grid-column: span 1 !important; width: 100% !important; }
-            #cal-dashboard-container { grid-column: span 1 !important; }
-            .notion-table thead { display: none; }
-            .notion-table, .notion-table tbody, .notion-table tr, .notion-table td { display: block; width: 100%; box-sizing: border-box;}
-            .notion-table tr { margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--panel-bg);}
-            .notion-table td { padding: 8px 5px; border: none; display: flex; align-items: center; gap: 10px;}
-            .notion-table td::before { content: attr(data-label); font-weight: 600; color: #888; width: 90px; flex-shrink: 0; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.5px;}
-            .notion-table .title-cell::before { content: none; }
-            
-            /* Ajustes cabecera para móvil */
-            .bc-main { font-size: 1.8em; }
-            .bc-cat { font-size: 1.4em; }
-            .bc-sub { font-size: 1.2em; }
-            .welcome-script { font-size: 1.5em; }
-        }
-
-        @media (max-width: 600px) {
-            .menu-btn { width: 45px; height: 45px; bottom: 20px; left: 20px; font-size: 16px; }
-            .fab { width: 45px; height: 45px; bottom: 20px; right: 20px; font-size: 20px; }
-            
-            .top-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .grid-col-1, .grid-col-2, .grid-col-4 { grid-column: span 1; }
-            
-            .header-top-row { gap: 8px; }
-            .header-right { justify-content: flex-start; max-width: 100%; }
-            .header-quote { text-align: left; font-size: 1em; }
-            .bc-main { font-size: 1.5em; }
-            .bc-cat { font-size: 1.1em; }
-            .bc-sub { font-size: 1em; }
-            
-            .modal { padding: 20px; width: 95%; }
-            .modal h2 { font-size: 1.3em; }
-            
-            .recipe-kanban { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
@@ -406,17 +482,27 @@
     <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
     <nav id="main-nav">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <h2 style="font-family:'Playfair Display', serif; margin:0; color:var(--text-dark);">Menú</h2>
+            <h2 style="font-family:'Playfair Display', serif; margin:0; color:var(--text-dark);">✦ Lucía</h2>
             <button onclick="toggleMenu()" style="background:transparent; border:none; font-size:1.5em; padding:0; margin:0; width:auto; color:#aaa;">×</button>
         </div>
+        <div style="font-size:0.75em; color:#aaa; text-transform:uppercase; letter-spacing:0.15em; padding: 0 5px; margin-bottom:8px;">Vistas</div>
         <button class="active" onclick="switchView('dashboard', this); toggleMenu()">🏠 Dashboard</button>
         <button onclick="switchView('kanban-general', this); toggleMenu()">📌 Kanban Global</button>
         <button onclick="switchView('full-calendar-view', this); toggleMenu()">📅 Calendario</button>
+        <div style="font-size:0.75em; color:#aaa; text-transform:uppercase; letter-spacing:0.15em; padding: 0 5px; margin: 15px 0 8px;">Módulos</div>
         <button onclick="switchView('mod-personal', this); toggleMenu()">🌸 Personal</button>
-        <button onclick="switchView('mod-escolar', this); toggleMenu()">Académico</button>
-        <button onclick="switchView('mod-profesional', this); toggleMenu()">Profesional</button>
-        <button onclick="switchView('master-view', this); toggleMenu()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🔍 Buscador Maestro</button>
-        <button onclick="changeGlobalBackground()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🖼️ Cambiar Fondo</button>
+        <button onclick="switchView('mod-escolar', this); toggleMenu()">📚 Académico</button>
+        <button onclick="switchView('mod-profesional', this); toggleMenu()">⌬ Profesional</button>
+        <div style="border-top:1px dashed var(--border-color); margin: 15px 0;"></div>
+        <button onclick="switchView('master-view', this); toggleMenu()">🔍 Buscador Maestro</button>
+        <button onclick="changeGlobalBackground()">🖼️ Cambiar Fondo</button>
+        <div style="margin-top:auto; padding-top:20px; border-top:1px dashed var(--border-color);">
+            <div class="month-nav" style="justify-content:center;">
+                <button onclick="monthOffset--; renderAll()">‹</button>
+                <span id="month-label" style="font-size:0.85em;"></span>
+                <button onclick="monthOffset++; renderAll()">›</button>
+            </div>
+        </div>
     </nav>
 
     <header>
@@ -437,6 +523,10 @@
                     <button class="header-tab" id="tab-profesional" data-icon="💼" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5]); updateHeaderTabs('tab-profesional')"><span class="tab-label">Profesional</span></button>
                 </div>
             </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; margin-left:auto;">
+            <span id="header-greeting" style="font-family:'Great Vibes',cursive; color:var(--script-color); font-size:1.2em; white-space:nowrap;"></span>
+            <button id="dark-mode-btn" onclick="toggleDarkMode()" title="Cambiar tema">🌙</button>
         </div>
     </header>
 
@@ -648,20 +738,26 @@
     <div id="dashboard" class="view-section active">
         <div class="dashboard-grid">
             <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
-                    <h2>Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
-                    <div style="margin-top: 25px;"></div>
-                    <h2>Ambiente</h2><iframe style="border-radius:4px; border: 1px solid var(--border-color); margin-bottom: 20px;" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                    <iframe src="https://notion-quotes-asnhvg7g6-hiscodesmells.vercel.app/quote?theme=light&fontSize=heading-2&quoteType=random" width="100%" height="150" style="border:none; border-radius:6px;"></iframe>
+                    <h2>🕐 Reloj</h2><iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" class="widget-iframe" style="height: 150px;"></iframe>
+                    <div style="margin-top: 5px;">
+                        <h2>🎵 Ambiente</h2>
+                        <iframe style="border-radius:12px; border: none; margin-bottom: 12px;" src="https://open.spotify.com/embed/playlist/1ryVSBDTaQNX0DVjVpwcNq" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                    </div>
+                    <div class="quote-box" id="daily-quote-box" style="margin-top:auto;"></div>
             </div>
             
             <div class="panel span-col-1 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="panel" style="flex:1;">
-                    <h2>Próximas Acciones</h2><div id="upcoming-tasks-container"></div>
+                <div class="panel" style="flex:1; background: linear-gradient(135deg, rgba(246,215,220,0.3), rgba(218,192,193,0.15));">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h2 style="margin:0;">📌 Próximas Acciones</h2>
+                        <button class="add-small-btn" onclick="openTaskModal()" style="background:var(--accent); color:white; border:none;">+ Nueva</button>
+                    </div>
+                    <div id="upcoming-tasks-container"></div>
                 </div>
                 <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
-                    <h2>Quick To-Do</h2>
+                    <h2>✅ Quick To-Do</h2>
                     <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                        <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
+                        <input type="text" id="quick-todo-input" placeholder="Ej. Mandar correo a la maestra..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; background:var(--bg-color); color:var(--text-dark); outline:none;" onkeydown="if(event.key==='Enter') addQuickTodo()">
                         <button class="add-small-btn" onclick="addQuickTodo()" style="background:var(--accent); color:white; border:none;">+</button>
                     </div>
                     <div id="quick-todo-list" style="flex: 1; overflow-y: auto; padding-right: 10px;"></div>
@@ -671,19 +767,21 @@
             <div class="panel span-col-2 span-row-2" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="panel" id="cal-dashboard-container" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 15px;" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])" onmouseover="this.style.borderColor='var(--accent)';" onmouseout="this.style.borderColor='var(--border-color)';">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent); font-size: 1.1em;">Calendario</h2>
+                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--accent); font-size: 1.1em;">📅 Calendario</h2>
                         <div style="display: flex; gap: 8px; align-items: center;">
+                            <button onclick="monthOffset--; renderAll(); event.stopPropagation();" style="background:transparent; border:1px solid var(--border-color); border-radius:4px; padding:2px 8px; cursor:pointer; color:var(--text-dark); font-size:0.85em;">‹</button>
+                            <span id="month-label" style="font-size:0.8em; color:var(--accent); font-weight:600; min-width:110px; text-align:center; text-transform:capitalize;"></span>
+                            <button onclick="monthOffset++; renderAll(); event.stopPropagation();" style="background:transparent; border:1px solid var(--border-color); border-radius:4px; padding:2px 8px; cursor:pointer; color:var(--text-dark); font-size:0.85em;">›</button>
                             <button id="btn-quick-kanban" class="add-small-btn" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; padding: 0; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;" onclick="openFocusKanban(); event.stopPropagation();" title="Vista de Enfoque Kanban">◫</button>
-                            <span style="font-size:0.8em; color:var(--accent); font-weight:500;">⤢ Ver</span>
                         </div>
                     </div>
                     <div class="calendar-grid" id="cal-dashboard" style="gap:3px;"></div>
                 </div>
-                <div class="panel" id="recetas-widget" style="flex:1;"></div>
+                <div class="panel" id="recetas-widget" style="flex:1; background: linear-gradient(135deg, rgba(253,232,200,0.4), rgba(246,215,220,0.25));"></div>
                 <div class="panel" style="height: 380px; display: flex; flex-direction: column;">
-                    <h2>Notas Rápidas</h2>
+                    <h2>📝 Notas Rápidas</h2>
                     <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
-                        <textarea id="quick-note-input" placeholder="Escribe una nota rápida..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
+                        <textarea id="quick-note-input" placeholder="Escribe una nota, idea o recordatorio..." style="width:100%; border:1px solid var(--border-color); border-radius:4px; padding:10px; font-family:inherit; background:var(--bg-color); color:var(--text-dark); resize:none; font-size:0.9em; box-sizing:border-box;" rows="3"></textarea>
                         <div style="display:flex; gap:10px;">
                             <input type="text" id="quick-note-img" placeholder="URL de imagen (opcional)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; box-sizing:border-box; background:var(--bg-color); color:var(--text-dark);">
                             <button class="add-small-btn" onclick="addQuickNote()" style="background:var(--accent); color:white; border:none;">Guardar</button>
@@ -694,9 +792,9 @@
             </div>
 
             <div class="panel span-col-2 span-row-1" id="dash-links-panel" style="flex:1;">
-                <h2>Archivos & Links</h2>
+                <h2>🔗 Archivos & Links Rápidos</h2>
                 <div style="display:flex; flex-direction:column; gap:8px; margin-bottom: 20px; padding: 15px; background: var(--hover-bg); border-radius: 6px; border: 1px dashed var(--border-color);">
-                    <input type="text" id="new-link-title" placeholder="Nombre (ej. Tesis)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
+                    <input type="text" id="new-link-title" placeholder="Nombre (ej. Tesis de Maestría)" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
                     <input type="text" id="new-link-url" placeholder="URL del link" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; font-size:0.85em; background:var(--bg-color); color:var(--text-dark);">
                     <button class="add-small-btn" onclick="addDashLink()" style="background:var(--accent); color:white; border:none;">Agregar Link</button>
                 </div>
@@ -705,7 +803,25 @@
         </div>
     </div>
 
-    <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><h2 style="margin:0; font-size: 2em; background:transparent; color:var(--text-dark); padding:0;">Calendario Maestro</h2><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
+    <div id="full-calendar-view" class="view-section">
+        <div class="standard-grid">
+            <div class="panel grid-col-3">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h2 style="margin:0; font-size: 2em; background:transparent; color:var(--text-dark); padding:0;">📅 Calendario Maestro</h2>
+                        <p style="margin:4px 0 0; color:#888; font-size:0.85em;">Todos tus eventos, tareas y rutinas en un solo lugar.</p>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button onclick="monthOffset--; renderAll();" style="background:transparent; border:1px solid var(--border-color); border-radius:6px; padding:6px 14px; cursor:pointer; color:var(--text-dark);">‹ Anterior</button>
+                        <span id="month-label" style="font-size:1em; font-weight:600; color:var(--accent); min-width:150px; text-align:center; text-transform:capitalize;"></span>
+                        <button onclick="monthOffset++; renderAll();" style="background:transparent; border:1px solid var(--border-color); border-radius:6px; padding:6px 14px; cursor:pointer; color:var(--text-dark);">Siguiente ›</button>
+                        <button class="add-small-btn" onclick="openTaskModal()" style="background:var(--accent); color:white; border:none;">+ Nuevo</button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="cal-full"></div>
+            </div>
+        </div>
+    </div>
     <div id="kanban-general" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
     
     <div id="focus-kanban-view" class="view-section">
@@ -729,47 +845,74 @@
     </div>
     
     <div id="mod-personal" class="view-section">
+        <div style="padding: 20px 0 10px; margin-bottom: 10px;">
+            <h1 style="font-family:'Playfair Display',serif; font-size:2.2em; color:var(--color-p6); margin:0;">🌸 Personal</h1>
+            <p style="color:#888; margin:4px 0 0; font-size:0.9em;">Tu espacio de bienestar, recetas, mindfulness y vida social.</p>
+        </div>
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel" id="habits-widget-container">
-                    <h2 style="margin:0; background: var(--cat-personal); color: var(--text-dark); margin-bottom: 15px;">Hábitos de Hoy</h2>
+                <div class="panel" id="habits-widget-container" style="background: linear-gradient(135deg, rgba(246,215,220,0.4), rgba(255,255,255,0.6));">
+                    <h2 style="margin:0; color: var(--color-p6); margin-bottom: 15px;">🌿 Hábitos de Hoy</h2>
                     <div id="personal-habits-summary"></div>
                     <button class="add-inline-btn" style="margin-top:15px;" onclick="openSubpage('personal', 'Selfcare')">Ir a Selfcare →</button>
                 </div>
                 <div class="panel clickable-panel" onclick="switchView('full-calendar-view', document.querySelectorAll('#main-nav button')[2])">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">Social & Cumpleaños</h2>
+                        <h2 style="margin:0; background:transparent; color:var(--text-dark); padding:0; border-bottom: 2px solid var(--cat-personal);">🎉 Social & Cumpleaños</h2>
                     </div>
-                    <button class="add-small-btn" onclick="event.stopPropagation(); openTaskModal('event', null, 'personal', 'Asuntos Sociales')" style="width:100%; border: 1px dashed var(--border-color); color:#888; margin-bottom:10px;">+ Añadir Cumpleaños/Salida</button>
+                    <button class="add-small-btn" onclick="event.stopPropagation(); openTaskModal('event', null, 'personal', 'Asuntos Sociales')" style="width:100%; border: 1px dashed var(--border-color); color:#888; margin-bottom:10px;">+ Añadir Cumpleaños / Salida</button>
                     <div class="calendar-grid" id="cal-personal" style="gap:2px;"></div>
                 </div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2><button class="edit-btn" onclick="openCategoryConfig('personal')" title="Configurar Etiquetas">⚙️</button></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;">
+                    <h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Módulos Personales</h2>
+                    <button class="edit-btn" onclick="openCategoryConfig('personal')" title="Configurar Etiquetas">⚙️ Configurar</button>
+                </div>
                 <div class="gallery-grid" id="render-personal"></div>
             </div>
         </div>
     </div>
     
     <div id="mod-escolar" class="view-section">
+        <div style="padding: 20px 0 10px; margin-bottom: 10px;">
+            <h1 style="font-family:'Playfair Display',serif; font-size:2.2em; color:#5a3e8a; margin:0;">📚 Académico</h1>
+            <p style="color:#888; margin:4px 0 0; font-size:0.9em;">Maestría, Análisis de Datos, Japonés y todo lo que te hace crecer.</p>
+        </div>
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-escolar); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div></div>
+                <div class="panel escolar-bg">
+                    <h2 style="margin:0; color:#5a3e8a; margin-bottom: 15px;">📅 Calendario Académico</h2>
+                    <div class="calendar-grid" id="cal-escolar" style="gap:2px;"></div>
+                </div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2><button class="edit-btn" onclick="openCategoryConfig('escolar')" title="Configurar Etiquetas">⚙️</button></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;">
+                    <h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Materias y Cursos</h2>
+                    <button class="edit-btn" onclick="openCategoryConfig('escolar')" title="Configurar Etiquetas">⚙️ Configurar</button>
+                </div>
                 <div class="gallery-grid" id="render-escolar"></div>
             </div>
         </div>
     </div>
     
     <div id="mod-profesional" class="view-section">
+        <div style="padding: 20px 0 10px; margin-bottom: 10px;">
+            <h1 style="font-family:'Playfair Display',serif; font-size:2.2em; color:#1e3a5f; margin:0;">⌬ Profesional</h1>
+            <p style="color:#888; margin:4px 0 0; font-size:0.9em;">ENMS Labs, inventario y todo lo que construyes con tus manos.</p>
+        </div>
         <div class="standard-grid">
             <div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;">
-                <div class="panel"><h2 style="margin:0; background: var(--cat-profesional); color: var(--text-light); margin-bottom: 15px;">Calendario</h2><div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div></div>
+                <div class="panel profesional-bg">
+                    <h2 style="margin:0; color:#1e3a5f; margin-bottom: 15px;">📅 Calendario Profesional</h2>
+                    <div class="calendar-grid" id="cal-profesional" style="gap:2px;"></div>
+                </div>
             </div>
             <div class="grid-col-2">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;"><h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2><button class="edit-btn" onclick="openCategoryConfig('profesional')" title="Configurar Etiquetas">⚙️</button></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom:20px;">
+                    <h2 style="background: transparent; color: var(--text-dark); font-size: 1.8em; margin: 0;">Espacios de Trabajo</h2>
+                    <button class="edit-btn" onclick="openCategoryConfig('profesional')" title="Configurar Etiquetas">⚙️ Configurar</button>
+                </div>
                 <div class="gallery-grid" id="render-profesional"></div>
             </div>
         </div>
@@ -813,44 +956,160 @@
         let monthOffset = 0;
 
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
-            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
-            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: ['proyecto', 'cliente', 'departamento'] } 
+            personal: { 
+                label: 'Personal', 
+                color: '#F6D7DC', 
+                cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', 
+                subcats: ['Selfcare', 'Recetas', 'Mindfulness', 'Biblioteca', 'Asuntos Sociales'], 
+                defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas', 'familia'], 
+                customFields: [] 
+            }, 
+            escolar: { 
+                label: 'Académico', 
+                color: '#c8b4e8', 
+                cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', 
+                subcats: ['Curso de Análisis de Datos', 'Maestría', 'Japón'], 
+                defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica', 'entrega'], 
+                customFields: ['materia', 'profesor', 'grupo'] 
+            }, 
+            profesional: { 
+                label: 'Profesional', 
+                color: '#a8c8e8', 
+                cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', 
+                subcats: ['ENMS Labs', 'Inventario'], 
+                defaultTags: ['urgente', 'reunión', 'proyecto', 'reporte', 'práctica'], 
+                customFields: ['proyecto', 'cliente', 'departamento'] 
+            } 
         };
         let defaultPageData = { 
-            "ENMS Labs": { icon: "⌬", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
-            "Wishlist": { icon: "✦", cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Cosas bonitas que quiero comprar o experiencias que quiero vivir.</p>` },
-            "Recetas": { icon: "◈", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` },
-            "Selfcare": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
-            "Mindfulness": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p1)", content: `<p>Un espacio para tu práctica diaria de atención plena y bienestar mental.</p>` },
-            "Biblioteca": { icon: "¶", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi biblioteca personal. Agrega links de libros, artículos o recursos que quieres leer.</p>`, links: [] },
-            "Asuntos Sociales": { icon: "❦", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
+            "ENMS Labs": { 
+                icon: "⌬", 
+                cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", 
+                color: "#2d6a9f", 
+                content: `<p>Panel de control para las prácticas de laboratorio en la <b>Escuela Normal de Maestros del Estado de Sinaloa</b>. Aquí registras cada práctica, su materia, profesor y grupo.</p><p>Recuerda: cada reporte semanal se entrega los <b>lunes</b>. ¡Sin excepción! 🧪</p>` 
+            }, 
+            "Wishlist": { 
+                icon: "✦", 
+                cover: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=80", 
+                color: "var(--color-p3)", 
+                content: `<p>Cosas bonitas que quiero comprar, experiencias que quiero vivir y pequeños lujos que me merezco. 🛍️</p><p>Tip: usa la etiqueta <b>#urgente</b> para lo que ya necesitas y <b>#sueño</b> para lo que viene después.</p>` 
+            },
+            "Recetas": { 
+                icon: "◈", 
+                cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", 
+                color: "#d4845a", 
+                content: `<p>Mi recetario personal. Platillos económicos, ricos y fáciles de preparar. 🍽️</p><p>Etiqueta tus recetas con <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b> para que aparezcan en la sugerencia del día.</p>` 
+            },
+            "Selfcare": { 
+                icon: "✧", 
+                cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", 
+                color: "var(--color-p3)", 
+                content: `<p>Mi espacio sagrado de autocuidado. Aquí vivo mi rutina de <b>skincare</b>, <b>haircare</b>, <b>pilates</b> y <b>gym</b>. 🌸</p><p>La constancia es la clave. Cada hábito completado es un acto de amor propio.</p>` 
+            },
+            "Mindfulness": { 
+                icon: "☽", 
+                cover: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1000&q=80", 
+                color: "#6b8e6b", 
+                content: `<p>Un espacio para mi práctica diaria de atención plena, meditación y bienestar mental. 🧘‍♀️</p><p>Recuerda: <em>la calma no es un destino, es una práctica diaria.</em></p>` 
+            },
+            "Biblioteca": { 
+                icon: "¶", 
+                cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", 
+                color: "#8b6914", 
+                content: `<p>Mi biblioteca personal. Libros de química, ciencia de datos, japonés y todo lo que alimenta mi mente. 📚</p><p>Agrega links de libros, artículos o recursos que quieres leer o ya leíste.</p>`, 
+                links: [] 
+            },
+            "Asuntos Sociales": { 
+                icon: "❦", 
+                cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", 
+                color: "var(--color-p3)", 
+                content: `<p>Registro de cumpleaños, salidas con amigos y momentos especiales. 🎉</p><p>Usa el calendario de la izquierda para ver todos tus eventos sociales del mes.</p>` 
+            },
+            "Curso de Análisis de Datos": { 
+                icon: "📊", 
+                cover: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80", 
+                color: "#5a3e8a", 
+                content: `<p>Curso de <b>Análisis de Datos</b> — Python, pandas, visualización y estadística aplicada. 📊</p><p>Cada tarea tiene fecha límite. Revisa el calendario para no perder ninguna entrega.</p>` 
+            },
+            "Maestría": { 
+                icon: "🎓", 
+                cover: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80", 
+                color: "#3d2b6e", 
+                content: `<p>Mi camino hacia la <b>Maestría</b>. Aquí registro avances de tesis, lecturas obligatorias, seminarios y fechas clave. 🎓</p><p>Recuerda: un capítulo a la vez, un día a la vez.</p>` 
+            },
+            "Japón": { 
+                icon: "⛩️", 
+                cover: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1000&q=80", 
+                color: "#c0392b", 
+                content: `<p>Mi preparación para el viaje a <b>Japón 🇯🇵</b> — trámites, presupuesto, itinerario, vocabulario y todo lo que necesito para ese sueño de 15 días.</p><p>Etiquetas útiles: <b>#trámites</b>, <b>#presupuesto</b>, <b>#itinerario</b>, <b>#vocabulario</b>.</p>` 
+            },
+            "Inventario": { 
+                icon: "📦", 
+                cover: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1000&q=80", 
+                color: "#394555", 
+                content: `<p>Control de <b>inventario</b> del laboratorio. Reactivos, materiales, equipos y su estado actual. 📦</p><p>Actualiza el inventario después de cada práctica para mantener el control.</p>` 
+            }
         };
-        let defaultDashboard = { links: [ {title: 'Mis proyectos en Overleaf', url: 'https://overleaf.com'}, {title: 'Archivos de OneDrive', url: 'https://onedrive.com'} ] };
+        let defaultDashboard = { links: [ 
+            {title: '📄 Tesis en Overleaf', url: 'https://overleaf.com'}, 
+            {title: '☁️ Archivos en OneDrive', url: 'https://onedrive.com'},
+            {title: '📊 Curso de Análisis de Datos', url: 'https://coursera.org'},
+            {title: '🇯🇵 Duolingo Japonés', url: 'https://duolingo.com'},
+            {title: '🧪 Protocolo ENMS Labs', url: 'https://drive.google.com'}
+        ] };
         
         let defaultTasks = [ 
-            { id: 1, type: 'event', title: 'Experimentación (Regreso Semana Santa)', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', recurring: false, enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1' },
-            { id: 2, type: 'task', title: 'Reporte Semanal', category: 'profesional', subcategory: 'ENMS Labs', date: '', priority: 'high', status: 'todo', recurring: true, recurrenceType: 'weekly', recurrenceStart: '', weeklyDay: 1, tags: ['reporte'], notes: 'Cada lunes sin excepción' },
-            { id: 101, type: 'task', title: 'Chilaquiles Verdes Económicos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Tortillas viejas, tomatillo de mercado, chile serrano, cebolla, cilantro y queso fresco.' },
-            { id: 102, type: 'task', title: 'Enfrijoladas de Queso', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo', 'cena'], notes: 'Frijoles molidos, tortillas, queso panela y aguacate.' },
-            { id: 103, type: 'task', title: 'Sopa de Fideo con Verduras', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita picada en cuadritos.' },
-            { id: 104, type: 'task', title: 'Tostadas de Atún con Elotitos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'low', status: 'todo', tags: ['cena'], notes: 'Lata de atún, mayonesa, elotitos de lata, tostadas y salsa.' },
-            { id: 105, type: 'task', title: 'Huevos a la Mexicana', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito picado.' }
+            // ── ENMS LABS ──
+            { id: 1, type: 'event', title: 'Regreso de Semana Santa — Práctica 1', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-13', priority: 'high', status: 'todo', recurring: false, enmsMateria: 'Experimentación', enmsProfesor: 'Por Asignar', enmsGrupo: 'Grupo A', enmsPractica: 'Práctica 1 — Introducción al Laboratorio', notes: 'Primera práctica del semestre. Revisar protocolo de seguridad y lista de materiales.' },
+            { id: 2, type: 'task', title: 'Reporte Semanal de Laboratorio', category: 'profesional', subcategory: 'ENMS Labs', date: '', priority: 'high', status: 'todo', recurring: true, recurrenceType: 'weekly', recurrenceStart: '', weeklyDay: 1, tags: ['reporte'], notes: 'Cada lunes sin excepción. Incluir: observaciones, resultados y conclusiones de la semana.' },
+            { id: 3, type: 'task', title: 'Actualizar Inventario de Reactivos', category: 'profesional', subcategory: 'Inventario', date: '', priority: 'medium', status: 'todo', recurring: true, recurrenceType: 'weekly', weeklyDay: 5, tags: ['inventario'], notes: 'Verificar stock de: HCl, NaOH, etanol, acetona y reactivos de titulación.' },
+            { id: 4, type: 'event', title: 'Reunión de Academia — Planeación Semestral', category: 'profesional', subcategory: 'ENMS Labs', date: '2026-04-18', priority: 'high', status: 'todo', tags: ['reunión'], notes: 'Presentar propuesta de prácticas para el semestre. Llevar el programa actualizado.' },
+            // ── ACADÉMICO: ANÁLISIS DE DATOS ──
+            { id: 10, type: 'task', title: 'Proyecto Final — Dashboard en Python', category: 'escolar', subcategory: 'Curso de Análisis de Datos', date: '2026-04-30', priority: 'high', status: 'in-progress', tags: ['entrega', 'python'], notes: 'Usar pandas + matplotlib. Dataset: ventas de mercado local. Incluir al menos 5 visualizaciones.' },
+            { id: 11, type: 'task', title: 'Tarea 3 — Limpieza de Datos con pandas', category: 'escolar', subcategory: 'Curso de Análisis de Datos', date: '2026-04-15', priority: 'high', status: 'todo', tags: ['tarea', 'python'], notes: 'Ejercicios del módulo 3: manejo de valores nulos, duplicados y normalización.' },
+            { id: 12, type: 'task', title: 'Lectura: "Python for Data Analysis" Cap. 5-7', category: 'escolar', subcategory: 'Curso de Análisis de Datos', date: '2026-04-20', priority: 'medium', status: 'todo', tags: ['lectura'], notes: 'Capítulos sobre GroupBy, merge y reshape. Tomar notas en Notion.' },
+            // ── ACADÉMICO: MAESTRÍA ──
+            { id: 20, type: 'task', title: 'Avance de Tesis — Marco Teórico (Cap. 2)', category: 'escolar', subcategory: 'Maestría', date: '2026-04-25', priority: 'high', status: 'in-progress', tags: ['tesis', 'entrega'], notes: 'Revisar bibliografía de Fischer-Tropsch. Mínimo 15 fuentes APA. Extensión: 8-10 páginas.' },
+            { id: 21, type: 'event', title: 'Seminario de Investigación — Presentación Avance', category: 'escolar', subcategory: 'Maestría', date: '2026-04-22', priority: 'high', status: 'todo', tags: ['seminario'], notes: 'Presentar 10 diapositivas con el estado actual de la investigación. Tiempo: 15 min.' },
+            { id: 22, type: 'task', title: 'Artículo: Fischer-Tropsch en Petroquímica', category: 'escolar', subcategory: 'Maestría', date: '2026-04-28', priority: 'medium', status: 'todo', tags: ['lectura', 'tesis'], notes: 'Revisar el artículo 1-s2.0-S0167577X2200790X. Anotar puntos clave para el marco teórico.' },
+            // ── ACADÉMICO: JAPÓN ──
+            { id: 30, type: 'task', title: 'Tramitar Pasaporte (si no está vigente)', category: 'escolar', subcategory: 'Japón', date: '2026-05-01', priority: 'high', status: 'todo', tags: ['trámites'], notes: 'Verificar vigencia. Si vence antes de 2027, renovar con 6 meses de anticipación.' },
+            { id: 31, type: 'task', title: 'Presupuesto Detallado del Viaje', category: 'escolar', subcategory: 'Japón', date: '2026-05-15', priority: 'high', status: 'todo', tags: ['presupuesto'], notes: 'Vuelo CDMX-Tokio: ~$18,000 MXN. Hotel: ~$800 MXN/noche. Comida: ~$400 MXN/día. Total estimado: ~$35,000 MXN.' },
+            { id: 32, type: 'task', title: 'Estudiar Hiragana completo', category: 'escolar', subcategory: 'Japón', date: '2026-06-01', priority: 'medium', status: 'todo', tags: ['vocabulario'], notes: '46 caracteres básicos. Usar la app Duolingo + tarjetas de memoria. Meta: 5 caracteres por día.' },
+            { id: 33, type: 'task', title: 'Itinerario Tokio — Días 1 al 5', category: 'escolar', subcategory: 'Japón', date: '2026-05-30', priority: 'medium', status: 'todo', tags: ['itinerario'], notes: 'Día 1: Shinjuku. Día 2: Akihabara + Ueno. Día 3: Harajuku + Shibuya. Día 4: Asakusa + Senso-ji. Día 5: Odaiba.' },
+            // ── PERSONAL: RECETAS ──
+            { id: 101, type: 'task', title: 'Chilaquiles Verdes Económicos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Tortillas viejas, tomatillo de mercado, chile serrano, cebolla, cilantro y queso fresco. Costo: ~$35 MXN.', customData: { difficulty: 'Fácil', prepTime: '20 min' } },
+            { id: 102, type: 'task', title: 'Enfrijoladas de Queso Panela', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo', 'cena'], notes: 'Frijoles negros molidos, tortillas de maíz, queso panela y aguacate. Costo: ~$40 MXN.', customData: { difficulty: 'Fácil', prepTime: '25 min' } },
+            { id: 103, type: 'task', title: 'Sopa de Fideo con Verduras de Temporada', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita picada en cuadritos. Caldo de pollo casero. Costo: ~$30 MXN.', customData: { difficulty: 'Fácil', prepTime: '30 min' } },
+            { id: 104, type: 'task', title: 'Tostadas de Atún con Elotitos', category: 'personal', subcategory: 'Recetas', date: '', priority: 'low', status: 'todo', tags: ['cena'], notes: 'Lata de atún, mayonesa, elotitos de lata, tostadas y salsa valentina. Costo: ~$25 MXN.', customData: { difficulty: 'Fácil', prepTime: '10 min' } },
+            { id: 105, type: 'task', title: 'Huevos a la Mexicana con Frijoles', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito serrano picado. Acompañar con frijoles de olla. Costo: ~$20 MXN.', customData: { difficulty: 'Fácil', prepTime: '15 min' } },
+            { id: 106, type: 'task', title: 'Arroz Rojo con Pollo Deshebrado', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Arroz, jitomate, ajo, cebolla y pollo cocido deshebrado. Clásico de la semana. Costo: ~$50 MXN.', customData: { difficulty: 'Medio', prepTime: '40 min' } },
+            { id: 107, type: 'task', title: 'Gelatina de Leche con Cajeta', category: 'personal', subcategory: 'Recetas', date: '', priority: 'low', status: 'todo', tags: ['postre'], notes: 'Leche, grenetina, azúcar y cajeta de cajita. Refrigerar 3 horas. Costo: ~$30 MXN.', customData: { difficulty: 'Fácil', prepTime: '15 min + refrigeración' } },
+            // ── PERSONAL: ASUNTOS SOCIALES ──
+            { id: 200, type: 'event', title: 'Cumpleaños de Mamá 🎂', category: 'personal', subcategory: 'Asuntos Sociales', date: '2026-05-10', priority: 'high', status: 'todo', tags: ['cumpleaños', 'familia'], notes: 'Preparar su pastel favorito: tres leches. Comprar regalo con anticipación.', customData: { eventType: 'Cumpleaños', attendees: 'Familia completa' } },
+            { id: 201, type: 'event', title: 'Salida con Amigas — Cine 🎬', category: 'personal', subcategory: 'Asuntos Sociales', date: '2026-04-19', priority: 'medium', status: 'todo', tags: ['salida'], notes: 'Ver la nueva película. Llevar dinero para palomitas y refresco.', customData: { eventType: 'Salida', location: 'Cinépolis', attendees: 'Amiga 1, Amiga 2' } }
         ];
         let defaultHabits = [
-            {id: 1, title: 'Masaje cuero cabelludo', group: 'Haircare', category: 'Bodycare', freq: 'personalizado', customDays: [1,3,5], recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 2, title: 'Despunte', group: 'Haircare', category: 'Bodycare', freq: 'monthly', monthlyDay: 15, recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 3, title: 'Repolarización capilar', group: 'Haircare', category: 'Bodycare', freq: 'monthly', monthlyDay: 1, recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 4, title: 'Exfoliación (cuerpo completo)', group: 'Skincare', category: 'Bodycare', freq: 'weekly', weeklyDay: 6, recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 5, title: 'Rutina cara mañana', group: 'Skincare', category: 'Bodycare', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 6, title: 'Rutina cara noche', group: 'Skincare', category: 'Bodycare', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 7, title: 'Inicio del día (Balasana)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 8, title: 'Fin del día (Gato enojado)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 9, title: 'Rutina Pilates', group: 'Pilates', category: 'Fitness', freq: 'personalizado', customDays: [1,3,5], link: 'https://youtube.com', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 10, title: 'Rutina Gym (Músculo del día)', group: 'Gym', category: 'Fitness', freq: 'personalizado', customDays: [2,4,6], recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 11, title: 'Meditación (10 mins)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 12, title: 'Decir a mi familia que los quiero', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', weeklyDay: 0, recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 13, title: 'Carta mensual para mí misma', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', monthlyDay: 1, recurrenceStart: '', lastDone: '', streak: 0}
+            // ── BODYCARE: HAIRCARE ──
+            {id: 1, title: 'Masaje de cuero cabelludo (aceite de argán)', group: 'Haircare', category: 'Bodycare', freq: 'personalizado', customDays: [1,3,5], recurrenceStart: '', lastDone: '', streak: 0, link: '', notes: '5 minutos con movimientos circulares. Estimula el crecimiento.'},
+            {id: 2, title: 'Despunte de puntas', group: 'Haircare', category: 'Bodycare', freq: 'monthly', monthlyDay: 15, recurrenceStart: '', lastDone: '', streak: 0, notes: 'Cortar solo las puntas dañadas. No más de 1 cm.'},
+            {id: 3, title: 'Repolarización capilar profunda', group: 'Haircare', category: 'Bodycare', freq: 'monthly', monthlyDay: 1, recurrenceStart: '', lastDone: '', streak: 0, notes: 'Mascarilla de keratina + aceite de coco. Dejar 30 min con calor.'},
+            // ── BODYCARE: SKINCARE ──
+            {id: 4, title: 'Exfoliación corporal completa', group: 'Skincare', category: 'Bodycare', freq: 'weekly', weeklyDay: 6, recurrenceStart: '', lastDone: '', streak: 0, notes: 'Exfoliante de azúcar + aceite de almendras. Circular, suave.'},
+            {id: 5, title: 'Rutina facial de mañana ☀️', group: 'Skincare', category: 'Bodycare', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0, notes: 'Limpiador → tónico → sérum vitamina C → hidratante → SPF 50.'},
+            {id: 6, title: 'Rutina facial de noche 🌙', group: 'Skincare', category: 'Bodycare', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0, notes: 'Doble limpieza → tónico → retinol (x3/semana) → crema de noche.'},
+            // ── FITNESS: ESTIRAMIENTOS ──
+            {id: 7, title: 'Inicio del día — Balasana (postura del niño)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0, notes: '5 minutos al despertar. Respiración profunda, libera la espalda baja.'},
+            {id: 8, title: 'Fin del día — Gato enojado + Vaca', group: 'Estiramientos', category: 'Fitness', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0, notes: '5 minutos antes de dormir. Libera tensión de la columna.'},
+            // ── FITNESS: PILATES ──
+            {id: 9, title: 'Rutina Pilates (30 min)', group: 'Pilates', category: 'Fitness', freq: 'personalizado', customDays: [1,3,5], link: 'https://youtube.com', recurrenceStart: '', lastDone: '', streak: 0, notes: 'Lunes, miércoles y viernes. Enfoque en core y postura.'},
+            // ── FITNESS: GYM ──
+            {id: 10, title: 'Gym — Músculo del día', group: 'Gym', category: 'Fitness', freq: 'personalizado', customDays: [2,4,6], recurrenceStart: '', lastDone: '', streak: 0, notes: 'Mar: piernas. Jue: espalda/bíceps. Sáb: pecho/tríceps. Siempre calentar 10 min.'},
+            // ── MIND: ESPIRITUALIDAD ──
+            {id: 11, title: 'Meditación guiada (10 min)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0, notes: 'App Insight Timer o YouTube. Antes de revisar el teléfono.'},
+            // ── MIND: SALUD EMOCIONAL ──
+            {id: 12, title: 'Decirle a mi familia que los quiero 💛', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', weeklyDay: 0, recurrenceStart: '', lastDone: '', streak: 0, notes: 'Un mensaje, una llamada o un abrazo. Lo que sea, pero que sea real.'},
+            {id: 13, title: 'Carta mensual para mí misma 💌', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', monthlyDay: 1, recurrenceStart: '', lastDone: '', streak: 0, notes: 'Escribir sobre logros del mes, cómo me sentí y qué quiero para el siguiente.'}
         ];
 
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits };
@@ -860,6 +1119,42 @@
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
         function getCatLabel(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
         function getCatCover(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].cover) ? appState.categories[catKey].cover : 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80'; }
+
+        // ── DARK MODE ──
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            let btn = document.getElementById('dark-mode-btn');
+            if(btn) btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            localStorage.setItem('lucia-dark', document.body.classList.contains('dark-mode') ? '1' : '0');
+        }
+        if(localStorage.getItem('lucia-dark') === '1') { document.body.classList.add('dark-mode'); let btn = document.getElementById('dark-mode-btn'); if(btn) btn.textContent = '☀️'; }
+
+        // ── GREETING ──
+        function renderGreeting() {
+            let el = document.getElementById('header-greeting');
+            if(!el) return;
+            let h = new Date().getHours();
+            let greet = h < 12 ? 'Buenos días, Lucía ☀️' : h < 19 ? 'Buenas tardes, Lucía 🌤️' : 'Buenas noches, Lucía 🌙';
+            el.textContent = greet;
+        }
+
+        // ── DAILY QUOTE ──
+        function renderDailyQuote() {
+            let el = document.getElementById('daily-quote-box');
+            if(!el) return;
+            let quotes = [
+                '"La disciplina es elegirte a ti misma una y otra vez." 🌸',
+                '"Cada práctica de laboratorio es un paso hacia quien quieres ser." ⌬',
+                '"Estudiar japonés hoy es vivir Japón mañana." ⛩️',
+                '"Tu tesis no se escribe sola, pero tú sí puedes escribirla." 🎓',
+                '"Cuidarte no es egoísmo, es la base de todo lo demás." ✧',
+                '"Un hábito a la vez, una versión mejor de ti." 🌿',
+                '"La constancia supera al talento cuando el talento no es constante." 🔥',
+                '"Hoy es un buen día para hacer algo que tu yo del futuro agradezca." 💛'
+            ];
+            let idx = new Date().getDate() % quotes.length;
+            el.innerHTML = quotes[idx];
+        }
         
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
 
@@ -1051,8 +1346,14 @@
 
         function getTodayFocusText() {
             let today = new Date().getDay();
-            if(today === 1) return { title: '🔥 Día de Pierna', subtitle: 'Fuerza, estabilidad y energía para comenzar la semana.' };
-            if(today === 3) return { title: '🧘‍♀️ Día de Recuperación', subtitle: 'Estira, respira y permite que tu cuerpo se regenere.' };
+            // 0=Dom, 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb
+            if(today === 0) return { title: '� Día de Familia', subtitle: 'Llama a mamá, dile que la quieres. Recarga energía para la semana.' };
+            if(today === 1) return { title: '🔥 Lunes de Pilates + Pierna', subtitle: 'Empieza fuerte. Pilates en la mañana, pierna en el gym por la tarde.' };
+            if(today === 2) return { title: '📊 Martes de Datos + Gym', subtitle: 'Avanza en el curso de análisis de datos. Gym: espalda y bíceps.' };
+            if(today === 3) return { title: '🧘‍♀️ Miércoles de Pilates + Tesis', subtitle: 'Pilates para el cuerpo, tesis para la mente. Escribe al menos una página.' };
+            if(today === 4) return { title: '⌬ Jueves de Lab + Gym', subtitle: 'Día de laboratorio en ENMS. Gym: pecho y tríceps por la tarde.' };
+            if(today === 5) return { title: '🌸 Viernes de Pilates + Skincare', subtitle: 'Último día de pilates de la semana. No olvides tu rutina facial de noche.' };
+            if(today === 6) return { title: '✨ Sábado de Exfoliación + Gym', subtitle: 'Exfoliación corporal completa. Gym: sesión libre. Tú decides.' };
             return { title: '✨ Selfcare Today', subtitle: 'Encuentra el equilibrio con tu rutina y tu energía.' };
         }
 
@@ -1389,23 +1690,50 @@
         function renderModule(catKey, containerId) { 
             const container = document.getElementById(containerId); if(!container) return; container.innerHTML = ''; 
             if (!appState.categories[catKey] || !appState.categories[catKey].subcats) return; 
+
+            // Context-specific card descriptions
+            const cardDescriptions = {
+                'Selfcare': 'Skincare · Haircare · Pilates · Gym',
+                'Recetas': 'Desayunos · Almuerzos · Cenas · Postres',
+                'Mindfulness': 'Meditación · Journaling · Prácticas',
+                'Biblioteca': 'Libros · Artículos · Recursos',
+                'Asuntos Sociales': 'Cumpleaños · Salidas · Reuniones',
+                'Curso de Análisis de Datos': 'Python · pandas · Visualización',
+                'Maestría': 'Tesis · Seminarios · Lecturas',
+                'Japón': 'Trámites · Presupuesto · Japonés',
+                'ENMS Labs': 'Prácticas · Reportes · Materias',
+                'Inventario': 'Reactivos · Materiales · Equipos'
+            };
+
             appState.categories[catKey].subcats.forEach(subcat => { 
                 let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
                 let subTasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status !== 'done'); 
-                let taskPreview = subTasks.slice(0, 3).map(t => `<div style="font-size:0.85em; color:var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">${t.type==='event'?'◈':'○'} ${t.title}</div>`).join(''); 
-                if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:5px;">+ ${subTasks.length - 3} más...</div>`; 
-                if(subTasks.length === 0) taskPreview = `<div style="font-size:0.85em; color:#888; font-style:italic;">Todo al día ✨</div>`; 
+                let doneCount = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat && t.status === 'done').length;
+                let taskPreview = subTasks.slice(0, 3).map(t => {
+                    let icon = t.type === 'event' ? '◈' : t.type === 'routine' ? '🔄' : t.type === 'product' ? '🛍️' : '○';
+                    let prioColor = t.priority === 'high' ? '#ef4444' : t.priority === 'low' ? '#10b981' : '#f59e0b';
+                    return `<div style="font-size:0.82em; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; display:flex; align-items:center; gap:5px;"><span style="color:${prioColor}; font-size:0.7em;">●</span>${icon} ${t.title}</div>`;
+                }).join(''); 
+                if(subTasks.length > 3) taskPreview += `<div style="font-size:0.75em; color:#888; margin-top:3px;">+ ${subTasks.length - 3} más pendientes...</div>`; 
+                if(subTasks.length === 0) taskPreview = `<div style="font-size:0.82em; color:#10b981; font-style:italic;">Todo al día ✨</div>`; 
                 
                 let cardColor = pageInfo.color ? pageInfo.color : 'var(--border-color)';
+                let desc = cardDescriptions[subcat] || '';
+                let statsHtml = doneCount > 0 ? `<div style="font-size:0.72em; color:#10b981; margin-top:4px;">✓ ${doneCount} completado${doneCount>1?'s':''}</div>` : '';
                 
                 container.innerHTML += `
                 <div class="gallery-card" oncontextmenu="showContextMenu(event, '${catKey}', '${subcat}')" onclick="openSubpage('${catKey}', '${subcat}')" style="border-top-color: ${cardColor}; border-top-width: 6px;">
-                    <img src="${pageInfo.cover}" class="gallery-cover">
+                    <div style="position:relative; overflow:hidden;">
+                        <img src="${pageInfo.cover}" class="gallery-cover">
+                        <div style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.4) 100%);"></div>
+                        <div style="position:absolute; bottom:10px; left:15px; color:white; font-size:0.75em; font-weight:600; text-shadow:0 1px 4px rgba(0,0,0,0.5);">${desc}</div>
+                    </div>
                     <div style="padding: 20px 15px 15px 15px; position: relative; flex:1; display:flex; flex-direction:column;">
                         <div class="gallery-icon">${pageInfo.icon}</div>
-                        <h3 style="margin: 5px 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3em; color: var(--text-dark);">${subcat}</h3>
-                        <div style="flex:1; min-height: 60px;">${taskPreview}</div>
-                        <button class="add-inline-btn" style="margin-top: 15px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Rápido</button>
+                        <h3 style="margin: 5px 0 6px 0; font-family: 'Playfair Display', serif; font-size: 1.2em; color: var(--text-dark);">${subcat}</h3>
+                        ${statsHtml}
+                        <div style="flex:1; min-height: 55px; margin-top:8px;">${taskPreview}</div>
+                        <button class="add-inline-btn" style="margin-top: 12px; padding: 8px;" onclick="event.stopPropagation(); openTaskModal('task', null, '${catKey}', '${subcat}')">+ Agregar rápido</button>
                     </div>
                 </div>`; 
             }); 
@@ -1835,12 +2163,12 @@
             document.getElementById('task-details-title').textContent = task.title;
             document.getElementById('task-details-title').style.color = getCatColor(task.category);
             
-            let scopeSymbol = task.category === 'personal' ? '✧' : task.category === 'escolar' ? '◈' : '⌬';
-            document.getElementById('task-details-scope').textContent = `${scopeSymbol} ${getCatLabel(task.category)} - ${task.subcategory}`;
+            let catIcon = task.category === 'personal' ? '✧' : task.category === 'escolar' ? '◈' : '⌬';
+            document.getElementById('task-details-scope').textContent = `${catIcon} ${getCatLabel(task.category)} — ${task.subcategory}`;
             
             let scheduleText = '';
             if (task.date) {
-                let dateObj = new Date(task.date);
+                let dateObj = new Date(task.date + 'T00:00:00');
                 let dateStr = dateObj.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 scheduleText += `📅 ${dateStr}`;
             }
@@ -1848,6 +2176,25 @@
                 scheduleText += scheduleText ? ` a las ${task.time}` : `⏰ ${task.time}`;
             }
             if (task.recurring) {
+                let recType = task.recurrenceType === 'daily' ? 'Diariamente' : task.recurrenceType === 'weekly' ? 'Semanalmente' : task.recurrenceType === 'monthly' ? 'Mensualmente' : task.recurrenceType === 'yearly' ? 'Anualmente' : 'Personalizado';
+                scheduleText += scheduleText ? ` (${recType})` : `🔄 ${recType}`;
+            }
+            document.getElementById('task-details-schedule').textContent = scheduleText;
+            
+            let prioColor = task.priority === 'high' ? '#ef4444' : task.priority === 'low' ? '#10b981' : '#f59e0b';
+            let prioLabel = task.priority === 'high' ? '🔴 Alta' : task.priority === 'low' ? '🟢 Baja' : '🟡 Media';
+            let tagsHtml = (task.tags || []).map(t => `<span class="pill tag">#${t}</span>`).join(' ');
+            
+            let notesHtml = '';
+            if(task.notes) notesHtml += `<div style="background:var(--hover-bg); padding:12px; border-radius:8px; margin-bottom:10px; font-size:0.9em; line-height:1.6; white-space:pre-wrap;">${task.notes}</div>`;
+            if(tagsHtml) notesHtml += `<div style="margin-bottom:8px;">${tagsHtml}</div>`;
+            notesHtml += `<div style="font-size:0.85em; color:${prioColor}; font-weight:600;">${prioLabel}</div>`;
+            
+            document.getElementById('task-details-notes').innerHTML = notesHtml || '<span style="color:#888; font-size:0.9em;">Sin notas adicionales.</span>';
+            
+            let modal = document.getElementById('taskDetailsModal');
+            if (modal) modal.style.display = 'flex';
+        }
                 let recType = task.recurrenceType === 'daily' ? 'Diariamente' : task.recurrenceType === 'weekly' ? 'Semanalmente' : task.recurrenceType === 'monthly' ? 'Mensualmente' : task.recurrenceType === 'yearly' ? 'Anualmente' : 'Personalizado';
                 scheduleText += scheduleText ? ` (${recType})` : recType;
             }
@@ -1967,11 +2314,56 @@
         }
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
-        function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
+        function renderUpcomingTasks() { 
+            const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; 
+            let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 5); 
+            if(upcoming.length === 0) { container.innerHTML = '<p style="color:#888; font-size:0.85em; text-align:center; padding:15px;">No hay eventos próximos. ¡Disfruta la calma! 🌸</p>'; return; }
+            upcoming.forEach(t => { 
+                let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); 
+                let catColor = getCatColor(t.category);
+                let dateObj = new Date(t.date + 'T00:00:00');
+                let today = new Date(); today.setHours(0,0,0,0);
+                let diff = Math.round((dateObj - today) / (1000*60*60*24));
+                let diffLabel = diff === 0 ? '<span style="color:#ef4444; font-weight:700; font-size:0.75em;">HOY</span>' : diff === 1 ? '<span style="color:#f59e0b; font-size:0.75em;">Mañana</span>' : `<span style="color:#888; font-size:0.75em;">en ${diff}d</span>`;
+                container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:10px 12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-left-color:${catColor};"><div style="flex:1; min-width:0;"><div style="font-weight:500; font-size:0.9em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span style="color:${catColor};">${icon}</span> ${t.title}</div><div style="color:#888; font-size:0.75em; margin-top:2px;">${t.subcategory}</div></div><div style="text-align:right; flex-shrink:0; margin-left:8px;">${diffLabel}</div></div>`; 
+            }); 
+        }
+        function renderKanban() { 
+            ['todo', 'in-progress', 'done'].forEach(s => { 
+                let col = document.getElementById(s); if(!col) return; 
+                let label = s==='todo' ? '📋 To-Do' : s==='in-progress' ? '⚡ In Progress' : '✅ Completed';
+                col.innerHTML = `<h3>${label}</h3>`; 
+                appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ 
+                    let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); 
+                    let prioColor = t.priority === 'high' ? '#ef4444' : t.priority === 'low' ? '#10b981' : '#f59e0b';
+                    let prioLabel = t.priority === 'high' ? 'Alta' : t.priority === 'low' ? 'Baja' : 'Media';
+                    col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}; font-size:0.65em;">${getCatLabel(t.category)}</span><span style="font-size:0.7em; color:${prioColor}; font-weight:600;">● ${prioLabel}</span></div><span class="task-title">${t.title}</span>${t.date ? `<div style="font-size:0.75em; color:#888; margin-top:4px;">📅 ${t.date}</div>` : ''}<div style="margin-top: 6px;">${tagsHTML}</div></div>`; 
+                }); 
+            }); 
+        }
         
-        function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
-        function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
+        function renderFocusKanban() { 
+            ['todo', 'in-progress', 'done'].forEach(s => { 
+                let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; 
+                let label = s==='todo' ? '📋 To-Do' : s==='in-progress' ? '⚡ In Progress' : '✅ Completed';
+                col.innerHTML = `<h3>${label}</h3>`; 
+                appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ 
+                    let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); 
+                    let prioColor = t.priority === 'high' ? '#ef4444' : t.priority === 'low' ? '#10b981' : '#f59e0b';
+                    col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}; font-size:0.65em;">${getCatLabel(t.category)}</span><span style="font-size:0.7em; color:${prioColor};">●</span></div><span class="task-title">${t.title}</span><div style="margin-top: 6px;">${tagsHTML}</div></div>`; 
+                }); 
+            }); 
+        }
+        function renderMasterEvents() { 
+            const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; 
+            let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); 
+            if(events.length === 0) { list.innerHTML = '<p style="color:#888; font-size:0.85em;">No hay eventos agendados. ¡Agrega uno!</p>'; return; }
+            events.forEach(ev => { 
+                let catColor = getCatColor(ev.category);
+                let catIcon = ev.category === 'personal' ? '✧' : ev.category === 'escolar' ? '◈' : '⌬';
+                list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${catColor}; cursor:pointer;"><div style="display:flex; justify-content:space-between; align-items:flex-start;"><div><span class="task-title" style="margin:0; font-size:0.95em;">${catIcon} ${ev.title}</span><div style="font-size:0.78em; color:#888; margin-top:4px;">${ev.subcategory}</div></div><div style="text-align:right; flex-shrink:0; margin-left:10px;"><div style="font-size:0.8em; color:${catColor}; font-weight:600;">${ev.date || 'Sin fecha'}</div>${ev.time ? `<div style="font-size:0.75em; color:#aaa;">${ev.time}</div>` : ''}</div></div>${ev.notes ? `<div style="font-size:0.8em; color:#888; margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${ev.notes}</div>` : ''}</div>`; 
+            }); 
+        }
         function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskDetails(${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : '○'}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
         function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let status = targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
@@ -1982,6 +2374,8 @@
             safeRender(applyDynamicColors); 
             safeRender(applyGlobalBackground); 
             safeRender(initializeHeaderTabs);
+            safeRender(renderGreeting);
+            safeRender(renderDailyQuote);
             safeRender(renderDashboardLinks); 
             safeRender(renderQuickNotes); 
             safeRender(renderQuickTodos); 
