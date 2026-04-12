@@ -109,6 +109,17 @@
             gap: 5px;
         }
 
+        .meal-grid > * {
+            min-height: 30px;
+            font-size: 0.9em;
+        }
+
+        #main-header-subtitle {
+            color: #4a148c;
+            font-size: 1.4em;
+            text-shadow: 0 0 8px white;
+        }
+
         #main-top-header {
             position: sticky;
             top: 0;
@@ -491,6 +502,28 @@
 </head>
 <body>
 
+    <header id="main-top-header">
+        <div class="header-left">
+            <div class="header-top-row">
+                <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
+                <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
+                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                </button>
+            </div>
+            <div class="header-title-group" style="display: flex; align-items: baseline; gap: 10px;">
+                <h1 id="main-header-title" style="margin: 0;"><span class="bc-main" onclick="goToHome()">Life Planner</span></h1>
+                <p class="welcome-script" id="main-header-subtitle" style="margin: 0;">welcome home, Quimicute</p>
+            </div>
+        </div>
+        <div class="header-nav-pills">
+            <button class="nav-pill" id="nav-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])"><span class="icon">✧</span><span class="text"> Personal</span></button>
+            <button class="nav-pill" id="nav-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])"><span class="icon">⌬</span><span class="text"> Académico</span></button>
+            <button class="nav-pill" id="nav-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])"><span class="icon">◈</span><span class="text"> Profesional</span></button>
+        </div>
+    </header>
+
     <div id="app-global-bg" style="position: fixed; top: -5%; left: -5%; width: 110%; height: 110%; z-index: -10; filter: blur(25px); background-size: cover; background-position: center; opacity: 0.6; transition: background-image 0.5s ease;"></div>
 
     <div id="module-context-menu" class="context-menu">
@@ -525,28 +558,6 @@
         <button onclick="switchView('master-view', this); toggleMenu()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🔍 Buscador Maestro</button>
         <button onclick="changeGlobalBackground()" style="margin-top:20px; border-top:1px dashed var(--border-color); border-radius:0; padding-top:20px;">🖼️ Cambiar Fondo</button>
     </nav>
-
-    <header id="main-top-header">
-        <div class="header-left">
-            <div class="header-top-row">
-                <button class="nav-icon-btn" onclick="goToHome()" id="btn-home" style="display:none;" title="Volver al Inicio">
-                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                </button>
-                <button class="nav-icon-btn" onclick="goBackFromSubpage()" id="btn-back" style="display:none;" title="Página Anterior">
-                    <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                </button>
-            </div>
-            <div class="header-title-group" style="display: flex; align-items: baseline; gap: 10px;">
-                <h1 id="main-header-title" style="margin: 0;"><span class="bc-main" onclick="goToHome()">Life Planner</span></h1>
-                <p class="welcome-script" id="main-header-subtitle" style="margin: 0;">welcome home, Quimicute</p>
-            </div>
-        </div>
-        <div class="header-nav-pills">
-            <button class="nav-pill" id="nav-personal" onclick="switchView('mod-personal', document.querySelectorAll('#main-nav button')[3])"><span class="icon">✧</span><span class="text"> Personal</span></button>
-            <button class="nav-pill" id="nav-escolar" onclick="switchView('mod-escolar', document.querySelectorAll('#main-nav button')[4])"><span class="icon">⌬</span><span class="text"> Académico</span></button>
-            <button class="nav-pill" id="nav-profesional" onclick="switchView('mod-profesional', document.querySelectorAll('#main-nav button')[5])"><span class="icon">◈</span><span class="text"> Profesional</span></button>
-        </div>
-    </header>
 
     <button class="fab" onclick="openTaskModal()">+</button>
 
