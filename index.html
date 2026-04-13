@@ -638,7 +638,7 @@
         <div class="modal">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
             <h2 id="modal-title">Nuevo Registro</h2>
-            <select id="m-type" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="birthday">Cumpleaños</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
+            <select id="m-type" onchange="onTypeChange()" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="birthday">Cumpleaños</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
             <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
             <div style="display:flex; gap:10px;">
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
@@ -2242,6 +2242,21 @@
                 html += '</div>';
             });
             container.innerHTML = html;
+        }
+
+        function onTypeChange() {
+            let type = document.getElementById('m-type').value;
+            if (type === 'birthday') {
+                document.getElementById('m-recurring').checked = true;
+                document.getElementById('m-recurrence-type').value = 'yearly';
+                toggleRecurrence();
+                // Mostrar campos yearly
+                document.getElementById('yearly-fields').style.display = 'block';
+                // Ocultar otros
+                document.getElementById('weekly-fields').style.display = 'none';
+                document.getElementById('monthly-fields').style.display = 'none';
+                document.getElementById('personalizado-fields').style.display = 'none';
+            }
         }
 
         function toggleRecurrence() { 
