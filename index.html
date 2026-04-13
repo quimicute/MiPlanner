@@ -638,7 +638,7 @@
         <div class="modal">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
             <h2 id="modal-title">Nuevo Registro</h2>
-            <select id="m-type" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
+            <select id="m-type" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="birthday">Cumpleaños</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
             <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
             <div style="display:flex; gap:10px;">
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
@@ -647,7 +647,7 @@
                 </div>
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:0.8em; color:#888;">Módulo</label>
-                    <select id="m-subcategory" onchange="toggleCustomFields(); renderModalTags(); showSocialTip(); renderSubcategoryCustomFields();"></select>
+                    <select id="m-subcategory" onchange="toggleCustomFields(); showSocialTip(); renderSubcategoryCustomFields();"></select>
                 </div>
             </div>
             <div id="social-tip" style="display:none; margin-top:10px; font-size:0.8em; color:#888;">Tip: Escribe 'Cumple' o 'Salida' para ver el icono especial.</div>
@@ -662,6 +662,10 @@
                 <div style="margin-bottom:15px;">
                     <label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">📅 Día de Inicio</label>
                     <input type="date" id="m-recurrence-start" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
+                </div>
+                <div style="margin-bottom:15px;">
+                    <label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">📅 Finaliza el:</label>
+                    <input type="date" id="m-recurrence-end" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
                 </div>
                 <div id="frequency-options" style="display:none;">
                     <div id="weekly-fields" style="display:none;">
@@ -712,8 +716,6 @@
                 <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span> Media</button>
                 <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span> Alta</button>
             </div>
-            <div style="font-size: 0.85em; color: #888; margin-top: 10px; font-weight: 500;">Etiquetas Predeterminadas</div>
-            <div class="tags-container" id="m-tags-container"></div>
             <div id="subcategory-custom-fields" style="margin-top: 15px;"></div>
             <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
@@ -1007,9 +1009,9 @@
         function nextMonth() { monthOffset++; renderAll(); }
 
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness', 'Inbox'], defaultTags: ['urgente', 'compras', 'salud', 'ideas', 'finanzas'], customFields: [] }, 
-            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Química'], defaultTags: ['urgente', 'examen', 'tarea', 'lectura', 'practica'], customFields: ['materia', 'profesor', 'grupo'] }, 
-            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Inventario'], defaultTags: ['urgente', 'reunión', 'proyecto', 'cliente', 'reporte'], customFields: [] } 
+            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness', 'Inbox'], customFields: [] }, 
+            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Química'], customFields: ['materia', 'profesor', 'grupo'] }, 
+            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Proyectos'], customFields: [] } 
         };
         let defaultPageData = { 
             "ENMS Labs": { icon: "⌬", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
@@ -1043,7 +1045,7 @@
             {id: 8, title: 'Fin del día (Gato enojado)', group: 'Estiramientos', category: 'Fitness', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
             {id: 9, title: 'Rutina Pilates', group: 'Pilates', category: 'Fitness', freq: 'personalizado', customDays: [1,3,5], link: 'https://youtube.com', recurrenceStart: '', lastDone: '', streak: 0},
             {id: 10, title: 'Rutina Gym (Músculo del día)', group: 'Gym', category: 'Fitness', freq: 'personalizado', customDays: [2,4,6], recurrenceStart: '', lastDone: '', streak: 0},
-            {id: 11, title: 'Meditación (10 mins)', group: 'Espiritualidad', category: 'Mind', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
+            {id: 11, title: 'Meditación (10 mins)', group: 'Mindfulness', category: 'Mind', freq: 'daily', recurrenceStart: '', lastDone: '', streak: 0},
             {id: 12, title: 'Decir a mi familia que los quiero', group: 'Salud Emocional', category: 'Mind', freq: 'weekly', weeklyDay: 0, recurrenceStart: '', lastDone: '', streak: 0},
             {id: 13, title: 'Carta mensual para mí misma', group: 'Salud Emocional', category: 'Mind', freq: 'monthly', monthlyDay: 1, recurrenceStart: '', lastDone: '', streak: 0}
         ];
@@ -1757,6 +1759,49 @@
             document.querySelectorAll('.month-display').forEach(el => el.textContent = label); 
         }
 
+        function getTasksForDate(dateStr, filterCat, containerId) {
+            let tasks = [];
+            // Tareas con fecha exacta
+            tasks = tasks.concat(appState.tasks.filter(t => t.date === dateStr));
+            // Tareas recurrentes proyectadas
+            appState.tasks.forEach(t => {
+                if (t.recurring && t.recurrenceStart && new Date(t.recurrenceStart) <= new Date(dateStr) && (!t.recurrenceEnd || new Date(t.recurrenceEnd) >= new Date(dateStr))) {
+                    if (matchesRecurrence(t, dateStr)) {
+                        tasks.push(t);
+                    }
+                }
+            });
+            // Filtros
+            if (containerId === 'cal-personal') {
+                tasks = tasks.filter(t => t.subcategory === 'Asuntos Sociales');
+            } else if (filterCat !== 'all') {
+                tasks = tasks.filter(t => t.category === filterCat);
+            }
+            return tasks;
+        }
+
+        function matchesRecurrence(task, dateStr) {
+            const date = new Date(dateStr);
+            const start = new Date(task.recurrenceStart);
+            if (date < start) return false;
+            const diffTime = date - start;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            switch (task.recurrenceType) {
+                case 'daily':
+                    return true;
+                case 'weekly':
+                    return date.getDay() === task.weeklyDay;
+                case 'monthly':
+                    return date.getDate() === task.monthlyDay;
+                case 'yearly':
+                    return date.getMonth() === task.yearlyMonth - 1 && date.getDate() === task.yearlyDay;
+                case 'personalizado':
+                    return task.customDays && task.customDays.includes(date.getDay());
+                default:
+                    return false;
+            }
+        }
+
         function renderCalendar(containerId, filterCat) { 
             const calGrid = document.getElementById(containerId); 
             if(!calGrid) return; 
@@ -1771,12 +1816,7 @@
             for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
             for(let day=1; day<=totalDays; day++) { 
                 let dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; 
-                let dayTasks = appState.tasks.filter(t => t.date === dateStr); 
-                if (containerId === 'cal-personal') {
-                    dayTasks = dayTasks.filter(t => t.subcategory === 'Asuntos Sociales');
-                } else if (filterCat !== 'all') {
-                    dayTasks = dayTasks.filter(t => t.category === filterCat);
-                }
+                let dayTasks = getTasksForDate(dateStr, filterCat, containerId);
                 let isToday = dateStr === getTodayStr() ? 'today' : ''; 
                 if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
                     let taskBars = dayTasks.map(t => { 
@@ -1800,7 +1840,9 @@
                     if (containerId === 'cal-personal') {
                         indicators = dayTasks.map(t => {
                             let icon = '👥', color = 'var(--color-p3)';
-                            if (t.customData && t.customData.eventType) {
+                            if (t.type === 'birthday') {
+                                icon = '🎂';
+                            } else if (t.customData && t.customData.eventType) {
                                 let et = t.customData.eventType;
                                 if (et === 'Cumpleaños') icon = '🎂';
                                 else if (et === 'Salida' || et === 'Reunión') icon = '🥂';
@@ -2256,11 +2298,11 @@
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
                 document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category || ''; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory || ''; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
-                currentModalTags = task.tags || []; setModalPriority(task.priority || 'none');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) {
                     document.getElementById('m-recurrence-type').value = task.recurrenceType;
                     document.getElementById('m-recurrence-start').value = task.recurrenceStart || '';
+                    document.getElementById('m-recurrence-end').value = task.recurrenceEnd || '';
                     // Cargar datos según tipo de recurrencia
                     if(task.recurrenceType === 'weekly' && task.weeklyDay) {
                         document.getElementById('m-weekly-' + task.weeklyDay).checked = true;
@@ -2325,13 +2367,14 @@
                     updateSubcatDropdown(); 
                 }
                 showSocialTip(); renderSubcategoryCustomFields(); 
-                currentModalTags = []; setModalPriority('none');
+                setModalPriority('none');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 // Clear custom fields
                 document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
                 document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
                 // Limpiar días personalizados
                 document.getElementById('m-recurrence-start').value = '';
+                document.getElementById('m-recurrence-end').value = '';
                 for(let i=0; i<7; i++) {
                     let cb = document.getElementById('m-day-' + i);
                     if(cb) cb.checked = false;
@@ -2342,7 +2385,7 @@
                 document.getElementById('m-yearly-month').value = '';
                 document.getElementById('m-yearly-day').value = '';
             } 
-            toggleCustomFields(); window.currentEditId = taskId; renderModalTags();
+            toggleCustomFields(); window.currentEditId = taskId;
         }
         
         function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
@@ -2429,10 +2472,10 @@
                 time: document.getElementById('m-time').value, 
                 notes: document.getElementById('m-notes').value, 
                 priority: currentModalPriority, 
-                tags: currentModalTags, 
                 recurring: isRecurring, 
                 recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null,
-                recurrenceStart: isRecurring ? document.getElementById('m-recurrence-start').value : null
+                recurrenceStart: isRecurring ? document.getElementById('m-recurrence-start').value : null,
+                recurrenceEnd: isRecurring ? document.getElementById('m-recurrence-end').value : null
             }; 
 
             if(isRecurring) {
@@ -2503,7 +2546,7 @@
         }
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${getPriorityEmoji(t)} ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
+        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let today = new Date(); today.setHours(0,0,0,0); let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist' && (t.status === 'todo' || new Date(t.date) >= today) && (t.type !== 'birthday' || new Date(t.date) >= today)).sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : (t.type === 'birthday' ? '🎂' : '○')); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${getPriorityEmoji(t)} ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
         function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
         
         function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
