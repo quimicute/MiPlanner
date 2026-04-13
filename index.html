@@ -2250,12 +2250,7 @@
                 document.getElementById('m-recurring').checked = true;
                 document.getElementById('m-recurrence-type').value = 'yearly';
                 toggleRecurrence();
-                // Mostrar campos yearly
-                document.getElementById('yearly-fields').style.display = 'block';
-                // Ocultar otros
-                document.getElementById('weekly-fields').style.display = 'none';
-                document.getElementById('monthly-fields').style.display = 'none';
-                document.getElementById('personalizado-fields').style.display = 'none';
+                toggleTaskCustomFields();
             } else if (type === 'task') {
                 document.getElementById('m-recurring').checked = false;
                 toggleRecurrence();
@@ -2575,7 +2570,7 @@
             }
         }
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let today = new Date(); today.setHours(0,0,0,0); let upcoming = appState.tasks.filter(t => { if (t.status === 'done' || t.subcategory === 'Wishlist') return false; if (t.type === 'birthday') { let nextBD = getNextBirthdayDate(t); return nextBD && (nextBD - today) / (1000 * 60 * 60 * 24) <= 30; } else { return t.date && (t.status === 'todo' || new Date(t.date) >= today); } }).sort((a,b) => { let dateA = a.type === 'birthday' ? getNextBirthdayDate(a) : new Date(a.date); let dateB = b.type === 'birthday' ? getNextBirthdayDate(b) : new Date(b.date); return dateA - dateB; }).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : (t.type === 'birthday' ? '🎂' : '○')); let displayDate = t.type === 'birthday' ? getNextBirthdayDate(t).toISOString().split('T')[0] : t.date; container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${getPriorityEmoji(t)} ${t.title}</span><span style="color:#888; font-size:0.85em;">${displayDate}</span></div>`; }); }
+        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let today = new Date(); today.setHours(0,0,0,0); let upcoming = appState.tasks.filter(t => { if (t.status === 'done' || t.subcategory === 'Wishlist') return false; if (t.type === 'birthday') { let nextBD = getNextBirthdayDate(t); return nextBD && (nextBD - today) / (1000 * 60 * 60 * 24) <= 30; } else { return t.date && (t.status === 'todo' || new Date(t.date) >= today); } }).sort((a,b) => { let dateA = a.type === 'birthday' ? getNextBirthdayDate(a) : new Date(a.date); let dateB = b.type === 'birthday' ? getNextBirthdayDate(b) : new Date(b.date); return dateA - dateB; }).slice(0, 4); upcoming.forEach(t => { let displayDate = t.type === 'birthday' ? getNextBirthdayDate(t).toISOString().split('T')[0] : t.date; container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span><span style="color:#888; font-size:0.85em;">${displayDate}</span></div>`; }); }
         function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
         
         function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
@@ -2826,6 +2821,7 @@
         }
 
         function getPriorityEmoji(task) {
+            if (task && task.type === 'birthday') return '🎂';
             if(!task || !task.priority) return '⚪';
             if(task.priority === 'high') return '🔴';
             if(task.priority === 'medium') return '🟠';
