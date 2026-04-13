@@ -2256,6 +2256,12 @@
                 document.getElementById('weekly-fields').style.display = 'none';
                 document.getElementById('monthly-fields').style.display = 'none';
                 document.getElementById('personalizado-fields').style.display = 'none';
+            } else {
+                // Si cambia de birthday, desactiva repetición
+                if (document.getElementById('m-type').value !== 'birthday') {
+                    document.getElementById('m-recurring').checked = false;
+                    toggleRecurrence();
+                }
             }
         }
 
