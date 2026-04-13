@@ -78,7 +78,7 @@
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1.5fr 1fr; /* 3 Columnas como el boceto */
-            gap: 20px;
+            gap: 30px;
             width: 100%;
             margin-top: 20px;
         }
@@ -105,8 +105,48 @@
 
         .meal-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            grid-template-columns: 1.5fr repeat(7, 1fr);
+            gap: 8px;
+            align-items: stretch;
+        }
+        .meal-grid .meal-label {
+            font-weight: 700;
+            padding: 12px 10px;
+            background: rgba(255,255,255,0.75);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        .meal-grid .meal-header,
+        .meal-grid .meal-cell {
+            padding: 14px 10px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: default;
+        }
+        .meal-grid .meal-cell {
+            background: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .meal-grid .meal-cell:hover {
+            transform: translateY(-1px);
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.9);
+        }
+        .meal-grid .meal-cell span {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .meal-grid > * {
@@ -143,6 +183,7 @@
             border-top: 4px solid var(--color-p3);
             color: var(--text-dark);
             transition: 0.3s ease;
+            margin-bottom: 25px;
         }
         #weekly-agenda {
             display: grid;
@@ -246,11 +287,14 @@
         .prio-btn { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark); cursor: pointer; font-size: 0.85em; font-weight: 500; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .prio-btn:hover { border-color: #ccc; }
         .prio-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: 0.2s;}
-        .prio-btn .prio-indicator.low { background: #10b981; opacity: 0.4;}
+        .prio-btn .prio-indicator.none { background: #d1d5db; opacity: 0.4;}
+        .prio-btn .prio-indicator.low { background: #3b82f6; opacity: 0.4;}
         .prio-btn .prio-indicator.med { background: #f59e0b; opacity: 0.4;}
         .prio-btn .prio-indicator.high { background: #ef4444; opacity: 0.4;}
-        .prio-btn.active.low { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
-        .prio-btn.active.low .prio-indicator.low { background: #10b981; opacity: 1; box-shadow: 0 0 5px rgba(16,185,129,0.5);}
+        .prio-btn.active.none { background: rgba(209, 213, 219, 0.15); border-color: rgba(209, 213, 219, 0.4); color: #4b5563; }
+        .prio-btn.active.none .prio-indicator.none { background: #9ca3af; opacity: 1; box-shadow: 0 0 5px rgba(156,163,175,0.5);}
+        .prio-btn.active.low { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); color: #2563eb; }
+        .prio-btn.active.low .prio-indicator.low { background: #3b82f6; opacity: 1; box-shadow: 0 0 5px rgba(59,130,246,0.5);}
         .prio-btn.active.med { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #d97706; }
         .prio-btn.active.med .prio-indicator.med { background: #f59e0b; opacity: 1; box-shadow: 0 0 5px rgba(245,158,11,0.5);}
         .prio-btn.active.high { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
@@ -570,7 +614,7 @@
             <div style="display:flex; gap:10px;">
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:0.8em; color:#888;">Ámbito</label>
-                    <select id="m-category" onchange="updateSubcatDropdown()"><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select>
+                    <select id="m-category" onchange="updateSubcatDropdown()"><option value="">Sin asignar</option><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select>
                 </div>
                 <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
                     <label style="font-size:0.8em; color:#888;">Módulo</label>
@@ -634,8 +678,9 @@
             </div>
             <div style="font-size: 0.85em; color: #888; margin-top: 15px; font-weight: 500;">Prioridad</div>
             <div class="priority-group" id="m-priority-group">
+                <button class="prio-btn none" onclick="setModalPriority('none')" id="btn-prio-none"><span class="prio-indicator none"></span> Sin Prioridad</button>
                 <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span> Baja</button>
-                <button class="prio-btn med active" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span> Media</button>
+                <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span> Media</button>
                 <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span> Alta</button>
             </div>
             <div style="font-size: 0.85em; color: #888; margin-top: 10px; font-weight: 500;">Etiquetas Predeterminadas</div>
@@ -804,23 +849,6 @@
                     </div>
                 </div>
             </div>
-
-            <div id="dashboard-bottom-row">
-                <div class="panel" style="border-top-color: #4a148c;">
-                    <h2>⌚ Horario ENMS GTO</h2>
-                    <div id="enms-schedule-display">
-                        <p style="font-size:0.9em; color:#666;">• Análisis de Datos: 19:00 - 22:00</p>
-                    </div>
-                </div>
-                <div class="panel">
-                    <h2>📋 Kanban (Solo Actividades)</h2>
-                    <div class="kanban">
-                        <div class="kanban-col" id="dashboard-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To Do</h3></div>
-                        <div class="kanban-col" id="dashboard-doing" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Doing</h3></div>
-                        <div class="kanban-col" id="dashboard-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Done</h3></div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -929,7 +957,7 @@
         const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
-        let currentModalTags = []; let currentModalPriority = 'medium';
+        let currentModalTags = []; let currentModalPriority = 'none';
         let monthOffset = 0;
         function prevMonth() { monthOffset--; renderAll(); }
         function nextMonth() { monthOffset++; renderAll(); }
@@ -2013,7 +2041,7 @@
         }
 
         function toggleModalTag(tag) { if (currentModalTags.includes(tag)) currentModalTags = currentModalTags.filter(t => t !== tag); else currentModalTags.push(tag); renderModalTags(); }
-        function setModalPriority(prio) { currentModalPriority = prio; ['low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
+        function setModalPriority(prio) { currentModalPriority = prio; ['none','low','medium','high'].forEach(p => { let el = document.getElementById('btn-prio-'+p); if(el) el.classList.remove('active'); }); let activeEl = document.getElementById('btn-prio-' + prio); if(activeEl) activeEl.classList.add('active'); }
         const subcategoryCustomFields = {
             "Recetas": [
                 { name: "difficulty", label: "Dificultad", type: "select", options: ["Fácil", "Medio", "Difícil"] },
@@ -2126,8 +2154,8 @@
             editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
-                currentModalTags = task.tags || []; setModalPriority(task.priority || 'medium');
+                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category || ''; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory || ''; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
+                currentModalTags = task.tags || []; setModalPriority(task.priority || 'none');
                 document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
                 if(task.recurring) {
                     document.getElementById('m-recurrence-type').value = task.recurrenceType;
@@ -2192,7 +2220,7 @@
                     updateSubcatDropdown(); 
                 }
                 showSocialTip(); renderSubcategoryCustomFields(); 
-                currentModalTags = []; setModalPriority('medium');
+                currentModalTags = []; setModalPriority('none');
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 // Clear custom fields
                 document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
@@ -2370,7 +2398,7 @@
         }
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
-        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
+        function renderUpcomingTasks() { const container = document.getElementById('upcoming-tasks-container'); if(!container) return; container.innerHTML = ''; let upcoming = appState.tasks.filter(t => t.status !== 'done' && t.date && t.subcategory !== 'Wishlist').sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 4); upcoming.forEach(t => { let icon = t.type === 'routine' ? '🔄' : (t.type === 'event' ? '◈' : '○'); container.innerHTML += `<div class="event-item" onclick="openTaskDetails(${t.id})" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;"><span style="font-weight:500;"><span class="icon-symbol">${icon}</span> ${getPriorityEmoji(t)} ${t.title}</span><span style="color:#888; font-size:0.85em;">${t.date}</span></div>`; }); }
         function renderKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let col = document.getElementById(s); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
         
         function renderFocusKanban() { ['todo', 'in-progress', 'done'].forEach(s => { let colId = 'focus-' + s; let col = document.getElementById(colId); if(!col) return; col.innerHTML = `<h3>${s==='todo'?'To-Do':(s==='in-progress'?'In Progress':'Completed')}</h3>`; appState.tasks.filter(t=>t.status===s && t.type==='task').forEach(t=>{ let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="filterByTag('${tag}')">#${tag}</span>`).join(''); col.innerHTML += `<div class="task-card" draggable="true" id="task-${t.id}" ondragstart="drag(event)" onclick="openTaskDetails(${t.id})" style="border-left: 3px solid ${getCatColor(t.category)}"><span class="pill" style="background:${getCatColor(t.category)}; color:#fff; border-color:${getCatColor(t.category)}">${getCatLabel(t.category)}</span><br><span class="task-title">${t.title}</span><div style="margin-top: 8px;">${tagsHTML}</div></div>`; }); }); }
@@ -2408,17 +2436,23 @@
         function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
-            appState.meals = appState.meals || {};
             let days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-            let meals = ['Desayuno', 'Comida', 'Cena'];
-            let html = '<div style="grid-column: 1; font-weight: bold;">Comida</div>';
-            days.forEach(d => html += `<div style="text-align: center; font-weight: bold;">${d}</div>`);
+            let meals = [
+                { label: 'Desayuno', key: 'desayuno' },
+                { label: 'Comida', key: 'almuerzo' },
+                { label: 'Cena', key: 'cena' },
+                { label: 'Snacks 🍓', key: 'snack' }
+            ];
+            let html = '<div class="meal-label">Comida</div>';
+            days.forEach(d => html += `<div class="meal-header">${d}</div>`);
             meals.forEach(meal => {
-                html += `<div style="font-weight: bold;">${meal}</div>`;
+                html += `<div class="meal-label">${meal.label}</div>`;
                 days.forEach((d, i) => {
-                    let key = `${i}-${meal.toLowerCase()}`;
-                    let value = appState.meals[key] || '';
-                    html += `<input type="text" value="${value}" onchange="updateMeal('${key}', this.value)" style="width: 100%; padding: 4px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-dark); font-size: 0.8em;">`;
+                    let jsDay = i === 6 ? 0 : i + 1;
+                    let key = `${jsDay}-${meal.key}`;
+                    let recId = appState.weeklyMenu[key];
+                    let rec = recId ? appState.tasks.find(t => t.id === recId) : null;
+                    html += `<div class="meal-cell" onclick="openMealSelector(${jsDay}, '${meal.key}', '${d}')">${rec ? `<span>${rec.title}</span>` : `<span style=\"color:#aaa;\">+ Agregar</span>`}</div>`;
                 });
             });
             container.innerHTML = html;
@@ -2540,10 +2574,10 @@
                     id: taskIdCounter++,
                     type: 'task',
                     title: text,
-                    category: 'personal',
+                    category: '',
                     subcategory: 'Inbox',
                     date: '',
-                    priority: 'medium',
+                    priority: 'none',
                     status: 'todo',
                     tags: [],
                     notes: ''
@@ -2562,9 +2596,9 @@
             container.innerHTML = '';
             let inboxTasks = appState.tasks.filter(t => t.subcategory === 'Inbox' && t.status !== 'done');
             inboxTasks.forEach(t => {
-                container.innerHTML += `<label class="task-item" style="display:flex; align-items:center; gap:10px; padding:10px; margin-bottom:8px; background: var(--hover-bg); border-radius:8px; cursor:pointer;">
-                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onchange="updateTaskStatus(${t.id}, this.checked)">
-                    <span style="flex:1;">${t.title}</span>
+                container.innerHTML += `<label class="task-item" style="display:flex; align-items:center; gap:10px; padding:10px; margin-bottom:8px; background: var(--hover-bg); border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
+                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onclick="event.stopPropagation(); updateTaskStatus(${t.id}, this.checked)">
+                    <span style="flex:1; cursor:pointer;">${getPriorityEmoji(t)} ${t.title}</span>
                 </label>`;
             });
             if(inboxTasks.length === 0) {
@@ -2609,6 +2643,14 @@
             if (task.priority === 'high') return '⏱️ 45 min';
             if (task.priority === 'low') return '⏱️ 20 min';
             return '⏱️ 30 min';
+        }
+
+        function getPriorityEmoji(task) {
+            if(!task || !task.priority) return '⚪';
+            if(task.priority === 'high') return '🔴';
+            if(task.priority === 'medium') return '🟠';
+            if(task.priority === 'low') return '🔵';
+            return '⚪';
         }
 
         function renderRecipeCard(task) {
