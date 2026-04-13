@@ -878,7 +878,10 @@
                     <div class="panel">
                         <div style="display:flex; justify-content:space-between; align-items:baseline;">
                             <h2>Calendario</h2>
-                            <span class="month-display" style="font-weight:600; color:var(--accent);"></span>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="month-display" style="font-weight:600; color:var(--accent);"></span>
+                                <button class="nav-icon-btn" onclick="switchView('kanban-general')" title="Ver Kanban Global">📊</button>
+                            </div>
                         </div>
                         <div id="cal-global" class="calendar-grid"></div>
                     </div>
@@ -893,6 +896,17 @@
                         <h2>📥 INBOX</h2>
                         <div id="inbox-list" class="panel-inbox-list"></div>
                     </div>
+                </div>
+            </div>
+
+            <div id="dashboard-lists-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px;">
+                <div class="panel" style="border-top-color: var(--color-p3);">
+                    <h2>📅 Próximos Eventos y Cumples</h2>
+                    <div id="dashboard-events-list"></div>
+                </div>
+                <div class="panel" style="border-top-color: var(--color-p2);">
+                    <h2>✅ Mis Tareas Pendientes</h2>
+                    <div id="dashboard-tasks-list"></div>
                 </div>
             </div>
         </div>
@@ -2666,6 +2680,8 @@
             safeRender(renderMealCalendar);
             safeRender(renderMasterEvents); 
             safeRender(renderUpcomingTasks); 
+            safeRender(renderDashboardEvents);
+            safeRender(renderDashboardTasks);
             safeRender(renderMasterView); 
             safeRender(() => renderCalendar('cal-dashboard', 'all')); 
             safeRender(() => renderCalendar('cal-full', 'all')); 
@@ -2778,6 +2794,42 @@
             });
             if(inboxTasks.length === 0) {
                 container.innerHTML = `<div style="color:#777; font-size:0.95em;">La bandeja está vacía. Agrega una tarea rápida arriba.</div>`;
+            }
+        }
+
+        function renderDashboardEvents() {
+            const container = document.getElementById('dashboard-events-list');
+            if(!container) return;
+            container.innerHTML = '';
+            let today = new Date();
+            today.setHours(0,0,0,0);
+            let events = appState.tasks.filter(t => (t.type === 'event' || t.type === 'birthday') && t.status !== 'done' && new Date(t.date) >= today);
+            events.forEach(t => {
+                let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
+                container.innerHTML += `<div class="task-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
+                    <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
+                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                </div>`;
+            });
+            if(events.length === 0) {
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay eventos próximos.</div>`;
+            }
+        }
+
+        function renderDashboardTasks() {
+            const container = document.getElementById('dashboard-tasks-list');
+            if(!container) return;
+            container.innerHTML = '';
+            let tasks = appState.tasks.filter(t => t.type === 'task' && t.status !== 'done');
+            tasks.forEach(t => {
+                let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
+                container.innerHTML += `<div class="task-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
+                    <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
+                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                </div>`;
+            });
+            if(tasks.length === 0) {
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes.</div>`;
             }
         }
 
