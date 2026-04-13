@@ -80,7 +80,7 @@
             grid-template-columns: 0.7fr 1.8fr 0.7fr;
             gap: 30px;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 100px;
         }
 
         #dashboard-bottom-row {
@@ -105,31 +105,41 @@
 
         .meal-grid {
             display: grid;
-            grid-template-columns: 1.5fr repeat(7, 1fr);
-            gap: 8px;
+            grid-template-columns: 80px repeat(7, 1fr);
+            gap: 5px;
+            width: 100%;
+            table-layout: fixed;
             align-items: stretch;
         }
         .meal-grid .meal-label {
             font-weight: 700;
-            padding: 12px 10px;
+            padding: 10px 8px;
             background: rgba(255,255,255,0.75);
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
+            font-size: 0.85em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .meal-grid .meal-header,
         .meal-grid .meal-cell {
-            padding: 10px 8px;
+            padding: 8px 6px;
             background: rgba(255,255,255,0.7);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            min-height: 44px;
+            border-radius: 8px;
+            min-height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             cursor: default;
+            font-size: 0.85em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .meal-grid .meal-cell {
             background: rgba(255,255,255,0.55);
@@ -151,7 +161,7 @@
 
         .meal-grid > * {
             min-height: 30px;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         #main-header-subtitle {
@@ -161,7 +171,7 @@
         }
 
         #main-top-header {
-            position: sticky;
+            position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
@@ -205,7 +215,7 @@
             height: 60px; box-sizing: border-box;
             background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); 
             border-bottom: 1px solid rgba(255, 255, 255, 0.5); 
-            position: sticky; top: 0; z-index: 1000; 
+            position: fixed; top: 0; width: 100%; z-index: 1000; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); 
         }
         .header-nav-pills { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
@@ -255,13 +265,14 @@
         .color-dot:hover { transform: scale(1.2); }
 
         /* MODAL BASE */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
-        .modal { background: var(--panel-bg); padding: 40px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); position: relative; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
+        .modal { background: var(--panel-bg); padding: 40px; border-radius: 20px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); position: relative; border: 1.5px solid var(--border-color); max-height: 90vh; overflow-y: auto; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);}
         .modal h2 { background: transparent; color: var(--text-dark); padding: 0; font-size: 1.8em; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); font-family: 'Playfair Display', serif;}
-        .modal input[type="text"], .modal input[type="date"], .modal input[type="time"], .modal select, .modal textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 0.9em; box-sizing: border-box; outline: none; background: var(--bg-color); color: var(--text-dark); transition: 0.2s;}
+        .modal input[type="text"], .modal input[type="date"], .modal input[type="time"], .modal select, .modal textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 0.9em; box-sizing: border-box; outline: none; background: var(--bg-color); color: var(--text-dark); transition: 0.2s;}
         .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(147, 112, 219, 0.15);}
-        .modal-btn { background: var(--color-p4); color: white; border: none; padding: 14px; width: 100%; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 25px; font-size: 1.05em; transition: 0.2s;}
-        .modal-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);}
+        .modal select option:hover { background: linear-gradient(#b8a8d8, #b8a8d8); }
+        .modal-btn { background: var(--color-p3, #4a148c); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 25px; font-size: 1.05em; transition: 0.2s;}
+        .modal-btn:hover { background: var(--accent-hover, #6a1b9a); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.3);}
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 28px; cursor: pointer; color: #555; font-weight: 300; transition: 0.2s; line-height: 1;}
         .close-modal:hover { color: var(--accent); transform: rotate(90deg);}
 
@@ -281,6 +292,15 @@
         .confirm-actions .yes-btn:hover { filter: brightness(0.95); }
         .confirm-actions .cancel-btn { background: var(--hover-bg); color: var(--text-dark); }
         .confirm-actions .cancel-btn:hover { background: var(--border-color); }
+        
+        /* MEAL SELECTOR MODAL PERSONALIZADO */
+        #mealSelectorModal .modal { max-width: 420px; border-radius: 20px; }
+        #mealSelectorModal #meal-selector-select { background: var(--bg-color); border-radius: 10px; border: 1.5px solid var(--border-color); }
+        #mealSelectorModal #meal-selector-select option { background: var(--bg-color); color: var(--text-dark); padding: 8px; }
+        #mealSelectorModal #meal-selector-select option:hover { background: rgba(210, 180, 234, 0.3); }
+        #mealSelectorModal #meal-selector-select option:checked { background: linear-gradient(rgba(147, 112, 219, 0.2), rgba(147, 112, 219, 0.2)); color: var(--text-dark); }
+        #mealSelectorModal .modal-btn { background: var(--color-p3, #4a148c); }
+        #mealSelectorModal .modal-btn:hover { background: var(--accent-hover, #6a1b9a); }
         
         /* BOTONES PRIORIDAD SEMÁFORO */
         .priority-group { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 15px;}
@@ -541,11 +561,15 @@
 .inv-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px; font-size: 0.9em; }
 .inv-actions button { background: transparent; border: none; cursor: pointer; padding: 2px 5px; border-radius: 4px; transition: 0.2s; }
 .inv-actions button:hover { background: rgba(0,0,0,0.05); transform: scale(1.1); }
-.menu-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.menu-table { table-layout: fixed; width: 100%; border-collapse: collapse; font-size: 0.9em; }
 .menu-table th, .menu-table td { padding: 8px; border: 1px solid var(--border-color); text-align: center; }
+.menu-table td:first-child { width: 16%; }
+.menu-table td { width: 12%; }
 .menu-table th { background: rgba(147,112,219,0.1); color: var(--text-dark); }
-.menu-cell { background: var(--hover-bg); cursor: pointer; transition: 0.2s; border-radius: 4px; padding: 6px 8px; min-height: 34px; font-size: 0.88em; display: inline-flex; align-items: center; justify-content: center; }
-.menu-cell:hover { background: rgba(147,112,219,0.12); border-color: var(--accent); }
+.menu-cell { background: var(--hover-bg); cursor: pointer; transition: 0.2s; border-radius: 6px; padding: 8px 6px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+.menu-cell-filled { background: rgba(210, 180, 234, 0.4); border: 1.5px solid rgba(147, 112, 219, 0.4); }
+.menu-cell:hover { background: rgba(147,112,219,0.15); }
+.menu-cell-filled:hover { background: rgba(210, 180, 234, 0.6); }
 @media (max-width: 768px) { .kitchen-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -720,10 +744,10 @@
             <h2 id="meal-selector-title">Seleccionar receta</h2>
             <div style="margin-top: 15px;">
                 <label style="font-size:0.9em; color:#666; display:block; margin-bottom:8px;">Receta</label>
-                <select id="meal-selector-select" style="width:100%; padding:10px; border:1px solid var(--border-color); border-radius:8px; background: var(--bg-color); color: var(--text-dark);"></select>
+                <select id="meal-selector-select"></select>
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-                <button class="modal-btn" type="button" onclick="closeMealSelectorModal()" style="flex:1; background: rgba(0,0,0,0.08); color: var(--text-dark); border: 1px solid var(--border-color);">Cancelar</button>
+                <button class="modal-btn" type="button" onclick="closeMealSelectorModal()" style="flex:1; background: rgba(100,100,100,0.2); color: var(--text-dark); border: 1px solid var(--border-color); font-weight: 500;">Cancelar</button>
                 <button class="modal-btn" type="button" onclick="saveMealSelection()" style="flex:1;">Guardar</button>
             </div>
         </div>
@@ -1217,7 +1241,10 @@
 
         function closeMealSelectorModal() {
             let modal = document.getElementById('mealSelectorModal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+                localStorage.removeItem('mealSelectorOpen');
+            }
         }
 
         function setMealRecipe(key, recId) {
@@ -2514,6 +2541,7 @@
         function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
+            let recipes = appState.tasks.filter(t => t.category === 'personal' && t.subcategory === 'Recetas');
             let days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
             let meals = [
                 { label: 'Desayuno', key: 'desayuno' },
@@ -2529,8 +2557,9 @@
                     let jsDay = i === 6 ? 0 : i + 1;
                     let key = `${jsDay}-${meal.key}`;
                     let recId = appState.weeklyMenu[key];
-                    let rec = recId ? appState.tasks.find(t => t.id === recId) : null;
-                    html += `<div class="meal-cell" onclick="openMealSelector(${jsDay}, '${meal.key}', '${d}')">${rec ? `<span>${rec.title}</span>` : `<span style=\"color:#aaa;\">+ Agregar</span>`}</div>`;
+                    let rec = recId ? recipes.find(r => r.id === recId) : null;
+                    let cellClass = rec ? 'meal-cell meal-cell-filled' : 'meal-cell';
+                    html += `<div class="${cellClass}" onclick="openMealSelector(${jsDay}, '${meal.key}', '${d}')" title="${rec ? rec.title : 'Agregar receta'}" style="font-size: 1.2em;">${rec ? '✅' : `<span style=\"color:#aaa;\">+</span>`}</div>`;
                 });
             });
             container.innerHTML = html;
@@ -2765,7 +2794,8 @@
             let recId = appState.weeklyMenu[key];
             let rec = recId ? recipes.find(r => r.id === recId) : null;
             let titleText = rec ? rec.title.replace(/"/g, '&quot;') : 'Agregar receta';
-            tableHtml += `<td><div class="menu-cell" onclick="openMealSelector(${jsDay}, '${m}', '${dayName}')" title="${titleText}">${rec ? `✅ ${rec.title}` : '<span style="color:#aaa;">+ Agregar</span>'}</div></td>`;
+            let cellClass = rec ? 'menu-cell menu-cell-filled' : 'menu-cell';
+            tableHtml += `<td><div class="${cellClass}" onclick="openMealSelector(${jsDay}, '${m}', '${dayName}')" title="${titleText}" style="font-size: 1.2em;">${rec ? '✅' : '<span style="color:#aaa;">+</span>'}</div></td>`;
         });
         tableHtml += '</tr>';
     });
