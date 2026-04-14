@@ -66,7 +66,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(280px, 1fr));
+            grid-template-columns: 0.8fr 1.5fr 0.9fr;
             gap: 20px;
             width: 100%;
             margin-top: 20px;
@@ -902,7 +902,7 @@
             #cal-dashboard-container { grid-column: span 2 !important; }
         }
         @media (min-width: 1024px) {
-            .dashboard-grid { grid-template-columns: 1fr 1.5fr 1fr; }
+            .dashboard-grid { grid-template-columns: 0.8fr 1.5fr 0.9fr; }
         }
         @media (max-width: 1024px) {
             .dashboard-grid, #dashboard-bottom-row { grid-template-columns: 1fr; }
@@ -1249,7 +1249,7 @@
         <div id="dashboard-container">
             <div class="dashboard-grid">
 
-                <div class="dashboard-column">
+                <div class="dashboard-column col-left">
                     <section class="widget-card">
                         <div class="widget-header">
                             <div>
@@ -1278,10 +1278,10 @@
                     </section>
                 </div>
 
-                <div class="dashboard-column">
-                    <section class="widget-card image-banner">
-                        <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1400&q=80" alt="Cute header">
-                    </section>
+                <div class="dashboard-column col-center">
+                    <div class="panel banner-panel">
+                        <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=80" alt="Cute header">
+                    </div>
 
                     <section class="widget-card">
                         <div class="calendar-controls">
@@ -1317,13 +1317,21 @@
                     </section>
                 </div>
 
-                <div class="dashboard-column">
+                <div class="dashboard-column col-right">
                     <section class="widget-card">
                         <div class="widget-header">
-                            <h3 class="widget-title">TAREAS</h3>
+                            <h3 class="widget-title">INBOX</h3>
+                            <button class="widget-action-btn" onclick="openTaskModal('task', null, 'personal', 'Inbox')">+</button>
+                        </div>
+                        <div id="inbox-list" class="task-list-scroll"></div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Mis Tareas Pendientes</h3>
                             <div class="widget-row">
                                 <button class="widget-action-btn" onclick="openTaskModal('task')">+</button>
-                                <button class="widget-action-btn" onclick="switchView('kanban-general')">⏱</button>
+                                <button class="widget-action-btn" onclick="toggleDashboardCompleted()">🕒</button>
                             </div>
                         </div>
                         <div id="dashboard-tasks-list" class="task-list-scroll"></div>
@@ -1433,9 +1441,9 @@
         function nextMonth() { monthOffset++; renderAll(); }
 
         let defaultCategories = { 
-            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Recetas', 'Mindfulness', 'Inbox'], customFields: [] }, 
-            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso de Análisis de Datos', 'Maestría', 'Química'], customFields: ['materia', 'profesor', 'grupo'] }, 
-            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs', 'Proyectos'], customFields: [] } 
+            personal: { label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Mindfulness', 'Vida Social', 'Recetas'], customFields: [] }, 
+            escolar: { label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso Análisis de Datos', 'Química', 'Maestría'], customFields: ['materia', 'profesor', 'grupo'] }, 
+            profesional: { label: 'Profesional', color: '#ff9aa2', cover: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80', subcats: ['ENMS Labs'], customFields: [] } 
         };
         let defaultPageData = { 
             "ENMS Labs": { icon: "⌬", cover: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Panel de control para las prácticas de laboratorio.</p>` }, 
@@ -1443,6 +1451,7 @@
             "Recetas": { icon: "◈", cover: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Anota aquí tus platillos favoritos. No olvides agregarles la etiqueta <b>#desayuno</b>, <b>#almuerzo</b>, <b>#cena</b> o <b>#postre</b>.</p>` },
             "Selfcare": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi espacio dedicado a cuidarme por dentro y por fuera.</p>` },
             "Mindfulness": { icon: "✧", cover: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=80", color: "var(--color-p1)", content: `<p>Un espacio para tu práctica diaria de atención plena y bienestar mental.</p>` },
+            "Vida Social": { icon: "❦", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Planea tus eventos sociales, cumpleaños y salidas con amigos.</p>` },
             "Biblioteca": { icon: "¶", cover: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi biblioteca personal. Agrega links de libros, artículos o recursos que quieres leer.</p>`, links: [] },
             "Inbox": { icon: "📥", cover: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Mi bandeja de entrada para ideas rápidas y tareas pendientes.</p>` },
             "Asuntos Sociales": { icon: "❦", cover: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80", color: "var(--accent)", content: `<p>Registro de cumpleaños y salidas con amigos.</p>` }
@@ -1475,7 +1484,7 @@
         ];
 
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits, pantry: [], shoppingList: [], weeklyMenu: {}, enmsWeekPlan: ['', '', '', '', '', ''] };
-        let taskIdCounter = 200; let habitIdCounter = 20; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; 
+        let taskIdCounter = 200; let habitIdCounter = 20; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; let dashboardShowCompletedTasks = true;
 
         // HELPER FUNCTIONS (ANTI-BERRINCHES DE JS)
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
@@ -2246,7 +2255,12 @@
                 if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
                     let taskBars = dayTasks.map(t => { 
                         if (containerId === 'cal-dashboard') {
-                            let sym = (t.type === 'birthday' || (t.tags && t.tags.includes('cumpleaños'))) ? '🎂' : (t.category === 'personal' ? '✧' : t.category === 'escolar' ? '⌬' : '◈');
+                            let sym = '';
+                            if (t.type === 'birthday') sym = '🎂';
+                            else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
+                            else if (t.category === 'personal') sym = '✧';
+                            else if (t.category === 'escolar') sym = '⌬';
+                            else sym = '◈';
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
@@ -3137,7 +3151,8 @@
         function toggleTaskCompletion(taskId, checked) { 
             let task = appState.tasks.find(t => t.id === taskId); 
             if(task) { 
-                task.archived = checked; 
+                task.status = checked ? 'done' : 'todo';
+                task.archived = checked;
                 saveToMemory(); 
                 renderAll(); 
                 let subpage = document.getElementById('subpage-view'); 
@@ -3336,7 +3351,7 @@
             const container = document.getElementById('dashboard-tasks-list');
             if(!container) return;
             container.innerHTML = '';
-            const tasks = appState.tasks.filter(t => t.type === 'task' && t.subcategory !== 'Recetas');
+            const tasks = appState.tasks.filter(t => t.type === 'task' && t.subcategory !== 'Recetas' && t.type !== 'routine' && (dashboardShowCompletedTasks || t.status !== 'done'));
             if (tasks.length === 0) {
                 container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes.</div>`;
                 return;
@@ -3354,6 +3369,11 @@
                     </div>
                 `;
             });
+        }
+
+        function toggleDashboardCompleted() {
+            dashboardShowCompletedTasks = !dashboardShowCompletedTasks;
+            renderDashboardTasks();
         }
 
         function renderDashboardHabits() {
@@ -3416,15 +3436,16 @@
         }
 
         function assignENMS(week, idx) {
-            let materia = prompt("Elegir materia: 1-Experimentación, 2-Orgánica, 3-Química II, 4-Personal");
+            let materia = prompt("Elegir materia: 1-Experimentación, 2-Orgánica, 3-Química II");
             let grupo = '';
             if(materia === '1') grupo = 'A';
             else if(materia === '2') grupo = 'B';
             else if(materia === '3') grupo = 'C';
-            else if(materia === '4') grupo = 'D';
             if(grupo) {
+                if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', ''];
                 if(!appState.enmsWeekPlan[week]) appState.enmsWeekPlan[week] = '';
                 let arr = appState.enmsWeekPlan[week].split('');
+                while(arr.length <= idx) arr.push('');
                 arr[idx] = grupo;
                 appState.enmsWeekPlan[week] = arr.join('');
                 saveToMemory();
@@ -3433,10 +3454,9 @@
         }
 
         function getProfesorForGrupo(grupo) {
-            if(grupo === 'A') return 'Prof. Exp';
-            if(grupo === 'B') return 'Prof. Org';
-            if(grupo === 'C') return 'Prof. QII';
-            if(grupo === 'D') return 'Personal';
+            if(grupo === 'A') return 'Prof. Experimentación';
+            if(grupo === 'B') return 'Prof. Orgánica';
+            if(grupo === 'C') return 'Prof. Química II';
             return '';
         }
 
