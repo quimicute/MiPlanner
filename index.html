@@ -60,33 +60,374 @@
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px 20px 20px;
+            padding: 28px 24px 24px;
             box-sizing: border-box;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 0.7fr 1.8fr 0.7fr;
-            gap: 30px;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        #dashboard {
-            margin-top: 100px;
-        }
-
-        #dashboard-bottom-row {
-            display: grid;
-            grid-template-columns: 1fr 2.5fr; /* Horario ENMS a la izq, Kanban a la der */
+            grid-template-columns: repeat(3, minmax(280px, 1fr));
             gap: 20px;
-            margin-top: 20px;
             width: 100%;
+            margin-top: 20px;
+            align-items: start;
         }
 
-        .dashboard-sidebar-list {
-            max-height: 300px;
+        .dashboard-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget-card {
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 22px;
+            padding: 24px;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: var(--text-dark);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .widget-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.14);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .widget-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45em;
+            font-weight: 600;
+            margin: 0;
+            color: var(--color-p6);
+        }
+
+        .widget-subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.4em;
+            color: var(--accent);
+            margin: 0;
+        }
+
+        .widget-action-btn,
+        .module-nav-btn {
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--text-dark);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
+            padding: 10px 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .widget-action-btn:hover,
+        .module-nav-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+        }
+
+        .image-banner {
+            position: relative;
+            overflow: hidden;
+            min-height: 260px;
+            border-radius: 24px;
+            padding: 0;
+        }
+
+        .image-banner img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 24px;
+            filter: saturate(1.05) brightness(1.04);
+        }
+
+        .image-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.12));
+            pointer-events: none;
+        }
+
+        .calendar-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-controls .month-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 10px;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .cal-day {
+            min-height: 96px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.82);
+            padding: 12px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease;
+        }
+
+        .cal-day.today {
+            border-color: rgba(123, 104, 238, 0.6);
+            box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.12);
+        }
+
+        .cal-day:hover {
+            transform: translateY(-1px);
+        }
+
+        .day-num {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.05em;
+            color: var(--color-p4);
+        }
+
+        .indicator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: flex-end;
+            margin-top: 10px;
+        }
+
+        .cal-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.4);
+        }
+
+        .widget-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .module-nav-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .lab-schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92em;
+        }
+
+        .lab-schedule-table th,
+        .lab-schedule-table td {
+            border: 1px solid rgba(150,150,150,0.18);
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .lab-schedule-table th {
+            background: rgba(255,255,255,0.7);
+            color: var(--color-p6);
+            font-weight: 700;
+        }
+
+        .lab-schedule-table td {
+            background: rgba(255,255,255,0.85);
+            min-height: 46px;
+        }
+
+        .event-group {
+            margin-bottom: 18px;
+        }
+
+        .event-group-header {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #6a5876;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .event-group-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -8px;
+            height: 1px;
+            background: rgba(135, 85, 183, 0.15);
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(255,255,255,0.7);
+            margin-bottom: 10px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .event-item:hover {
+            transform: translateY(-1px);
+        }
+
+        .event-item .event-meta {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            color: #7e6d86;
+            font-size: 0.88em;
+        }
+
+        .task-list-scroll,
+        .habit-list {
+            max-height: 420px;
             overflow-y: auto;
+            display: grid;
+            gap: 12px;
+            padding-right: 4px;
+        }
+
+        .task-list-scroll::-webkit-scrollbar,
+        .habit-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .task-list-scroll::-webkit-scrollbar-thumb,
+        .habit-list::-webkit-scrollbar-thumb {
+            background: rgba(115, 72, 203, 0.28);
+            border-radius: 999px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 18px;
+            transition: background 0.2s ease;
+        }
+
+        .task-item.completed .task-label {
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+
+        .task-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95em;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .task-meta {
+            font-size: 0.82em;
+            color: #8c6ab7;
+            white-space: nowrap;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-hover);
+        }
+
+        .habit-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 18px;
+        }
+
+        .habit-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 160px;
+        }
+
+        .habit-dots {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        .habit-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(146, 151, 197, 0.35);
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+
+        .habit-dot.done {
+            background: #6e57ef;
+        }
+
+        .habit-streak {
+            font-size: 0.88em;
+            color: #5f3c83;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Ajustes para móvil */
@@ -907,57 +1248,94 @@
     <div id="dashboard" class="view-section active">
         <div id="dashboard-container">
             <div class="dashboard-grid">
-                <div class="col-left">
-                    <div class="panel" style="text-align: center; border-top-color: var(--color-p4);">
-                        <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 2.5em; font-weight: 700; color: #4a148c;"></div>
-                        <div id="date-widget" style="font-size: 0.9em; color: #666; margin-bottom: 15px;"></div>
-                        <div id="lyric-quote" style="border-top: 1px solid #eee; padding-top: 15px;"></div>
-                    </div>
-                    <div class="panel" style="border-top-color: var(--color-p2);">
-                        <h2>📅 Próximos Eventos y Cumples</h2>
-                        <div id="dashboard-events-list" class="dashboard-sidebar-list"></div>
-                    </div>
-                    <div class="panel" style="border-top-color: var(--color-p3);">
-                        <h2>📅 Horario Semanal de Laboratorio</h2>
-                        <div id="weekly-schedule-grid"></div>
-                    </div>
-                </div>
 
-                <div class="col-center">
-                    <div class="panel">
-                        <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                            <h2>Calendario</h2>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <button class="nav-icon-btn" onclick="prevMonth()" title="Mes anterior">❮</button>
-                                <span class="month-display" style="font-weight:600; color:var(--accent);"></span>
-                                <button class="nav-icon-btn" onclick="nextMonth()" title="Mes siguiente">❯</button>
-                                <button class="nav-icon-btn" onclick="switchView('kanban-general')" title="Ver Kanban Global">📊</button>
+                <div class="dashboard-column">
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <div>
+                                <p class="widget-subtitle">Life Planner by Quimicute</p>
+                                <h3 class="widget-title">Bienvenida</h3>
                             </div>
                         </div>
-                        <div id="cal-global" class="calendar-grid"></div>
-                    </div>
-                    <div class="panel" style="border-top-color: var(--color-p1);">
-                        <h2>🍎 Menú Semanal</h2>
-                        <div id="meal-calendar" class="meal-grid"></div>
-                    </div>
+                        <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 3.4em; font-weight: 800; color: var(--color-p4); line-height: 1; margin-bottom: 10px;"></div>
+                        <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 0.95em; color: #66587c; margin-bottom: 20px;"></div>
+                        <div id="lyric-quote" style="padding: 18px 12px 0 12px; border-top: 1px solid rgba(123,104,238,0.12);"></div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Próximos Eventos</h3>
+                            <button class="widget-action-btn" onclick="openTaskModal('event')">+</button>
+                        </div>
+                        <div id="dashboard-events-list"></div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Horario Semanal de Laboratorio</h3>
+                        </div>
+                        <div id="weekly-schedule-grid"></div>
+                    </section>
                 </div>
 
-                <div class="col-right">
-                    <div class="panel" style="border-top-color: #b366ff; padding: 16px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <h2 style="margin: 0; font-size: 1.3em;">📥 INBOX</h2>
-                            <button class="add-small-btn" onclick="openTaskModal('task', null, 'personal', 'Inbox')" style="background: var(--accent); color: white; border: none; width: 32px; height: 32px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;" title="Nueva tarea rápida">+</button>
+                <div class="dashboard-column">
+                    <section class="widget-card image-banner">
+                        <img src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1400&q=80" alt="Cute header">
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="calendar-controls">
+                            <div>
+                                <p class="widget-subtitle">Plan Mensual</p>
+                                <h3 class="widget-title">Calendario</h3>
+                            </div>
+                            <div class="widget-row">
+                                <button class="widget-action-btn" onclick="prevMonth()">❮</button>
+                                <span class="month-label month-display"></span>
+                                <button class="widget-action-btn" onclick="nextMonth()">❯</button>
+                            </div>
                         </div>
-                        <div id="inbox-list" class="panel-inbox-list" style="max-height: 250px; overflow-y: auto;"></div>
-                    </div>
-                    <div class="panel" style="border-top-color: var(--color-p2);">
-                        <h2>✅ Mis Tareas Pendientes</h2>
-                        <div id="dashboard-tasks-list" class="dashboard-sidebar-list"></div>
-                    </div>
-                    <div class="panel" style="border-top-color: var(--color-p3);">
-                        <h2>🌿 Hábitos Diarios</h2>
-                        <div id="dashboard-habits-list"></div>
-                    </div>
+                        <div id="cal-dashboard" class="calendar-grid"></div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Navegación</h3>
+                        </div>
+                        <div class="module-nav-row">
+                            <button class="module-nav-btn" onclick="switchView('mod-personal')">PERSO</button>
+                            <button class="module-nav-btn" onclick="switchView('mod-escolar')">ACAD.</button>
+                            <button class="module-nav-btn" onclick="switchView('mod-profesional')">PROF.</button>
+                        </div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Menú Semanal</h3>
+                        </div>
+                        <div id="meal-calendar" class="meal-grid"></div>
+                    </section>
+                </div>
+
+                <div class="dashboard-column">
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">TAREAS</h3>
+                            <div class="widget-row">
+                                <button class="widget-action-btn" onclick="openTaskModal('task')">+</button>
+                                <button class="widget-action-btn" onclick="switchView('kanban-general')">⏱</button>
+                            </div>
+                        </div>
+                        <div id="dashboard-tasks-list" class="task-list-scroll"></div>
+                    </section>
+
+                    <section class="widget-card">
+                        <div class="widget-header">
+                            <h3 class="widget-title">Hábitos Diarios</h3>
+                            <button class="widget-action-btn" onclick="openHabitModal()">+</button>
+                        </div>
+                        <div id="dashboard-habits-list" class="habit-list"></div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -2863,10 +3241,10 @@
             if (quoteEl) {
                 const item = MIS_LYRICS[Math.floor(Math.random() * MIS_LYRICS.length)];
                 quoteEl.innerHTML = `
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.2em; color: var(--text-dark); line-height: 1.4;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 1.18em; color: var(--text-dark); line-height: 1.45;">
                         "${item.texto}"
                     </div>
-                    <div style="text-align: right; margin-top: 8px; font-size: 0.85em; color: var(--color-p6); font-weight: 500; font-family: 'Inter', sans-serif;">
+                    <div style="text-align: right; margin-top: 12px; font-size: 0.86em; color: rgba(59,23,35,0.92); font-weight: 600; font-family: 'Inter', sans-serif;">
                         — ${item.autor}
                     </div>
                 `;
@@ -2917,17 +3295,39 @@
             const container = document.getElementById('dashboard-events-list');
             if(!container) return;
             container.innerHTML = '';
-            let today = new Date();
+            const today = new Date();
             today.setHours(0,0,0,0);
-            let events = appState.tasks.filter(t => (t.type === 'event' || t.type === 'birthday') && t.status !== 'done' && new Date(t.date) >= today);
+            const groups = { HOY: [], MAÑANA: [], '1 SEMANA': [] };
+            const events = appState.tasks.filter(t => (t.type === 'event' || t.type === 'birthday') && t.status !== 'done' && t.date);
             events.forEach(t => {
-                let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
-                container.innerHTML += `<div class="task-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
-                    <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
-                    <span style="color:#888; font-size:0.85em;">📅 ${t.date} | ⏰ ${t.time || 'Todo el día'}</span>
-                </div>`;
+                const date = new Date(t.date);
+                date.setHours(0,0,0,0);
+                const diff = Math.round((date - today) / 86400000);
+                if (diff === 0) groups.HOY.push(t);
+                else if (diff === 1) groups.MAÑANA.push(t);
+                else if (diff >= 2) groups['1 SEMANA'].push(t);
             });
-            if(events.length === 0) {
+
+            const formatDate = d => d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            Object.entries(groups).forEach(([label, items]) => {
+                if (!items.length) return;
+                container.innerHTML += `<div class="event-group"><div class="event-group-header">${label}</div>`;
+                items.forEach(t => {
+                    const date = new Date(t.date);
+                    const dateLabel = !isNaN(date) ? formatDate(date) : 'Sin fecha';
+                    container.innerHTML += `
+                        <div class="event-item" onclick="openTaskModal(null, ${t.id})">
+                            <div>
+                                <div style="font-weight:700; color: var(--color-p4);">${getPriorityEmoji(t)} ${t.title}</div>
+                                <div class="event-meta">${t.category ? `#${t.category}` : 'Evento'}</div>
+                            </div>
+                            <div class="event-meta">${dateLabel} · ${t.time || 'Todo el día'}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML += `</div>`;
+            });
+            if (!Object.values(groups).flat().length) {
                 container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay eventos próximos.</div>`;
             }
         }
@@ -2936,73 +3336,82 @@
             const container = document.getElementById('dashboard-tasks-list');
             if(!container) return;
             container.innerHTML = '';
-            let tasks = appState.tasks.filter(t => t.type === 'task' && t.status !== 'done' && t.subcategory !== 'Recetas');
-            tasks.forEach(t => {
-                let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
-                let archivedClass = t.archived ? 'task-archived' : '';
-                container.innerHTML += `<div class="task-item ${archivedClass}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
-                    <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
-                    <input type="checkbox" ${t.archived ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
-                </div>`;
-            });
-            if(tasks.length === 0) {
+            const tasks = appState.tasks.filter(t => t.type === 'task' && t.subcategory !== 'Recetas');
+            if (tasks.length === 0) {
                 container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes.</div>`;
+                return;
             }
+            tasks.forEach(t => {
+                const completed = t.status === 'done';
+                const meta = t.date ? `${t.date}` : (t.category ? `${t.category}` : 'Sin fecha');
+                container.innerHTML += `
+                    <div class="task-item ${completed ? 'completed' : ''}" onclick="openTaskModal(null, ${t.id})">
+                        <div style="display:flex; align-items:center; gap:12px; flex:1;">
+                            <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                            <div class="task-label">${getPriorityEmoji(t)} ${t.title}</div>
+                        </div>
+                        <div class="task-meta">${meta}</div>
+                    </div>
+                `;
+            });
         }
 
         function renderDashboardHabits() {
             const container = document.getElementById('dashboard-habits-list');
             if(!container) return;
             container.innerHTML = '';
-            let habits = appState.habits.filter(h => isHabitDueToday(h));
-            if(habits.length === 0) {
-                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay hábitos para hoy.</div>`;
+            const habits = appState.habits || [];
+            if (habits.length === 0) {
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay hábitos definidos aún.</div>`;
                 return;
             }
-            container.innerHTML = '<div class="habit-tracker">';
             habits.forEach(h => {
+                const streak = h.streak || 0;
+                const frequency = h.frequency ? `• ${h.frequency}` : '• Frecuencia diaria';
                 let dots = '';
-                for(let i=0; i<7; i++) {
-                    let isDone = i < h.streak; // Simplificar: colorear los últimos streak días
-                    dots += `<div class="habit-dot ${isDone ? 'done' : ''}"></div>`;
+                for (let i = 0; i < 7; i++) {
+                    dots += `<div class="habit-dot ${i < streak ? 'done' : ''}"></div>`;
                 }
                 container.innerHTML += `
-                    <div class="habit-row">
-                        <div class="habit-name">${h.title}</div>
+                    <div class="habit-row" onclick="openHabitModal(${h.id || 'null'})">
+                        <div style="display:flex; flex-direction:column; gap:4px; min-width: 150px;">
+                            <div class="habit-name">${h.title}</div>
+                            <div style="font-size:0.85em; color:#7b6a91;">${frequency}</div>
+                        </div>
                         <div class="habit-dots">${dots}</div>
-                        <div class="habit-streak">🔥 ${h.streak}</div>
+                        <div class="habit-streak">🔥 ${streak}</div>
                     </div>
                 `;
             });
-            container.innerHTML += '</div>';
         }
 
         let currentWeek = 0;
         function renderWeeklySchedule() {
             const container = document.getElementById('weekly-schedule-grid');
             if(!container) return;
-            let weekData = appState.enmsWeekPlan[currentWeek] || '';
-            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <button class="nav-icon-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
-                <span>Semana ${currentWeek + 1}</span>
-                <button class="nav-icon-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
+            const weekData = appState.enmsWeekPlan[currentWeek] || '';
+            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px;">
+                <button class="widget-action-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
+                <span style="font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--color-p6);">Semana ${currentWeek + 1}</span>
+                <button class="widget-action-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
             </div>`;
-            html += '<div style="display:grid; grid-template-columns: 60px repeat(5, 1fr); gap:2px; font-size:0.8em;">';
-            html += '<div></div><div>L</div><div>M</div><div>M</div><div>J</div><div>V</div>';
-            for(let h=8; h<=16; h++) {
-                html += `<div>${h}:00</div>`;
-                for(let d=1; d<=5; d++) {
-                    let idx = (h-8)*5 + (d-1);
-                    let grupo = weekData[idx] || '';
-                    let color = '';
-                    if(grupo === 'A') color = '#4CAF50'; // Verde Experimentación
-                    else if(grupo === 'B') color = '#000080'; // Azul Marino Orgánica
-                    else if(grupo === 'C') color = '#FDD835'; // Amarillo Química II
-                    else if(grupo === 'D') color = '#FFC0CB'; // Rosa Personal
-                    html += `<div style="background:${color}; border:1px solid #ccc; min-height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="assignENMS(${currentWeek}, ${idx})" title="Profesor: ${getProfesorForGrupo(grupo)}">${grupo}</div>`;
+            html += '<table class="lab-schedule-table">';
+            html += '<thead><tr><th>Hora</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th></tr></thead><tbody>';
+            for(let hour = 8; hour <= 16; hour++) {
+                html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
+                for(let day = 1; day <= 5; day++) {
+                    const idx = (hour - 8) * 5 + (day - 1);
+                    const grupo = weekData[idx] || '';
+                    let color = 'transparent';
+                    if (grupo === 'A') color = '#d4f7dc';
+                    else if (grupo === 'B') color = '#dbe7ff';
+                    else if (grupo === 'C') color = '#fff4c2';
+                    else if (grupo === 'D') color = '#ffdced';
+                    html += `<td style="background:${color}; cursor:pointer;" onclick="assignENMS(${currentWeek}, ${idx})" title="${grupo ? getProfesorForGrupo(grupo) : 'Asignar materia'}">${grupo}</td>`;
                 }
+                html += '</tr>';
             }
-            html += '</div>';
+            html += '</tbody></table>';
             container.innerHTML = html;
         }
 
