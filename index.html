@@ -236,9 +236,12 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); 
         }
         .header-nav-pills { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
-        .nav-pill { background: rgba(57, 69, 85, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); color: #ffffff; padding: 6px 16px; border-radius: 30px; font-family: 'Playfair Display', serif; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .nav-pill:hover { background: rgba(57, 69, 85, 0.85); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .nav-pill.active { background: rgba(147, 112, 219, 0.8); color: #ffffff; }
+        .nav-pill { background: linear-gradient(135deg, #394555, #797A7C); color: #ffffff; padding: 10px 20px; border-radius: 50px; font-family: 'Playfair Display', serif; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: none; position: relative; }
+        .nav-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .nav-pill.active { background: linear-gradient(135deg, #a78bfa, #c4b5fd); color: #ffffff; }
+        .nav-pill.personal { background: linear-gradient(135deg, #F6D7DC, #3B1723); }
+        .nav-pill.escolar { background: linear-gradient(135deg, #7b68ee, #a78bfa); }
+        .nav-pill.profesional { background: linear-gradient(135deg, #394555, #797A7C); }
 
         .header-top-row { display: flex; align-items: center; gap: 10px; }
         .header-left { 
@@ -271,7 +274,43 @@
 
         .item-row { padding: 5px 0; font-size: 0.9em; color: var(--text-dark); }
         .task-card { padding: 10px; font-size: 0.85em; }
-        .task-archived { text-decoration: line-through; opacity: 0.5; }
+        .habit-tracker {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .habit-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: var(--hover-bg);
+            border-radius: 8px;
+        }
+        .habit-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .habit-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .habit-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .habit-dot.done {
+            background: var(--accent);
+        }
+        .habit-streak {
+            font-size: 0.9em;
+            color: var(--accent);
+            font-weight: 600;
+        }
         
         /* CLICK DERECHO - CONTEXT MENU */
         .context-menu { display: none; position: absolute; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 9999; flex-direction: column; padding: 8px; min-width: 180px; animation: popMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -606,11 +645,11 @@
             </div>
         </div>
         <div class="header-nav-pills">
-            <button class="nav-pill" id="nav-personal" onclick="toggleCategoryPopover('personal', this)"><span class="icon">✧</span><span class="text"> Personal</span></button>
+            <button class="nav-pill personal" id="nav-personal" onclick="toggleCategoryPopover('personal', this)"><span class="icon">✧</span><span class="text"> Personal</span></button>
             <div class="category-popover" id="popover-personal"></div>
-            <button class="nav-pill" id="nav-escolar" onclick="toggleCategoryPopover('escolar', this)"><span class="icon">⌬</span><span class="text"> Académico</span></button>
+            <button class="nav-pill escolar" id="nav-escolar" onclick="toggleCategoryPopover('escolar', this)"><span class="icon">⌬</span><span class="text"> Académico</span></button>
             <div class="category-popover" id="popover-escolar"></div>
-            <button class="nav-pill" id="nav-profesional" onclick="toggleCategoryPopover('profesional', this)"><span class="icon">◈</span><span class="text"> Profesional</span></button>
+            <button class="nav-pill profesional" id="nav-profesional" onclick="toggleCategoryPopover('profesional', this)"><span class="icon">◈</span><span class="text"> Profesional</span></button>
             <div class="category-popover" id="popover-profesional"></div>
         </div>
     </header>
@@ -854,6 +893,14 @@
                 <!-- Fields will be rendered here -->
             </div>
             <button class="modal-btn" onclick="saveSubcatConfig()">Guardar Cambios</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="moduleModal" onclick="if(event.target===this) closeModuleModal()">
+        <div class="modal">
+            <span class="close-modal" onclick="closeModuleModal()">×</span>
+            <h2 id="module-modal-title">Módulo</h2>
+            <div id="module-modal-content"></div>
         </div>
     </div>
 
@@ -1194,7 +1241,7 @@
         function deleteQuickNote(idx) { customConfirm("¿Borrar nota?", () => { appState.quickNotesList.splice(idx, 1); saveToMemory(); renderQuickNotes(); }); }
 
         function customConfirm(message, callback) { const overlay = document.getElementById('confirmModalOverlay'); if(!overlay) { if(confirm(message)) callback(); return; } overlay.querySelector('.confirm-message').innerText = message; overlay.style.display = 'flex'; window._confirmCallback = callback; }
-        function closeConfirmModal() { const overlay = document.getElementById('confirmModalOverlay'); if(overlay) overlay.style.display = 'none'; window._confirmCallback = null; }
+        function closeConfirmModal() { const overlay = document.getElementById('confirmModalOverlay'); if(overlay) overlay.style.display = 'none'; window._confirmCallback = null; document.body.style.filter = ''; document.body.style.overflow = ''; }
         function confirmModalYes() { if(window._confirmCallback) window._confirmCallback(); closeConfirmModal(); }
 
         function addKitchenItem(type) {
@@ -1244,6 +1291,8 @@
                 modal.style.display = 'none';
                 localStorage.removeItem('mealSelectorOpen');
             }
+            document.body.style.filter = '';
+            document.body.style.overflow = '';
         }
 
         function setMealRecipe(key, recId) {
@@ -1419,7 +1468,7 @@
             }
             toggleHabitCustomFields();
         }
-        function closeHabitModal() { let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'none'; }
+        function closeHabitModal() { let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'none'; document.body.style.filter = ''; document.body.style.overflow = ''; }
         function toggleHabitCustomFields() {
             let freq = document.getElementById('h-freq').value;
             let customEl = document.getElementById('habit-custom-fields');
@@ -1518,7 +1567,7 @@
             document.getElementById('subcat-config-modal-title').innerText = 'Configurar Campos - ' + currentConfigSubcat;
             renderFieldsList();
         }
-        function closeSubcatConfigModal() { let modal = document.getElementById('subcatConfigModal'); if(modal) modal.style.display = 'none'; currentConfigSubcat = null; }
+        function closeSubcatConfigModal() { let modal = document.getElementById('subcatConfigModal'); if(modal) modal.style.display = 'none'; currentConfigSubcat = null; document.body.style.filter = ''; document.body.style.overflow = ''; }
         function renderFieldsList() {
             let list = document.getElementById('fields-list');
             if(!list || !currentConfigSubcat) return;
@@ -2104,12 +2153,34 @@
             let cat = appState.categories[catKey];
             if (!cat) return;
             popover.innerHTML = cat.subcats.map(subcat => `
-                <button onclick="openSubpage('${catKey}', '${subcat}'); closeAllPopovers();">${subcat}</button>
+                <button onclick="openModuleModal('${catKey}', '${subcat}'); closeAllPopovers();">${subcat}</button>
             `).join('');
         }
 
         function closeAllPopovers() {
             document.querySelectorAll('.category-popover').forEach(p => p.classList.remove('active'));
+        }
+
+        function openModuleModal(catKey, subcat) {
+            const modal = document.getElementById('moduleModal');
+            const title = document.getElementById('module-modal-title');
+            const content = document.getElementById('module-modal-content');
+            title.textContent = subcat;
+            let tasks = appState.tasks.filter(t => t.category === catKey && t.subcategory === subcat);
+            content.innerHTML = tasks.map(t => `
+                <div class="task-card" onclick="openTaskDetails(${t.id})">
+                    <b>${t.title}</b>
+                    <div>${t.date || ''} ${t.time || ''}</div>
+                </div>
+            `).join('');
+            modal.style.display = 'flex';
+        }
+
+        function closeModuleModal() {
+            const modal = document.getElementById('moduleModal');
+            modal.style.display = 'none';
+            document.body.style.filter = '';
+            document.body.style.overflow = '';
         }
 
         // Cerrar popovers al hacer clic fuera
@@ -2449,7 +2520,7 @@
             toggleCustomFields(); window.currentEditId = taskId;
         }
         
-        function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; }
+        function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; document.body.style.filter = ''; document.body.style.overflow = ''; }
 
         function openTaskDetails(taskId) {
             window.currentTaskId = taskId;
@@ -2883,19 +2954,27 @@
             const container = document.getElementById('dashboard-habits-list');
             if(!container) return;
             container.innerHTML = '';
-            let dueHabits = appState.habits.filter(h => !isHabitDone(h) && isHabitDueToday(h));
-            dueHabits.forEach(h => {
-                container.innerHTML += `<div class="task-card" style="margin-bottom:8px;">
-                    <label class="habit-left">
-                        <input type="checkbox" onchange="toggleHabit(${h.id})">
-                        <span>${h.title}</span>
-                    </label>
-                    <span class="streak-pill">🔥 ${h.streak}</span>
-                </div>`;
-            });
-            if(dueHabits.length === 0) {
-                container.innerHTML = `<div style="color:#777; font-size:0.95em;">Todos los hábitos completados hoy. 🌟</div>`;
+            let habits = appState.habits.filter(h => isHabitDueToday(h));
+            if(habits.length === 0) {
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay hábitos para hoy.</div>`;
+                return;
             }
+            container.innerHTML = '<div class="habit-tracker">';
+            habits.forEach(h => {
+                let dots = '';
+                for(let i=0; i<7; i++) {
+                    let isDone = i < h.streak; // Simplificar: colorear los últimos streak días
+                    dots += `<div class="habit-dot ${isDone ? 'done' : ''}"></div>`;
+                }
+                container.innerHTML += `
+                    <div class="habit-row">
+                        <div class="habit-name">${h.title}</div>
+                        <div class="habit-dots">${dots}</div>
+                        <div class="habit-streak">🔥 ${h.streak}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML += '</div>';
         }
 
         let currentWeek = 0;
