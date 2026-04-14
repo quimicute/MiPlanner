@@ -85,7 +85,7 @@
         }
 
         .dashboard-sidebar-list {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -271,6 +271,7 @@
 
         .item-row { padding: 5px 0; font-size: 0.9em; color: var(--text-dark); }
         .task-card { padding: 10px; font-size: 0.85em; }
+        .task-archived { text-decoration: line-through; opacity: 0.5; }
         
         /* CLICK DERECHO - CONTEXT MENU */
         .context-menu { display: none; position: absolute; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 9999; flex-direction: column; padding: 8px; min-width: 180px; animation: popMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -869,6 +870,10 @@
                         <h2>📅 Próximos Eventos y Cumples</h2>
                         <div id="dashboard-events-list" class="dashboard-sidebar-list"></div>
                     </div>
+                    <div class="panel" style="border-top-color: var(--color-p3);">
+                        <h2>📅 Horario Semanal de Laboratorio</h2>
+                        <div id="weekly-schedule-grid"></div>
+                    </div>
                 </div>
 
                 <div class="col-center">
@@ -876,7 +881,9 @@
                         <div style="display:flex; justify-content:space-between; align-items:baseline;">
                             <h2>Calendario</h2>
                             <div style="display:flex; align-items:center; gap:10px;">
+                                <button class="nav-icon-btn" onclick="prevMonth()" title="Mes anterior">❮</button>
                                 <span class="month-display" style="font-weight:600; color:var(--accent);"></span>
+                                <button class="nav-icon-btn" onclick="nextMonth()" title="Mes siguiente">❯</button>
                                 <button class="nav-icon-btn" onclick="switchView('kanban-general')" title="Ver Kanban Global">📊</button>
                             </div>
                         </div>
@@ -899,6 +906,10 @@
                     <div class="panel" style="border-top-color: var(--color-p2);">
                         <h2>✅ Mis Tareas Pendientes</h2>
                         <div id="dashboard-tasks-list" class="dashboard-sidebar-list"></div>
+                    </div>
+                    <div class="panel" style="border-top-color: var(--color-p3);">
+                        <h2>🌿 Hábitos Diarios</h2>
+                        <div id="dashboard-habits-list"></div>
                     </div>
                 </div>
             </div>
@@ -2674,7 +2685,16 @@
             saveToMemory();
         }
         
-        function toggleTaskCompletion(taskId, checked) { let task = appState.tasks.find(t => t.id === taskId); if(task) { task.status = checked ? 'done' : 'todo'; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(task.category, task.subcategory); } }
+        function toggleTaskCompletion(taskId, checked) { 
+            let task = appState.tasks.find(t => t.id === taskId); 
+            if(task) { 
+                task.archived = checked; 
+                saveToMemory(); 
+                renderAll(); 
+                let subpage = document.getElementById('subpage-view'); 
+                if(subpage && subpage.classList.contains('active')) renderSubpageTasks(task.category, task.subcategory); 
+            } 
+        }
         function saveENMSWeekPlan(index, value) { if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', '']; appState.enmsWeekPlan[index] = value; saveToMemory(); }
         function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
         function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskDetails(${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : (t.type === 'birthday' ? '🎂' : '○')}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
@@ -2693,6 +2713,8 @@
             safeRender(renderQuickTodos); 
             safeRender(renderRecetasWidget); 
             safeRender(renderHabitsWidget);
+            safeRender(renderDashboardHabits);
+            safeRender(renderWeeklySchedule);
             safeRender(() => renderModule('personal', 'render-personal')); 
             safeRender(() => renderModule('escolar', 'render-escolar')); 
             safeRender(() => renderModule('profesional', 'render-profesional')); 
@@ -2773,7 +2795,7 @@
                     <div style="font-family: 'Playfair Display', serif; font-size: 1.2em; color: var(--text-dark); line-height: 1.4;">
                         "${item.texto}"
                     </div>
-                    <div style="text-align: right; margin-top: 8px; font-size: 0.85em; color: #3B1723; font-weight: 500; font-family: 'Inter', sans-serif;">
+                    <div style="text-align: right; margin-top: 8px; font-size: 0.85em; color: var(--color-p6); font-weight: 500; font-family: 'Inter', sans-serif;">
                         — ${item.autor}
                     </div>
                 `;
@@ -2831,7 +2853,7 @@
                 let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
                 container.innerHTML += `<div class="task-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
                     <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
-                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                    <span style="color:#888; font-size:0.85em;">📅 ${t.date} | ⏰ ${t.time || 'Todo el día'}</span>
                 </div>`;
             });
             if(events.length === 0) {
@@ -2843,17 +2865,91 @@
             const container = document.getElementById('dashboard-tasks-list');
             if(!container) return;
             container.innerHTML = '';
-            let tasks = appState.tasks.filter(t => t.type === 'task' && t.status !== 'done');
+            let tasks = appState.tasks.filter(t => t.type === 'task' && t.status !== 'done' && t.subcategory !== 'Recetas');
             tasks.forEach(t => {
                 let bgColor = t.category === 'escolar' ? 'rgba(246, 215, 220, 0.3)' : 'var(--hover-bg)';
-                container.innerHTML += `<div class="task-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
+                let archivedClass = t.archived ? 'task-archived' : '';
+                container.innerHTML += `<div class="task-item ${archivedClass}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; margin-bottom:8px; background: ${bgColor}; border-radius:8px; cursor:pointer;" onclick="openTaskModal(null, ${t.id})">
                     <span style="font-weight:500;">${getPriorityEmoji(t)} ${t.title}</span>
-                    <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                    <input type="checkbox" ${t.archived ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
                 </div>`;
             });
             if(tasks.length === 0) {
                 container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes.</div>`;
             }
+        }
+
+        function renderDashboardHabits() {
+            const container = document.getElementById('dashboard-habits-list');
+            if(!container) return;
+            container.innerHTML = '';
+            let dueHabits = appState.habits.filter(h => !isHabitDone(h) && isHabitDueToday(h));
+            dueHabits.forEach(h => {
+                container.innerHTML += `<div class="task-card" style="margin-bottom:8px;">
+                    <label class="habit-left">
+                        <input type="checkbox" onchange="toggleHabit(${h.id})">
+                        <span>${h.title}</span>
+                    </label>
+                    <span class="streak-pill">🔥 ${h.streak}</span>
+                </div>`;
+            });
+            if(dueHabits.length === 0) {
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">Todos los hábitos completados hoy. 🌟</div>`;
+            }
+        }
+
+        let currentWeek = 0;
+        function renderWeeklySchedule() {
+            const container = document.getElementById('weekly-schedule-grid');
+            if(!container) return;
+            let weekData = appState.enmsWeekPlan[currentWeek] || '';
+            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <button class="nav-icon-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
+                <span>Semana ${currentWeek + 1}</span>
+                <button class="nav-icon-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
+            </div>`;
+            html += '<div style="display:grid; grid-template-columns: 60px repeat(5, 1fr); gap:2px; font-size:0.8em;">';
+            html += '<div></div><div>L</div><div>M</div><div>M</div><div>J</div><div>V</div>';
+            for(let h=8; h<=16; h++) {
+                html += `<div>${h}:00</div>`;
+                for(let d=1; d<=5; d++) {
+                    let idx = (h-8)*5 + (d-1);
+                    let grupo = weekData[idx] || '';
+                    let color = '';
+                    if(grupo === 'A') color = '#4CAF50'; // Verde Experimentación
+                    else if(grupo === 'B') color = '#000080'; // Azul Marino Orgánica
+                    else if(grupo === 'C') color = '#FDD835'; // Amarillo Química II
+                    else if(grupo === 'D') color = '#FFC0CB'; // Rosa Personal
+                    html += `<div style="background:${color}; border:1px solid #ccc; min-height:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="assignENMS(${currentWeek}, ${idx})" title="Profesor: ${getProfesorForGrupo(grupo)}">${grupo}</div>`;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function assignENMS(week, idx) {
+            let materia = prompt("Elegir materia: 1-Experimentación, 2-Orgánica, 3-Química II, 4-Personal");
+            let grupo = '';
+            if(materia === '1') grupo = 'A';
+            else if(materia === '2') grupo = 'B';
+            else if(materia === '3') grupo = 'C';
+            else if(materia === '4') grupo = 'D';
+            if(grupo) {
+                if(!appState.enmsWeekPlan[week]) appState.enmsWeekPlan[week] = '';
+                let arr = appState.enmsWeekPlan[week].split('');
+                arr[idx] = grupo;
+                appState.enmsWeekPlan[week] = arr.join('');
+                saveToMemory();
+                renderWeeklySchedule();
+            }
+        }
+
+        function getProfesorForGrupo(grupo) {
+            if(grupo === 'A') return 'Prof. Exp';
+            if(grupo === 'B') return 'Prof. Org';
+            if(grupo === 'C') return 'Prof. QII';
+            if(grupo === 'D') return 'Personal';
+            return '';
         }
 
         // Inicializar reloj y lyric
