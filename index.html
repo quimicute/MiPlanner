@@ -102,24 +102,20 @@
             overflow-x: hidden;
             min-height: 0;
         }
-/* ========================================= */
-        /* 🚀 EL GRID BENTO PANORÁMICO DEFINITIVO 🚀 */
-        /* ========================================= */
+/* 🚀 EL GRID BENTO PANORÁMICO DEFINITIVO 🚀 */
         @media (min-width: 1024px) {
             .dashboard-grid {
                 display: grid !important;
                 grid-template-columns: repeat(12, 1fr) !important;
                 grid-template-rows: 1.4fr 1fr !important; 
-                
-                /* ✨ Aumentamos a 90vh para que se estire y elimine el hueco de abajo */
-                height: 90vh !important; 
-                gap: 16px !important; /* Un pelito menos de espacio entre tarjetas */
+                height: calc(100vh - 30px) !important; 
+                gap: 16px !important;
                 align-items: stretch !important;
                 
-                /* 🗺️ EL NUEVO MAPA: Bienvenida más chica (3), Horario más ancho (4) */
+                /* 🗺️ MAPA NUEVO: Abajo todo mide 3 columnas (Tareas, Eventos, Menú, Hábitos) */
                 grid-template-areas: 
                     "bien bien bien cal cal cal cal cal hora hora hora hora"
-                    "tar  tar  eve  eve  menu menu menu menu menu hab  hab  hab" !important;
+                    "tar  tar  tar  eve  eve  eve  menu menu menu hab  hab  hab" !important;
             }
 
             .dashboard-grid > section.widget-card {
@@ -137,6 +133,31 @@
             .widget-card:has(#dashboard-events-list) { grid-area: eve !important; }
             .widget-card:has(#dashboard-habits-list) { grid-area: hab !important; }
             .widget-card:has(#meal-calendar) { grid-area: menu !important; }
+        }
+
+        /* 🕰️ ESTILO RELOJ FLIP Y FRASES MINI 🕰️ */
+        #clock-widget {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            font-size: 2.2em !important;
+            margin-bottom: 5px !important;
+        }
+        .flip-unit {
+            background: rgba(0, 0, 0, 0.08);
+            padding: 4px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 4px 8px rgba(0,0,0,0.05);
+            min-width: 50px;
+            text-align: center;
+            color: var(--color-p4);
+        }
+        #lyric-quote {
+            font-size: 0.85em !important; /* Letra más chiquita */
+            line-height: 1.4 !important;
+            max-height: 80px; /* Evita que se desborde */
+            overflow-y: auto;
         }
 
         /* ========================================= */
@@ -1408,9 +1429,11 @@
         <section class="widget-card span-3">
             <div class="widget-header">
                 <h3 class="widget-title">Mis Tareas</h3>
-                <button class="widget-action-btn" onclick="openTaskModal('task')">+</button>
+                <div style="display: flex; gap: 5px;">
+                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Abrir Kanban Completo">📋</button>
+                    <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
+                </div>
             </div>
-            <div id="dashboard-tasks-list" class="task-list-scroll"></div>
         </section>
 
         <section class="widget-card span-3">
@@ -3474,8 +3497,17 @@ function renderModalSubtasks() {
         
         function updateClock() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('clock-widget').textContent = timeString;
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            
+            // Crea el efecto visual de tarjetas separadas
+            document.getElementById('clock-widget').innerHTML = `
+                <div class="flip-unit">${h}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
+                <div class="flip-unit">${m}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
+                <div class="flip-unit" style="color: var(--accent);">${s}</div>
+            `;
+            
             const dateString = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('date-widget').textContent = dateString;
         }
