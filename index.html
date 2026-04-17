@@ -103,46 +103,49 @@
             min-height: 0;
         }
 
-        /* 🚀 EL GRID PANORÁMICO PERFECTO (TETRIS BENTO) 🚀 */
+        /* 🚀 EL GRID BENTO PANORÁMICO DEFINITIVO 🚀 */
         @media (min-width: 1024px) {
             .dashboard-grid {
-                grid-template-columns: repeat(12, 1fr);
+                display: grid !important;
+                grid-template-columns: repeat(12, 1fr) !important;
                 
-                /* ✨ LA MAGIA ESTÁ AQUÍ ✨ */
-                /* Forzamos a que haya exactamente 2 filas de la MISMA altura */
-                grid-template-rows: 1fr 1fr; 
+                /* ✨ Fila 1 más alta (1.4fr) y Fila 2 normal (1fr) */
+                grid-template-rows: 1.4fr 1fr !important; 
+                height: 86vh !important; 
+                gap: 18px !important;
+                align-items: stretch !important;
                 
-                /* Hace que todo el tablero ocupe aprox. el 95% del alto de tu pantalla */
-                height: 95vh; 
-                
-                gap: 20px;
-                align-items: stretch;
-                
+                /* 🗺️ EL MAPA EXACTO QUE DISEÑASTE */
                 grid-template-areas: 
-                    "bien bien bien bien cal cal cal cal tar tar eve eve"
-                    "hab hab hab hab menu menu menu menu hora hora hora hora";
+                    "bien bien bien bien cal cal cal cal cal hora hora hora"
+                    "tar  tar  eve  eve  menu menu menu menu menu hab  hab  hab" !important;
             }
 
             .dashboard-grid > section.widget-card {
-                margin: 0 !important; 
+                grid-column: auto !important;
+                margin-top: 0 !important; 
                 height: 100% !important;
-                /* Estas dos líneas evitan que las tarjetas crezcan más allá de su fila */
-                min-height: 0 !important; 
-                max-height: 100%;
+                min-height: 0 !important;
+                max-height: 100% !important;
             }
 
-            /* Asignamos las áreas */
-            .dashboard-grid > section:nth-child(1) { grid-area: bien; } 
-            .dashboard-grid > section:nth-child(2) { grid-area: hora; } 
-            .dashboard-grid > section:nth-child(3) { grid-area: cal;  } 
-            .dashboard-grid > section:nth-child(4) { grid-area: tar;  } 
-            .dashboard-grid > section:nth-child(5) { grid-area: eve;  } 
-            .dashboard-grid > section:nth-child(6) { grid-area: hab;  } 
-            .dashboard-grid > section:nth-child(7) { grid-area: menu; } 
+            /* 🎯 REPARTICIÓN INFALIBLE POR CONTENIDO (Ignora el orden del HTML) */
+            .widget-card:has(#clock-widget) { grid-area: bien !important; justify-content: space-between !important; }
+            .widget-card:has(#cal-dashboard) { grid-area: cal !important; }
+            .widget-card:has(#weekly-schedule-grid) { grid-area: hora !important; }
+            .widget-card:has(#dashboard-tasks-list) { grid-area: tar !important; }
+            .widget-card:has(#dashboard-events-list) { grid-area: eve !important; }
+            .widget-card:has(#dashboard-habits-list) { grid-area: hab !important; }
+            .widget-card:has(#meal-calendar) { grid-area: menu !important; }
+        }
 
-            /* 🧹 OJO: Ya no hay max-height en píxeles. 
-               Tu código interno de Flexbox (.task-list-scroll, etc) hará que
-               las barritas de scroll salgan solitas en el espacio sobrante. */
+        /* 📉 TÍTULOS DE LA FILA INFERIOR MÁS CHICOS 📉 */
+        .widget-card:has(#dashboard-habits-list) .widget-title,
+        .widget-card:has(#meal-calendar) .widget-title,
+        .widget-card:has(#dashboard-tasks-list) .widget-title,
+        .widget-card:has(#dashboard-events-list) .widget-title {
+            font-size: 0.92rem !important;
+            color: #6a5876 !important; 
         }
 
         /* RESPONSIVO: En pantallas medianas y chicas, todo a 1 columna */
