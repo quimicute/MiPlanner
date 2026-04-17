@@ -1678,9 +1678,6 @@
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits, pantry: [], shoppingList: [], weeklyMenu: {}, enmsWeekPlan: ['', '', '', '', '', ''] };
         let taskIdCounter = 200; let habitIdCounter = 20; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; let dashboardShowCompletedTasks = true;
 
-        // Renderizar inmediatamente con datos por defecto
-        setTimeout(() => renderAll(), 10);
-
         // HELPER FUNCTIONS (ANTI-BERRINCHES DE JS)
         function getCatColor(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].color) ? appState.categories[catKey].color : 'var(--accent)'; }
         function getCatLabel(catKey) { return (appState.categories && appState.categories[catKey] && appState.categories[catKey].label) ? appState.categories[catKey].label : 'General'; }
@@ -1688,16 +1685,17 @@
         
         function saveToMemory() { db.collection("usuarios").doc("datos_planner").set(appState).catch(e=>console.error(e)); }
 
-        db.collection("usuarios").doc("datos_planner").get().then((doc) => {
-            if (doc.exists) { 
-                let data = doc.data();
-                if(data.tasks && data.tasks.length > 0) appState.tasks = data.tasks; 
-                if(data.categories) appState.categories = data.categories;
-                if(data.pageData) appState.pageData = data.pageData;
-                appState.dashboard = data.dashboard || defaultDashboard; 
-                if(!appState.dashboard.links) appState.dashboard.links = defaultDashboard.links;
-                if(!appState.dashboard.biblioteca) appState.dashboard.biblioteca = [];
-                
+        function initializeApp() {
+            db.collection("usuarios").doc("datos_planner").get().then((doc) => {
+                if (doc.exists) { 
+                    let data = doc.data();
+                    if(data.tasks && data.tasks.length > 0) appState.tasks = data.tasks; 
+                    if(data.categories) appState.categories = data.categories;
+                    if(data.pageData) appState.pageData = data.pageData;
+                    appState.dashboard = data.dashboard || defaultDashboard; 
+                    if(!appState.dashboard.links) appState.dashboard.links = defaultDashboard.links;
+                    if(!appState.dashboard.biblioteca) appState.dashboard.biblioteca = [];
+                    
                 if(!appState.categories.personal.cover) {
                     appState.categories.personal.cover = defaultCategories.personal.cover;
                     appState.categories.escolar.cover = defaultCategories.escolar.cover;
@@ -1734,14 +1732,20 @@
                     appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Sopa de Fideo con Verduras', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['almuerzo'], notes: 'Fideo, chayote, zanahoria y calabacita picada en cuadritos.' });
                     appState.tasks.push({ id: taskIdCounter++, type: 'task', title: 'Huevos a la Mexicana', category: 'personal', subcategory: 'Recetas', date: '', priority: 'medium', status: 'todo', tags: ['desayuno'], notes: 'Huevo, jitomate, cebolla y chilito picado.' });
                 }
-                
-                taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 200; 
-                habitIdCounter = appState.habits.length > 0 ? Math.max(...appState.habits.map(h => h.id)) + 1 : 20;
-            } else { saveToMemory(); }
-            renderAll();
-        }).catch((e) => {console.error(e); renderAll();});
+                    
+                    taskIdCounter = appState.tasks.length > 0 ? Math.max(...appState.tasks.map(t => t.id)) + 1 : 200; 
+                    habitIdCounter = appState.habits.length > 0 ? Math.max(...appState.habits.map(h => h.id)) + 1 : 20;
+                } else { saveToMemory(); }
+                renderAll();
+            }).catch((e) => {console.error(e); renderAll();});
+        }
 
-        setTimeout(() => { if(document.getElementById('dashboard-tasks-list').innerHTML === '') renderAll(); }, 500);
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
 
         // --- SISTEMA DE CABECERA DINÁMICA ---
         function goToHome() { switchView('dashboard'); }
