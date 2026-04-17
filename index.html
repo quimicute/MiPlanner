@@ -1389,10 +1389,7 @@
 
         <section class="widget-card span-7">
             <div class="widget-header">
-                <div>
-                    <p class="widget-subtitle">Life Planner</p>
-                    <h3 class="widget-title">Welcome, Quimicute</h3>
-                </div>
+
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex: 1;">
                 <div style="flex: 1;">
@@ -3457,43 +3454,48 @@ function renderModalSubtasks() {
             if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
-        const MIS_LYRICS = [
-            // --- THE KILLERS ---
-            { texto: "I got soul, but I'm not a soldier 🎸", autor: "All These Things That I've Done, The Killers" },
-            { texto: "Destiny is calling me ⚡", autor: "Mr. Brightside, The Killers" },
-            { texto: "Open up your eager eyes...", autor: "Mr. Brightside, The Killers" },
-            { texto: "I'm coming out of my cage and I've been doing just fine", autor: "Mr. Brightside, The Killers" },
-            { texto: "Are we human, or are we dancer? 💃", autor: "Human, The Killers" },
-            { texto: "He doesn't look a thing like Jesus, but he talks like a gentleman", autor: "When You Were Young, The Killers" },
-            { texto: "Smile like you mean it 😄", autor: "Smile Like You Mean It, The Killers" },
-            { texto: "I've got a lot to learn and I'm looking for a sign 📖", autor: "Read My Mind, The Killers" },
+       const MIS_LYRICS = [
+    // --- THE KILLERS ---
+    { texto: "Time, truth and hearts", autor: "All these things that I've done, The Killers" },
+    { texto: "You're gonna miss me when I'm gone...", autor: "Miss Atomic Bomb, The Killers" },
+    { texto: "Don't break character, you got a lot of heart", autor: "Be Still, The Killers" },
+    { texto: "Don't you wanna come with me? Don't you wanna feel my bones?", autor: "Bones, The Killers" },
+    { texto: "It was only a kiss", autor: "Mr Brightside, The Killers" },
+    { texto: "'Cuz I don't shine if you don't shine", autor: "Read My Mind, The Killers" },
+    { texto: "The starmaker says, 'It ain't so bad'", autor: "Spaceman, The Killers" },
+    { texto: "The spaceman says, 'Everybody look down, it's all in your mind'", autor: "Spaceman, The Killers" },
+    { texto: "Are we human? Or are we Dancer?", autor: "Human, The Killers" },
+    { texto: "There is a place, here in this house that you can stay", autor: "Deadlines and Commitments, The Killers" },
+    { texto: "We're all the same, and love is blind", autor: "Change Your Mind, The Killers" },
+    { texto: "I got money in the bank, I got news for you baby, you're looking at the man", autor: "The Man, The Killers" },
 
-            // --- CAIFANES ---
-            { texto: "Ayer me dijo un ave que volara... 🕊️", autor: "Ayer me dijo un ave, Caifanes" },
-            { texto: "No dejes que nos coma el diablo, amor 👹", autor: "No dejes que..., Caifanes" },
-            { texto: "Viento, amárranos 🌬️", autor: "Viento, Caifanes" },
-            { texto: "Afuera, tú no existes, solo adentro ⛩️", autor: "Afuera, Caifanes" },
-            { texto: "Hay veces que no sé qué me pasa, que me siento como una célula que explota", autor: "La célula que explota, Caifanes" },
-            { texto: "Vamos a dar una vuelta al cielo para ver lo que es de verdad 🌌", autor: "Nubes, Caifanes" },
-            { texto: "Antes de que nos olviden, haremos historia 🕯️", autor: "Antes de que nos olviden, Caifanes" },
+    // --- CAIFANES ---
+    { texto: "Afuera tu no existes solo adentro", autor: "Afuera, Caifanes" },
+    { texto: "Ayer me dijo un ave que volara", autor: "Ayer me dijo un ave, Caifanes" },
+    { texto: "Viento amarranos", autor: "Viento, Caifanes" },
+    { texto: "No dejes que nos coma el diablo amor", autor: "No dejes que..., Caifanes" },
+    { texto: "Hay veces que no se que me pasa", autor: "La célula que explota, Caifanes" },
+    { texto: "Quisiera ser alcohol para estar en tu sangre", autor: "Aquí no es así, Caifanes" },
+    { texto: "Antes de que nos olviden haremos historia", autor: "Antes de que nos olviden, Caifanes" },
 
-            // --- KENIA OS ---
-            { texto: "Flores en mi piel, todo lo que soñé 🌸", autor: "Flores, Kenia Os" },
-            { texto: "Soy una mala decisión que quieres tomar 🍷", autor: "Malas Decisiones, Kenia Os" },
-            { texto: "Joder, qué bien te ves 🥂", autor: "Llévatelo, Kenia Os" },
-            { texto: "Yo no soy de nadie, yo soy mía 👑", autor: "La Invitación, Kenia Os" },
-            { texto: "Todo fluye, nada influye 🌊", autor: "Mood, Kenia Os" },
-            { texto: "No me busques, yo ya me encontré 🕵️‍♀️", autor: "Buscando, Kenia Os" },
+    // --- 80S ENGLISH VIBES ---
+    { texto: "Welcome to your life, there's no turning back", autor: "Everybody Wants to Rule the World, Tears for Fears" },
+    { texto: "Words are very unnecessary, they can only do harm", autor: "Enjoy the Silence, Depeche Mode" },
+    { texto: "There is a light that never goes out", autor: "There Is A Light That Never Goes Out, The Smiths" },
+    { texto: "Take on me, take me on", autor: "Take On Me, A-ha" },
 
-            // --- FRANCIA 🇫🇷 ---
-            { texto: "Non, je ne regrette rien 🇫🇷", autor: "Édith Piaf, Motivación Estrasburgo 🥨" },
-            { texto: "La vie est belle 🌿", autor: "Inspo, Objetivo Francia 🇫🇷" },
-            { texto: "Petit à petit, l'oiseau fait son nid 🐣", autor: "Proverbio, Paso a paso" },
-            { texto: "Impossible n'est pas français 🇫🇷 💪", autor: "Napoleón, Determinación" },
-            { texto: "Paris est toujours une bonne idée 🥐", autor: "Audrey Hepburn, Inspo" },
-            { texto: "Savoir, c'est pouvoir 📖", autor: "Francis Bacon, Éxito académico" },
-            { texto: "Fais de ta vie un rêve 🌙", autor: "Saint-Exupéry, Inspo" }
-        ];
+    // --- MY CHEMICAL ROMANCE ---
+    { texto: "I am not afraid to keep on living", autor: "Famous Last Words, MCR" },
+    { texto: "We'll carry on, we'll carry on", autor: "Welcome to the Black Parade, MCR" },
+    { texto: "So long and goodnight", autor: "Helena, MCR" },
+    { texto: "I'm not okay, I promise", autor: "I'm Not Okay, MCR" },
+
+    // --- FALLING IN REVERSE (COMING HOME) ---
+    { texto: "I don't wanna be a superhero, 'cause I can't save the world", autor: "Superhero, Falling In Reverse" },
+    { texto: "We are the broken, hoping for a change of heart", autor: "Broken, Falling In Reverse" },
+    { texto: "Hold on my dear, I'm coming home", autor: "Coming Home, Falling In Reverse" },
+    { texto: "I'm just a ghost in the making", autor: "The Departure, Falling In Reverse" }
+];
         
         function updateClock() {
             const now = new Date();
