@@ -2458,7 +2458,10 @@
             const month = monthDate.getMonth();
             const totalDays = new Date(year, month + 1, 0).getDate();
             const startWeekday = new Date(year, month, 1).getDay();
-            const iconMap = { 'personal': '✧', 'escolar': '⌬', 'profesional': '◈', 'default': '•' };
+            
+            // 🔥 AQUÍ ACTUALIZAMOS LOS ICONOS GLOBALES DEL CALENDARIO 🔥
+            const iconMap = { 'personal': '💕', 'escolar': '🧪', 'profesional': '💼', 'default': '•' };
+            
             calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
             for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
             for(let day=1; day<=totalDays; day++) { 
@@ -2472,11 +2475,13 @@
                     let taskBars = dayTasks.map(t => { 
                         if (containerId === 'cal-dashboard') {
                             let sym = '';
+                            // 🔥 AQUÍ ASIGNAMOS LOS EMOJIS A CADA ÁMBITO 🔥
                             if (t.type === 'birthday') sym = '🎂';
                             else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
-                            else if (t.category === 'personal') sym = '✧';
-                            else if (t.category === 'escolar') sym = '⌬';
-                            else sym = '◈';
+                            else if (t.category === 'personal') sym = '💕';
+                            else if (t.category === 'escolar') sym = '🧪';
+                            else sym = '💼'; // Profesional
+                            
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
