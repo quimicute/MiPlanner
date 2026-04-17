@@ -1531,24 +1531,20 @@
 
     <div id="master-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3" style="max-width: 800px; margin: 0 auto; width: 100%;"><h2>Buscador Global</h2><input type="text" id="master-filter" placeholder="Buscar por nombre o #etiqueta..." oninput="renderMasterView()" style="width:100%; padding:14px; border-radius:6px; border: 1px solid var(--border-color); margin-bottom:20px; outline:none; font-family:inherit; background:var(--bg-color); color:var(--text-dark); font-size:1em;"><div id="master-list"></div></div></div></div>
 
-    <div id="subpage-view" class="view-section">
-        <div class="standard-grid">
-            <div class="panel grid-col-3" style="max-width: 1000px; margin: 0 auto; width: 100%; padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
-                <div style="position: relative;">
-                    <img src="" class="page-cover" id="sp-cover" alt="Cover">
+   <div id="subpage-modal" class="modal-overlay" onclick="if(event.target===this) closeSubpageModal()">
+        <div class="modal-content-wrapper">
+            <span class="close-modal" onclick="closeSubpageModal()" style="position: absolute; top: 20px; right: 25px; z-index: 100; background: rgba(255,255,255,0.7); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">×</span>
+            
+            <div id="subpage-modal-body">
+                <img src="" class="page-cover" id="sp-cover" style="width: 100%; height: 220px; object-fit: cover;">
+                <div class="page-icon-wrapper" style="margin-top: -40px; margin-left: 40px; position: relative; z-index: 2;">
+                    <div class="page-icon" id="sp-icon" style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3.5em; border: 1px solid var(--border-color); cursor: pointer;" onclick="changeCover()">✧</div>
                 </div>
-                
-                <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="changeCover()" title="Cambiar Icono">✧</div></div>
-                <div style="padding: 0 5vw 50px 5vw;">
-                    <div id="sp-general-info-container">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
-                            <h3 id="sp-subcat-title" style="margin:0; font-family: 'Playfair Display', serif; font-size: 1.6em; color: var(--text-dark); font-weight: 600;">Información de la Materia</h3>
-                            <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, currentParentView.replace('mod-', ''), currentSubcatOpened)">+ Nueva Tarea / Evento</button>
-                        </div>
-                        <div id="sp-page-content" class="page-content-area"></div>
-                        <textarea id="sp-page-editor" class="page-content-editor"></textarea>
+                <div style="padding: 20px 50px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        <h2 id="sp-subcat-title" style="margin:0; font-family: 'Playfair Display', serif; font-size: 2.2em; color: var(--text-dark);"></h2>
+                        <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, currentParentView.replace('mod-', ''), currentSubcatOpened)">+ Nueva Tarea / Evento</button>
                     </div>
-                    
                     <div id="sp-dynamic-content-area"></div>
                 </div>
             </div>
@@ -2823,27 +2819,34 @@
             renderDashboardEvents();
         }
 
-        function openSubpageInternal(catKey, subcatName) {
-            currentParentView = 'mod-' + catKey;
-            currentSubcatOpened = subcatName;
+       function openSubpageInternal(catKey, subcatName) {
+            // Ya no usamos switchView para que no desaparezca el fondo
+            currentParentView = 'mod-' + catKey; 
+            currentSubcatOpened = subcatName; 
             
-            const modal = document.getElementById('subpage-modal');
-            const pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" };
+            let pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
             
+            // Cargar títulos e imágenes
             document.getElementById('sp-subcat-title').innerText = subcatName;
-            document.getElementById('sp-icon').innerText = pageInfo.icon;
-            document.getElementById('sp-cover').src = pageInfo.cover;
-
+            let iEl = document.getElementById('sp-icon'); if(iEl) iEl.innerText = pageInfo.icon; 
+            let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
+            
+            // Magia: Abrir la ventana flotante y congelar el fondo
+            const modal = document.getElementById('subpage-modal');
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden'; 
             
-            renderSubpageTasks(catKey, subcatName);
+            try { renderSubpageTasks(catKey, subcatName); } catch(e) { console.error("Error al pintar subpágina:", e); }
+            
+            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
         function closeSubpageModal() {
+            // Cierra la ventana y devuelve el scroll
             document.getElementById('subpage-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto'; 
         }
+
 
         function openCategoryGalleryModal(catKey) {
             let cat = appState.categories[catKey];
