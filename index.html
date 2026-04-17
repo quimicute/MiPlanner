@@ -2660,15 +2660,52 @@
                             </table>
                         </div>
                         <div class="panel" style="padding:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h3 style="margin:0;">Base de Datos Maestra</h3><button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button></div>
-                            <table class="notion-table"><thead><tr><th>Materia</th><th>Grupo</th><th>Práctica</th><th>Profesor</th><th>Fecha / Hora</th><th>Materiales & Preparación</th><th>Estado</th></tr></thead><tbody>`;
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                <h3 style="margin:0;">Base de Datos Maestra</h3>
+                                <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button>
+                            </div>
+                            <table class="notion-table">
+                                <thead>
+                                    <tr>
+                                        <th>Materia</th>
+                                        <th>Práctica</th>
+                                        <th>Profesor & Grupo</th>
+                                        <th>Fecha / Hora</th>
+                                        <th>Materiales</th>
+                                        <th>Reactivos</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
                 subTasks.forEach(t => {
                     let preparedClass = t.status === 'prepared' ? 'status-prepared' : '';
                     let statusValue = ['todo','prepared','done'].includes(t.status) ? t.status : 'todo';
-                    html += `<tr class="event-item ${preparedClass}" onclick="openTaskDetails(${t.id})"><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Práctica">${t.enmsPractica || t.title}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Fecha / Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Materiales & Preparación" style="max-width:220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${(t.enmsMateriales || '-').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${statusValue==='todo'?'selected':''}>Pendiente</option><option value="prepared" ${statusValue==='prepared'?'selected':''}>Preparado 🧪</option><option value="done" ${statusValue==='done'?'selected':''}>Completado ✅</option></select></td></tr>`;
+                    
+                    // 🎨 PILLS DE COLORES PARA LAS MATERIAS 🎨
+                    let matPill = '';
+                    if (t.enmsMateria === 'Experimentación') matPill = `<span class="pill" style="background:#4ade80; color:#022c22;">🌱 Experimentación</span>`;
+                    else if (t.enmsMateria === 'Química Orgánica') matPill = `<span class="pill" style="background:#1e3a8a; color:#ffffff;">🌌 Orgánica</span>`;
+                    else if (t.enmsMateria === 'Química II') matPill = `<span class="pill" style="background:#fef08a; color:#422006;">☀️ Química II</span>`;
+                    else matPill = `<span style="font-weight:600;">${t.enmsMateria || '-'}</span>`;
+
+                    html += `<tr class="event-item ${preparedClass}" onclick="openTaskDetails(${t.id})">
+                        <td data-label="Materia">${matPill}</td>
+                        <td data-label="Práctica"><b>${t.enmsPractica || t.title}</b></td>
+                        <td data-label="Prof & Grupo">${t.enmsProfesor || '-'} (Gpo: ${t.enmsGrupo || '-'})</td>
+                        <td data-label="Fecha / Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} <br><span style="color:#888;">${t.time ? '⏰ '+t.time : ''}</span></td>
+                        <td data-label="Materiales" style="max-width:180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${(t.enmsMateriales||'')}">${(t.enmsMateriales || '-').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td>
+                        <td data-label="Reactivos" style="max-width:180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${(t.enmsReactivos||'')}">${(t.enmsReactivos || '-').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td>
+                        <td data-label="Estado" onclick="event.stopPropagation();">
+                            <select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)">
+                                <option value="todo" ${statusValue==='todo'?'selected':''}>Pendiente</option>
+                                <option value="prepared" ${statusValue==='prepared'?'selected':''}>Preparado 🧪</option>
+                                <option value="done" ${statusValue==='done'?'selected':''}>Listo ✅</option>
+                            </select>
+                        </td>
+                    </tr>`;
                 });
                 html += `</tbody></table>
-                        </div>
+                        </div>`;
                     </div>
                     <div>
                         <div class="panel" style="padding:20px;">
@@ -3052,23 +3089,27 @@
             let container = document.getElementById('custom-fields-container'); 
             let titleEl = document.getElementById('custom-fields-title'); 
             if(!customEl || !container || !titleEl) return; 
-            if(subcat === 'ENMS Labs') {
+            if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') {
                 customEl.style.display = 'flex'; 
-                titleEl.innerText = '⌬ Datos de Laboratorio'; 
-                container.innerHTML = `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;"><input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;"><input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;"><input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;"><input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;"></div><textarea id="m-enms-materiales" placeholder="Materiales & Preparación" rows="4" style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-color); color:var(--text-dark);"></textarea>`;
+                titleEl.innerText = '⌬ Base de Datos de Laboratorio'; 
+                container.innerHTML = `
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; width: 100%;">
+                        <select id="m-enms-materia" style="flex:1; min-width:140px; padding:8px; border:1px solid var(--border-color); border-radius:6px; background: var(--bg-color); font-family: inherit;">
+                            <option value="">Selecciona Materia...</option>
+                            <option value="Experimentación">🌱 Experimentación</option>
+                            <option value="Química Orgánica">🌌 Química Orgánica</option>
+                            <option value="Química II">☀️ Química II</option>
+                        </select>
+                        <input type="text" id="m-enms-profesor" placeholder="Profesor(a)" style="flex:1; min-width:140px; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
+                        <input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:80px; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
+                        <input type="text" id="m-enms-practica" placeholder="Práctica (Ej. P1)" style="flex:1; min-width:100px; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
+                    </div>
+                    <div style="display:flex; gap:10px; width: 100%;">
+                        <textarea id="m-enms-materiales" placeholder="Materiales requeridos..." rows="2" style="flex:1; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-color); color:var(--text-dark); resize:vertical;"></textarea>
+                        <textarea id="m-enms-reactivos" placeholder="Reactivos..." rows="2" style="flex:1; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-color); color:var(--text-dark); resize:vertical;"></textarea>
+                    </div>
+                `;
             } else {
-                let customization = appState.categories[cat]; 
-                if(customization && customization.customFields && customization.customFields.length > 0) { 
-                    customEl.style.display = 'flex'; 
-                    titleEl.innerText = cat === 'escolar' ? '📚 Datos Académicos' : cat === 'profesional' ? '💼 Datos Profesionales' : 'Campos Personalizados'; 
-                    container.innerHTML = customization.customFields.map(field => { 
-                        let placeholder = field.charAt(0).toUpperCase() + field.slice(1); 
-                        return `<input type="text" id="m-custom-${field}" placeholder="${placeholder}" style="flex:1; min-width:140px;">`; 
-                    }).join(''); 
-                } else { 
-                    customEl.style.display = 'none'; 
-                } 
-            }
         }
 
         let currentSubtasks = [];
@@ -3165,6 +3206,9 @@ function renderModalSubtasks() {
                 let enmsGrupoEl = document.getElementById('m-enms-grupo'); if(enmsGrupoEl) enmsGrupoEl.value = task.enmsGrupo || '';
                 let enmsPracticaEl = document.getElementById('m-enms-practica'); if(enmsPracticaEl) enmsPracticaEl.value = task.enmsPractica || '';
                 let enmsMaterialesEl = document.getElementById('m-enms-materiales'); if(enmsMaterialesEl) enmsMaterialesEl.value = task.enmsMateriales || '';
+                
+                /* 🔥 AGREGA ESTA LÍNEA NUEVA AQUÍ 🔥 */
+                let enmsReactivosEl = document.getElementById('m-enms-reactivos'); if(enmsReactivosEl) enmsReactivosEl.value = task.enmsReactivos || '';
             } else { 
                 document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; document.getElementById('m-enms-materiales') && (document.getElementById('m-enms-materiales').value = '');
                 currentSubtasks = [];
@@ -3767,6 +3811,7 @@ function renderModalSubtasks() {
         }
 
         let currentWeek = 0;
+        let currentWeek = 0;
         function renderWeeklySchedule() {
             const container = document.getElementById('weekly-schedule-grid');
             const header = document.getElementById('weekly-schedule-header');
@@ -3788,13 +3833,22 @@ function renderModalSubtasks() {
                 </div>
             `;
 
-            // Tabla Estilo Excel
+            let weekData = appState.enmsWeekPlan[currentWeek] || '';
             let html = '<table class="lab-schedule-table"><thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
+            
             for(let hour = 8; hour <= 22; hour++) {
                 html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
                 for(let day = 1; day <= 7; day++) {
-                    // Aquí podrías filtrar tareas de tipo 'class' que coincidan con la hora y día
-                    html += `<td style="min-height:30px;"></td>`;
+                    const idx = (hour - 8) * 7 + (day - 1); 
+                    const grupoCode = weekData[idx] || ' ';
+                    
+                    // 🎨 PALETA OFICIAL DE MATERIAS 🎨
+                    let bgCol = 'transparent', txtCol = 'var(--text-dark)', name = '';
+                    if (grupoCode === 'E') { bgCol = '#4ade80'; txtCol = '#022c22'; name = 'Experimentación'; } // Verde Planta
+                    else if (grupoCode === 'O') { bgCol = '#1e3a8a'; txtCol = '#ffffff'; name = 'Orgánica'; } // Azul Marino
+                    else if (grupoCode === 'Q') { bgCol = '#fef08a'; txtCol = '#422006'; name = 'Química II'; } // Amarillita
+                    
+                    html += `<td style="background:${bgCol}; color:${txtCol}; cursor:pointer; font-weight:500;" onclick="assignENMS(${currentWeek}, ${idx})" title="Asignar clase">${name}</td>`;
                 }
                 html += '</tr>';
             }
@@ -3803,21 +3857,21 @@ function renderModalSubtasks() {
         }
 
         function assignENMS(week, idx) {
-            let materia = prompt("Elegir materia: 1-Experimentación, 2-Orgánica, 3-Química II");
-            let grupo = '';
-            if(materia === '1') grupo = 'A';
-            else if(materia === '2') grupo = 'B';
-            else if(materia === '3') grupo = 'C';
-            if(grupo) {
-                if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', ''];
-                if(!appState.enmsWeekPlan[week]) appState.enmsWeekPlan[week] = '';
-                let arr = appState.enmsWeekPlan[week].split('');
-                while(arr.length <= idx) arr.push('');
-                arr[idx] = grupo;
-                appState.enmsWeekPlan[week] = arr.join('');
-                saveToMemory();
-                renderWeeklySchedule();
-            }
+            let materia = prompt("Selecciona tu materia:\n1 - 🌱 Experimentación\n2 - 🌌 Química Orgánica\n3 - ☀️ Química II\n0 - Borrar celda");
+            let code = ' ';
+            if(materia === '1') code = 'E';
+            else if(materia === '2') code = 'O';
+            else if(materia === '3') code = 'Q';
+            else if(materia !== '0') return;
+
+            if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', '', '', '', ''];
+            if(!appState.enmsWeekPlan[week]) appState.enmsWeekPlan[week] = '';
+            
+            let arr = appState.enmsWeekPlan[week].split('');
+            while(arr.length <= idx) arr.push(' ');
+            arr[idx] = code;
+            appState.enmsWeekPlan[week] = arr.join('');
+            saveToMemory(); renderWeeklySchedule();
         }
 
         function getProfesorForGrupo(grupo) {
