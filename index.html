@@ -1438,9 +1438,9 @@
         <section class="widget-card span-3">
             <div class="widget-header">
                 <h3 class="widget-title">Mis Tareas</h3>
-                <div class="header-actions-group">
-                    <button class="widget-action-btn" onclick="toggleHistory()" title="Historial">🕒</button>
-                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Kanban">📋</button>
+                <div style="display: flex; flex-direction: row; gap: 5px;">
+                    <button class="widget-action-btn" onclick="openHistoryModal()" title="Historial de Completadas">🕒</button>
+                    <button class="widget-action-btn" onclick="openFocusKanbanModal()" title="Abrir Kanban">📋</button>
                     <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
                 </div>
             </div>
@@ -1476,23 +1476,36 @@
     <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background:transparent; padding:0; border:none;">Calendario Maestro</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
     <div id="kanban-general" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
     
-    <div id="focus-kanban-view" class="view-section">
-        <div style="display: grid; grid-template-columns: 70% 30%; gap: 20px; width: 100%; margin: auto;">
-            <div class="panel" style="grid-column: 1;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h2 style="margin:0; font-size: 1.4em;">Tablero de Enfoque</h2>
-                    <button class="add-small-btn" onclick="openTaskModal('task')" style="background: var(--accent); color: white; border: none;">+ Nueva Tarea</button>
+    <div class="modal-overlay" id="focus-kanban-modal" onclick="if(event.target===this) closeFocusKanbanModal()">
+        <div class="modal-content-wrapper" style="width: 95%; max-width: 1200px; height: 85vh; padding: 30px; background: var(--bg-color); border-radius: 30px; overflow-y: auto; position: relative;">
+            <span class="close-modal" onclick="closeFocusKanbanModal()" style="position: absolute; top: 20px; right: 25px; z-index: 100; background: rgba(255,255,255,0.7); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">×</span>
+            
+            <div style="display: grid; grid-template-columns: 70% 30%; gap: 20px; width: 100%; height: 100%;">
+                <div class="panel" style="grid-column: 1; display: flex; flex-direction: column; margin: 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <h2 style="margin:0; font-size: 1.6em;">Tablero de Enfoque</h2>
+                        <button class="add-small-btn" onclick="openTaskModal('task')" style="background: var(--accent); color: white; border: none;">+ Nueva Tarea</button>
+                    </div>
+                    <div class="kanban" id="kanban-focus" style="flex: 1; overflow-y: auto; min-height: 0;">
+                        <div class="kanban-col" id="focus-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div>
+                        <div class="kanban-col" id="focus-in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div>
+                        <div class="kanban-col" id="focus-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div>
+                    </div>
                 </div>
-                <div class="kanban" id="kanban-focus">
-                    <div class="kanban-col" id="focus-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div>
-                    <div class="kanban-col" id="focus-in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div>
-                    <div class="kanban-col" id="focus-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div>
+                <div class="panel" style="grid-column: 2; display: flex; flex-direction: column; margin: 0;">
+                    <h2 style="margin:0 0 15px 0; font-size: 1.3em;">Referencia Rápida</h2>
+                    <div class="calendar-grid" id="cal-focus-mini" style="font-size: 0.8em; gap: 2px;"></div>
                 </div>
             </div>
-            <div class="panel" style="grid-column: 2; display: flex; flex-direction: column;">
-                <h2 style="margin:0 0 15px 0; font-size: 1.1em;">Referencia Rápida</h2>
-                <div class="calendar-grid" id="cal-focus-mini" style="font-size: 0.8em; gap: 2px;"></div>
-            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal" onclick="if(event.target===this) closeHistoryModal()">
+        <div class="modal" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; padding: 30px;">
+            <span class="close-modal" onclick="closeHistoryModal()">×</span>
+            <h2 style="margin-top: 0; color: var(--text-dark); font-size: 1.6em;">Historial</h2>
+            <p style="color: #888; font-size: 0.9em; margin-top: -10px;">Tareas y eventos completados.</p>
+            <div id="history-tasks-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
     
@@ -2799,13 +2812,6 @@
             else updateHeader(viewId);
         }
 
-        function openFocusKanban() { 
-            switchView('focus-kanban-view'); 
-            updateHeader('focus-kanban-view'); 
-            renderFocusKanban(); 
-            renderCalendar('cal-focus-mini', 'all'); 
-        }
-
         function openSubpage(catKey, subcatName) {
             history.pushState({ view: 'subpage-view', catKey: catKey, subcatName: subcatName }, "", "#subpage-" + subcatName.replace(/\s+/g, '-'));
             openSubpageInternal(catKey, subcatName);
@@ -3638,24 +3644,62 @@ function renderModalSubtasks() {
             const container = document.getElementById('dashboard-tasks-list');
             if(!container) return;
             container.innerHTML = '';
-            const tasks = appState.tasks.filter(t => t.type === 'task' && t.subcategory !== 'Recetas' && t.type !== 'routine' && (dashboardShowCompletedTasks || t.status !== 'done'));
+            
+            // Fijo: Ya NO mostramos las terminadas aquí, se van al historial.
+            const tasks = appState.tasks.filter(t => t.type === 'task' && t.subcategory !== 'Recetas' && t.type !== 'routine' && t.status !== 'done');
+            
             if (tasks.length === 0) {
-                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes.</div>`;
+                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay tareas pendientes. ✨</div>`;
                 return;
             }
             tasks.forEach(t => {
-                const completed = t.status === 'done';
                 const meta = t.date ? `${t.date}` : (t.category ? `${t.category}` : 'Sin fecha');
                 container.innerHTML += `
-                    <div class="task-item ${completed ? 'completed' : ''}" onclick="openTaskModal(null, ${t.id})">
+                    <div class="task-item" onclick="openTaskModal(null, ${t.id})">
                         <div style="display:flex; align-items:center; gap:12px; flex:1;">
-                            <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
+                            <input class="task-checkbox" type="checkbox" onclick="event.stopPropagation(); toggleTaskCompletion(${t.id}, this.checked)">
                             <div class="task-label">${getPriorityEmoji(t)} ${t.title}</div>
                         </div>
                         <div class="task-meta">${meta}</div>
                     </div>
                 `;
             });
+        }
+
+        // --- FUNCIONES NUEVAS PARA MODALES FLOTANTES ---
+        
+        function openHistoryModal() {
+            let list = document.getElementById('history-tasks-list');
+            list.innerHTML = '';
+            let doneTasks = appState.tasks.filter(t => t.status === 'done').sort((a,b) => b.id - a.id); 
+            
+            if(doneTasks.length === 0) {
+                list.innerHTML = '<p style="color:#888; text-align:center;">No hay tareas completadas aún.</p>';
+            } else {
+                doneTasks.forEach(t => {
+                    list.innerHTML += `
+                    <div class="task-item completed" style="background: rgba(0,0,0,0.02); opacity: 0.8;">
+                        <div style="display:flex; align-items:center; gap:12px; flex:1;">
+                            <input class="task-checkbox" type="checkbox" checked onchange="toggleTaskCompletion(${t.id}, false); openHistoryModal();">
+                            <div class="task-label" style="text-decoration: line-through;">${t.title}</div>
+                        </div>
+                        <div class="task-meta">${t.date || ''}</div>
+                    </div>`;
+                });
+            }
+            document.getElementById('historyModal').style.display = 'flex';
+        }
+        function closeHistoryModal() { document.getElementById('historyModal').style.display = 'none'; }
+
+        function openFocusKanbanModal() { 
+            document.getElementById('focus-kanban-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+            renderFocusKanban(); 
+            renderCalendar('cal-focus-mini', 'all'); 
+        }
+        function closeFocusKanbanModal() {
+            document.getElementById('focus-kanban-modal').style.display = 'none';
+            document.body.style.overflow = 'auto'; 
         }
 
         function toggleDashboardCompleted() {
