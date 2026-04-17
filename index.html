@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#fdfafc">
     <link rel="manifest" href="manifest.json">
     <title>Life Planner</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48dGV4dCB5PSIuOWVtIiBmb250LXNpemU9IjkwIj7ilqDilaDilaA8L3RleHQ+PC9zdmc+">
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -1076,8 +1076,51 @@
         /* Asegura que los márgenes globales de la página sean iguales arriba y abajo */
         body { padding-bottom: 15px !important; }
         #dashboard-container { padding-top: 15px !important; padding-bottom: 15px !important; }
-        
-   </style>
+
+        /* 🎭 VENTANA FLOTANTE (MODAL) PROFESIONAL */
+        #subpage-modal.modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(10px);
+            z-index: 5000; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        #subpage-modal .modal-content-wrapper {
+            background: var(--bg-color);
+            width: 95%;
+            max-width: 1150px;
+            height: 85vh;
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        #subpage-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 40px;
+        }
+
+        /* Estilo para los 3 botones circulares */
+        .header-actions-group {
+            display: flex;
+            gap: 6px;
+        }
 </head>
 <body>
 
@@ -1377,7 +1420,6 @@
                 
             </div>
         </section>
-        
 
         <section class="widget-card span-5">
             <div class="widget-header" id="weekly-schedule-header">
@@ -1400,8 +1442,9 @@
         <section class="widget-card span-3">
             <div class="widget-header">
                 <h3 class="widget-title">Mis Tareas</h3>
-                <div style="display: flex; gap: 3px;">
-                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Abrir Kanban Completo">📋</button>
+                <div class="header-actions-group">
+                    <button class="widget-action-btn" onclick="toggleHistory()" title="Historial">🕒</button>
+                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Kanban">📋</button>
                     <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
                 </div>
             </div>
@@ -2776,32 +2819,34 @@
             openSubpageInternal(catKey, subcatName);
         }
 
+        let showHistory = false;
+
+        function toggleHistory() {
+            showHistory = !showHistory;
+            renderDashboardTasks();
+            renderDashboardEvents();
+        }
+
         function openSubpageInternal(catKey, subcatName) {
-            switchView('subpage-view');
-            currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
-            let pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
+            currentParentView = 'mod-' + catKey;
+            currentSubcatOpened = subcatName;
             
-            updateHeader('subpage', getCatLabel(catKey), subcatName);
+            const modal = document.getElementById('subpage-modal');
+            const pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" };
             
             document.getElementById('sp-subcat-title').innerText = subcatName;
+            document.getElementById('sp-icon').innerText = pageInfo.icon;
+            document.getElementById('sp-cover').src = pageInfo.cover;
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
             
-            let iEl = document.getElementById('sp-icon'); if(iEl) iEl.innerText = pageInfo.icon; 
-            let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
-            
-            let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
-            if(contentDiv) contentDiv.innerHTML = pageInfo.content || '<p style="color:#888; font-style:italic;">Tu espacio para crear...</p>'; 
-            if(editorDiv) editorDiv.value = pageInfo.content || ''; 
-            if(contentDiv) contentDiv.style.display = 'block'; 
-            if(editorDiv) editorDiv.style.display = 'none'; 
-            let btnEdit = document.getElementById('btn-edit-page'); if(btnEdit) btnEdit.innerText = "[Editar Contenido]"; 
-            
-            try { renderSubpageTasks(catKey, subcatName); } catch(e) { console.error("Error al pintar subpágina:", e); }
-            
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
-            document.getElementById('subpage-view').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
+            renderSubpageTasks(catKey, subcatName);
+        }
+
+        function closeSubpageModal() {
+            document.getElementById('subpage-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         function openCategoryGalleryModal(catKey) {
@@ -3464,7 +3509,6 @@ function renderModalSubtasks() {
     { texto: "Welcome to your life, there's no turning back", autor: "Everybody Wants to Rule the World, Tears for Fears" },
     { texto: "Words are very unnecessary, they can only do harm", autor: "Enjoy the Silence, Depeche Mode" },
     { texto: "There is a light that never goes out", autor: "There Is A Light That Never Goes Out, The Smiths" },
-    { texto: "Take on me, take me on", autor: "Take On Me, A-ha" },
 
     // --- MY CHEMICAL ROMANCE ---
     { texto: "I am not afraid to keep on living", autor: "Famous Last Words, MCR" },
@@ -3474,9 +3518,8 @@ function renderModalSubtasks() {
 
     // --- FALLING IN REVERSE (COMING HOME) ---
     { texto: "I don't wanna be a superhero, 'cause I can't save the world", autor: "Superhero, Falling In Reverse" },
-    { texto: "We are the broken, hoping for a change of heart", autor: "Broken, Falling In Reverse" },
     { texto: "Hold on my dear, I'm coming home", autor: "Coming Home, Falling In Reverse" },
-    { texto: "I'm just a ghost in the making", autor: "The Departure, Falling In Reverse" }
+    { texto: "Tell me who you are, Your father has forsaken you", autor: "Coming Home, Falling In Reverse" }
 ];
         
         function updateClock() {
@@ -3655,31 +3698,30 @@ function renderModalSubtasks() {
             const container = document.getElementById('weekly-schedule-grid');
             const header = document.getElementById('weekly-schedule-header');
             if(!container || !header) return;
-            const weekData = appState.enmsWeekPlan[currentWeek] || '';
+
+            // Cálculo de fechas reales
+            const today = new Date();
+            const first = today.getDate() - today.getDay() + 1 + (currentWeek * 7);
+            const startDay = new Date(new Date().setDate(first));
+            const endDay = new Date(new Date().setDate(first + 6));
+            const rangeStr = `${startDay.getDate()} al ${endDay.getDate()} de ${startDay.toLocaleDateString('es-ES', {month:'short'})}`;
             
-            // Movemos los controles al Header de la tarjeta para ahorrar espacio
             header.innerHTML = `
                 <h3 class="widget-title">Horario Semanal</h3>
                 <div style="display:flex; gap:5px; align-items:center;">
-                    <button class="widget-action-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
-                    <span style="font-size: 0.85em; font-weight: 600; color: var(--color-p6);">Sem 0${currentWeek + 1}</span>
-                    <button class="widget-action-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
+                    <button class="widget-action-btn" onclick="currentWeek--; renderWeeklySchedule();">❮</button>
+                    <span style="font-size: 0.75em; font-weight: 700; color: var(--color-p6); min-width: 100px; text-align:center;">${rangeStr}</span>
+                    <button class="widget-action-btn" onclick="currentWeek++; renderWeeklySchedule();">❯</button>
                 </div>
             `;
 
-            let html = '<table class="lab-schedule-table">';
-            html += '<thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
+            // Tabla Estilo Excel
+            let html = '<table class="lab-schedule-table"><thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
             for(let hour = 8; hour <= 22; hour++) {
                 html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
                 for(let day = 1; day <= 7; day++) {
-                    const idx = (hour - 8) * 7 + (day - 1); 
-                    const grupo = weekData[idx] || '';
-                    let color = 'transparent';
-                    if (grupo === 'A') color = '#d4f7dc';
-                    else if (grupo === 'B') color = '#dbe7ff';
-                    else if (grupo === 'C') color = '#fff4c2';
-                    else if (grupo === 'D') color = '#ffdced';
-                    html += `<td style="background:${color}; cursor:pointer;" onclick="assignENMS(${currentWeek}, ${idx})" title="${grupo ? getProfesorForGrupo(grupo) : 'Asignar materia'}">${grupo}</td>`;
+                    // Aquí podrías filtrar tareas de tipo 'class' que coincidan con la hora y día
+                    html += `<td style="min-height:30px;"></td>`;
                 }
                 html += '</tr>';
             }
