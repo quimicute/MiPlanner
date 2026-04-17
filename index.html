@@ -1077,65 +1077,6 @@
         body { padding-bottom: 15px !important; }
         #dashboard-container { padding-top: 15px !important; padding-bottom: 15px !important; }
         
-        /* Nuevo Overlay para el Modal de Subpáginas */
-        #subpage-modal.modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #subpage-modal .modal-content-wrapper {
-            background: var(--bg-color);
-            width: 95%;
-            max-width: 1100px;
-            height: 90vh;
-            border-radius: 28px;
-            position: relative;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-        }
-
-        .schedule-grid {
-            display: grid;
-            grid-template-columns: 60px repeat(7, 1fr);
-            grid-template-rows: auto repeat(15, 40px);
-            gap: 2px;
-            font-size: 0.8em;
-        }
-
-        .schedule-grid .time-label {
-            font-weight: 600;
-            text-align: center;
-            padding: 4px;
-        }
-
-        .schedule-grid .day-header {
-            font-weight: 600;
-            text-align: center;
-            padding: 4px;
-        }
-
-        .schedule-grid .slot {
-            border: 1px solid #eee;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-        }
-
-        .schedule-grid .event-block {
-            z-index: 10;
-            pointer-events: none;
-        }
-        
    </style>
 </head>
 <body>
@@ -1460,10 +1401,9 @@
         <section class="widget-card span-3">
             <div class="widget-header">
                 <h3 class="widget-title">Mis Tareas</h3>
-                <div style="display: flex; gap: 8px;">
-                    <button class="widget-action-btn" onclick="toggleHistory()" title="Historial">🕒</button>
-                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Kanban">📋</button>
-                    <button class="widget-action-btn" onclick="openTaskModal('task')" title="Agregar">+</button>
+                <div style="display: flex; gap: 3px;">
+                    <button class="widget-action-btn" onclick="openFocusKanban()" title="Abrir Kanban Completo">📋</button>
+                    <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
                 </div>
             </div>
             <div id="dashboard-tasks-list" class="task-list-scroll"></div>
@@ -1553,11 +1493,27 @@
 
     <div id="master-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3" style="max-width: 800px; margin: 0 auto; width: 100%;"><h2>Buscador Global</h2><input type="text" id="master-filter" placeholder="Buscar por nombre o #etiqueta..." oninput="renderMasterView()" style="width:100%; padding:14px; border-radius:6px; border: 1px solid var(--border-color); margin-bottom:20px; outline:none; font-family:inherit; background:var(--bg-color); color:var(--text-dark); font-size:1em;"><div id="master-list"></div></div></div></div>
 
-    <div id="subpage-modal" class="modal-overlay">
-        <div class="modal-content-wrapper">
-            <span class="close-modal" onclick="closeSubpageModal()" style="position: sticky; top: 20px; left: 95%; z-index: 10;">×</span>
-            <div id="subpage-modal-body">
+    <div id="subpage-view" class="view-section">
+        <div class="standard-grid">
+            <div class="panel grid-col-3" style="max-width: 1000px; margin: 0 auto; width: 100%; padding: 0; overflow: hidden; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+                <div style="position: relative;">
+                    <img src="" class="page-cover" id="sp-cover" alt="Cover">
                 </div>
+                
+                <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" style="cursor:pointer;" onclick="changeCover()" title="Cambiar Icono">✧</div></div>
+                <div style="padding: 0 5vw 50px 5vw;">
+                    <div id="sp-general-info-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">
+                            <h3 id="sp-subcat-title" style="margin:0; font-family: 'Playfair Display', serif; font-size: 1.6em; color: var(--text-dark); font-weight: 600;">Información de la Materia</h3>
+                            <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, currentParentView.replace('mod-', ''), currentSubcatOpened)">+ Nueva Tarea / Evento</button>
+                        </div>
+                        <div id="sp-page-content" class="page-content-area"></div>
+                        <textarea id="sp-page-editor" class="page-content-editor"></textarea>
+                    </div>
+                    
+                    <div id="sp-dynamic-content-area"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1649,30 +1605,6 @@
         let defaultDashboard = { links: [], biblioteca: [], bgImage: '' };
         let appState = { categories: defaultCategories, tasks: defaultTasks, pageData: defaultPageData, dashboard: defaultDashboard, quickNotesList: [], quickTodos: [], habits: defaultHabits, pantry: [], shoppingList: [], weeklyMenu: {}, enmsWeekPlan: ['', '', '', '', '', ''] };
         let taskIdCounter = 200; let habitIdCounter = 20; let editingTaskId = null; let currentEditHabitId = null; let currentParentView = null; let currentSubcatOpened = null; let subpageViewMode = 'table'; let dashboardShowCompletedTasks = true;
-
-        let showHistory = false;
-
-        function toggleHistory() {
-            showHistory = !showHistory;
-            renderDashboardTasks();
-            renderDashboardEvents();
-        }
-
-        function openSubpageInternal(catKey, subcatName) {
-            currentParentView = 'mod-' + catKey;
-            currentSubcatOpened = subcatName;
-            
-            const modal = document.getElementById('subpage-modal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Bloquea scroll de fondo
-            
-            renderSubpageTasks(catKey, subcatName);
-        }
-
-        function closeSubpageModal() {
-            document.getElementById('subpage-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
 
         // Renderizar inmediatamente con datos por defecto
         setTimeout(() => renderAll(), 10);
@@ -2004,7 +1936,7 @@
             if(done) { h.lastDone = ''; h.streak = Math.max(0, h.streak - 1); } 
             else { h.lastDone = getTodayStr(); h.streak++; } 
             saveToMemory(); renderAll();
-            let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex') renderSelfcareDashboard();
+            let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
 
         function openHabitModal(id = null) {
@@ -2101,9 +2033,9 @@
                 hData.id = habitIdCounter++; 
                 appState.habits.push(hData); 
             }
-            saveToMemory(); closeHabitModal(); renderAll(); let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex') renderSelfcareDashboard();
+            saveToMemory(); closeHabitModal(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard();
         }
-        function deleteHabit(id) { customConfirm('¿Seguro que quieres borrar este hábito? perderás la racha.', () => { appState.habits = appState.habits.filter(h => h.id !== id); saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex') renderSelfcareDashboard(); }); }
+        function deleteHabit(id) { customConfirm('¿Seguro que quieres borrar este hábito? perderás la racha.', () => { appState.habits = appState.habits.filter(h => h.id !== id); saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSelfcareDashboard(); }); }
 
         let currentConfigCat = null;
         function openCategoryConfig(catKey) {
@@ -2525,49 +2457,34 @@
         // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); let tab = document.getElementById('tab-' + mode); if(tab) tab.classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
         
-        function renderSubpageTasks(catKey, subcatName) {
-            const area = document.getElementById('subpage-modal-body');
-            let html = "";
+        function renderSubpageTasks(catKey, subcatName) { 
+            const dynamicArea = document.getElementById('sp-dynamic-content-area'); if(!dynamicArea) return;
+            if (subcatName === 'Selfcare') { renderSelfcareDashboard(); return; }
+            if (subcatName === 'Recetas') { renderRecipeBoard(catKey, subcatName); return; }
+            if (subcatName === 'Mindfulness') { renderMindfulnessBoard(catKey, subcatName); return; }
+            if (subcatName === 'Biblioteca') { renderBibliotecaSubpage(catKey, subcatName); return; }
 
-            // Lógica para el Horario Semanal (Rango de fechas)
-            const getWeekRange = () => {
-                const curr = new Date();
-                const first = curr.getDate() - curr.getDay() + 1;
-                const last = first + 4;
-                const firstDay = new Date(curr.setDate(first)).toLocaleDateString('es-ES', {day:'numeric'});
-                const lastDay = new Date(curr.setDate(last)).toLocaleDateString('es-ES', {day:'numeric', month:'long'});
-                return `${firstDay} al ${lastDay}`;
-            };
+            if (catKey === 'escolar') {
+                let links = (appState.pageData[subcatName] && appState.pageData[subcatName].links) ? appState.pageData[subcatName].links : [];
+                
+                // Lógica visual del horario (Ejemplo dinámico)
+                let scheduleHtml = '';
+                if(subcatName === 'Curso de Análisis de Datos') {
+                    scheduleHtml = `<div style="display:flex; gap:10px; margin-top:10px;">
+                        <span style="background: rgba(147,112,219,0.15); color: var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">📅 Martes 18:00 - 21:00</span>
+                        <span style="background: rgba(147,112,219,0.15); color: var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">📅 Jueves 18:00 - 21:00</span>
+                    </div>`;
+                } else {
+                    scheduleHtml = `<div style="font-size:0.85em; color:#888; margin-top:10px; font-style:italic;">Sin horario fijo configurado.</div>`;
+                }
 
-            if (subcatName === 'Recetas') {
-                html = `
-                    <div style="padding: 40px;">
-                        <h2>📖 Mi Recetario Especial</h2>
-                        <div class="kitchen-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
-                            <div id="recipes-grid"> </div>
-                            <div class="sidebar">
-                                <h3>🛒 Lista del Súper</h3>
-                                <div id="shopping-list"></div>
+                let html = `
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="panel" style="padding: 20px; border-left: 4px solid var(--accent);">
+                                <h4 style="margin:0 0 5px 0; color:var(--text-dark); font-size:1.2em;">⏰ Horario de Clase</h4>
+                                ${scheduleHtml}
                             </div>
-                        </div>
-                    </div>`;
-            } else if (catKey === 'escolar') {
-                html = `
-                    <div style="padding: 40px;">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                            <div class="panel"><h3>✍️ Notas y Horario (${getWeekRange()})</h3></div>
-                            <div class="panel"><h3>🔗 Recursos y Overleaf</h3></div>
-                        </div>
-                        <h3>📋 Entregables de la Materia</h3>
-                        <div id="school-tasks-table"></div>
-                    </div>`;
-            } else {
-                // Layout Genérico con Kanban Filtrado
-                html = `<div style="padding: 40px;"><h2>${subcatName}</h2><div id="generic-kanban"></div></div>`;
-            }
-
-            area.innerHTML = html;
-        }
                             <div class="panel" style="padding: 20px; flex: 1; display:flex; flex-direction:column;">
                                 <h4 style="margin:0 0 10px 0; color:var(--text-dark);">✍️ Apuntes y Notas Rápidas</h4>
                                 <textarea placeholder="Escribe ideas o apuntes rápidos de la materia aquí..." style="flex:1; width:100%; min-height:100px; border:1px solid var(--border-color); border-radius:8px; padding:10px; background:var(--bg-color); color:var(--text-dark); resize:none; font-family:inherit; outline:none;"></textarea>
@@ -2839,7 +2756,7 @@
             if(btn) { document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
 
-            // if(viewId === 'subpage-view') return; // removed 
+            if(viewId === 'subpage-view') return; 
             
             if(viewId === 'dashboard') updateHeader('dashboard');
             else if(viewId === 'mod-personal') { updateHeader('category', getCatLabel('personal')); renderCategoryModules('personal'); updateHeaderTabs('tab-personal'); }
@@ -2856,19 +2773,36 @@
         }
 
         function openSubpage(catKey, subcatName) {
-            history.pushState({ view: 'subpage-modal', catKey: catKey, subcatName: subcatName }, "", "#subpage-" + subcatName.replace(/\s+/g, '-'));
+            history.pushState({ view: 'subpage-view', catKey: catKey, subcatName: subcatName }, "", "#subpage-" + subcatName.replace(/\s+/g, '-'));
             openSubpageInternal(catKey, subcatName);
         }
 
         function openSubpageInternal(catKey, subcatName) {
-            currentParentView = 'mod-' + catKey;
-            currentSubcatOpened = subcatName;
+            switchView('subpage-view');
+            currentParentView = 'mod-' + catKey; currentSubcatOpened = subcatName; 
+            let pageInfo = appState.pageData[subcatName] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80", content: "<p style='color:#888;'>Usa el botón de editar.</p>" }; 
             
-            const modal = document.getElementById('subpage-modal');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Bloquea scroll de fondo
+            updateHeader('subpage', getCatLabel(catKey), subcatName);
             
-            renderSubpageTasks(catKey, subcatName);
+            document.getElementById('sp-subcat-title').innerText = subcatName;
+            
+            let iEl = document.getElementById('sp-icon'); if(iEl) iEl.innerText = pageInfo.icon; 
+            let cEl = document.getElementById('sp-cover'); if(cEl) cEl.src = pageInfo.cover; 
+            
+            let contentDiv = document.getElementById('sp-page-content'); let editorDiv = document.getElementById('sp-page-editor'); 
+            if(contentDiv) contentDiv.innerHTML = pageInfo.content || '<p style="color:#888; font-style:italic;">Tu espacio para crear...</p>'; 
+            if(editorDiv) editorDiv.value = pageInfo.content || ''; 
+            if(contentDiv) contentDiv.style.display = 'block'; 
+            if(editorDiv) editorDiv.style.display = 'none'; 
+            let btnEdit = document.getElementById('btn-edit-page'); if(btnEdit) btnEdit.innerText = "[Editar Contenido]"; 
+            
+            try { renderSubpageTasks(catKey, subcatName); } catch(e) { console.error("Error al pintar subpágina:", e); }
+            
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active')); 
+            document.getElementById('subpage-view').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if(window.MathJax) { try { MathJax.typesetPromise(); } catch(e){} } 
         }
 
         function openCategoryGalleryModal(catKey) {
@@ -3361,9 +3295,9 @@ function renderModalSubtasks() {
                 appState.tasks.push(taskData); 
             } 
             saveToMemory(); closeTaskModal(); renderAll(); 
-            let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex') renderSubpageTasks(taskData.category, taskData.subcategory); 
+            let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(taskData.category, taskData.subcategory); 
         }
-        function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex'){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
+        function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
         function getNextBirthdayDate(task) {
             if (!task.yearlyMonth || !task.yearlyDay) return null;
@@ -3453,14 +3387,14 @@ function renderModalSubtasks() {
                 task.archived = checked;
                 saveToMemory(); 
                 renderAll(); 
-                let subpage = document.getElementById('subpage-modal'); 
-                if(subpage && subpage.style.display === 'flex') renderSubpageTasks(task.category, task.subcategory); 
+                let subpage = document.getElementById('subpage-view'); 
+                if(subpage && subpage.classList.contains('active')) renderSubpageTasks(task.category, task.subcategory); 
             } 
         }
         function saveENMSWeekPlan(index, value) { if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', '']; appState.enmsWeekPlan[index] = value; saveToMemory(); }
         function renderMasterEvents() { const list = document.getElementById('master-events-list'); if(!list) return; list.innerHTML = ''; let events = appState.tasks.filter(t => t.type === 'event' && t.status !== 'done').sort((a,b) => new Date(a.date) - new Date(b.date)); events.forEach(ev => { list.innerHTML += `<div class="event-item" onclick="openTaskDetails(${ev.id})" style="border-left-color:${getCatColor(ev.category)}"><div class="event-header"><span class="task-title" style="margin:0;">${ev.title}</span></div><div style="font-size:0.85em; color:#888; margin-top:8px;">${ev.date || 'Sin fecha'} ${ev.time ? ' | '+ev.time : ''}</div></div>`; }); }
         function renderMasterView() { const container = document.getElementById('master-list'); if(!container) return; let filterInput = document.getElementById('master-filter'); const query = filterInput ? filterInput.value.toLowerCase().trim() : ''; let tasks = appState.tasks; if(query !== '') { if (query.startsWith('#')) { let qTag = query.replace('#','').trim(); tasks = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase() === qTag)); } else { tasks = tasks.filter(t => t.title.toLowerCase().includes(query) || (t.tags || []).some(tag => tag.toLowerCase().includes(query))); } } container.innerHTML = tasks.map(t => { let tagsHTML = (t.tags || []).map(tag => `<span class="pill tag" onclick="event.stopPropagation(); filterByTag('${tag}')">#${tag}</span>`).join(''); return `<div class="event-item" onclick="openTaskDetails(${t.id})" style="border-left-color: ${getCatColor(t.category)}; display:flex; justify-content:space-between; padding: 15px;"><div style="flex:1;"><b><span class="icon-symbol">${t.type === 'event' ? '◈' : (t.type === 'birthday' ? '🎂' : '○')}</span> ${t.title}</b><div style="font-size:0.85em; color:#888; margin-top:5px; margin-bottom:5px;">${getCatLabel(t.category)} • ${t.subcategory}</div>${tagsHTML}</div></div>`; }).join(''); }
-        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let statusMap = { 'todo': 'todo', 'in-progress': 'in-progress', 'done': 'done', 'dashboard-todo': 'todo', 'dashboard-doing': 'in-progress', 'dashboard-done': 'done', 'focus-todo': 'todo', 'focus-in-progress': 'in-progress', 'focus-done': 'done' }; let status = statusMap[targetId] || targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-modal'); if(subpage && subpage.style.display === 'flex') renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
+        function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); } function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); } function drop(ev) { ev.preventDefault(); let targetId = ev.currentTarget.id; let statusMap = { 'todo': 'todo', 'in-progress': 'in-progress', 'done': 'done', 'dashboard-todo': 'todo', 'dashboard-doing': 'in-progress', 'dashboard-done': 'done', 'focus-todo': 'todo', 'focus-in-progress': 'in-progress', 'focus-done': 'done' }; let status = statusMap[targetId] || targetId.replace('-sub', ''); let idNum = parseInt(ev.dataTransfer.getData("text").split('-')[1]); let taskIndex = appState.tasks.findIndex(t => t.id === idNum); if(taskIndex !== -1) { appState.tasks[taskIndex].status = status; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(appState.tasks[taskIndex].category, appState.tasks[taskIndex].subcategory); setTimeout(()=>{ let el = document.getElementById('task-'+idNum); if(el){ el.classList.add('pop-effect'); setTimeout(()=>el.classList.remove('pop-effect'), 400);}}, 50); } ev.currentTarget.classList.remove('drag-over'); }
         document.querySelectorAll('.kanban-col').forEach(c => c.addEventListener('dragleave', function() { this.classList.remove('drag-over'); }));
         
         function safeRender(fn) { try { fn(); } catch(e) { console.error("Error visual en: " + fn.name, e); } }
@@ -3521,7 +3455,7 @@ function renderModalSubtasks() {
     // --- CAIFANES ---
     { texto: "Afuera tu no existes solo adentro", autor: "Afuera, Caifanes" },
     { texto: "Ayer me dijo un ave que volara", autor: "Ayer me dijo un ave, Caifanes" },
-    { texto: "Viento... amarranos", autor: "Viento, Caifanes" },
+    { texto: "Viento amarranos", autor: "Viento, Caifanes" },
     { texto: "No dejes que nos coma el diablo amor", autor: "No dejes que..., Caifanes" },
     { texto: "Hay veces que no se que me pasa", autor: "La célula que explota, Caifanes" },
     { texto: "Quisiera ser alcohol para estar en tu sangre", autor: "Aquí no es así, Caifanes" },
@@ -3552,22 +3486,12 @@ function renderModalSubtasks() {
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             
-            // Solo actualiza si los elementos existen (evita el error del iframe)
-            const widget = document.getElementById('clock-widget');
-            if (widget) {
-                widget.innerHTML = `
-                    <div class="flip-unit">${h}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
-                    <div class="flip-unit">${m}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
-                    <div class="flip-unit" style="color: var(--accent);">${s}</div>
-                `;
-            }
-            
-            const dateWidget = document.getElementById('date-widget');
-            if (dateWidget) {
-                const dateString = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                dateWidget.textContent = dateString;
-            }
-        }
+            // Crea el efecto visual de tarjetas separadas
+            document.getElementById('clock-widget').innerHTML = `
+                <div class="flip-unit">${h}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
+                <div class="flip-unit">${m}</div><span style="opacity:0.4; font-size:0.8em;">:</span>
+                <div class="flip-unit" style="color: var(--accent);">${s}</div>
+            `;
             
             const dateString = now.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('date-widget').textContent = dateString;
@@ -3744,15 +3668,10 @@ function renderModalSubtasks() {
                 </div>
             `;
 
-            let html = '<div class="schedule-grid">';
-            // Headers
-            html += '<div class="time-label"></div>';
-            const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-            days.forEach(day => html += `<div class="day-header">${day}</div>`);
-            
-            // Time slots
+            let html = '<table class="lab-schedule-table">';
+            html += '<thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
             for(let hour = 8; hour <= 22; hour++) {
-                html += `<div class="time-label">${hour}:00</div>`;
+                html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
                 for(let day = 1; day <= 7; day++) {
                     const idx = (hour - 8) * 7 + (day - 1); 
                     const grupo = weekData[idx] || '';
@@ -3761,22 +3680,11 @@ function renderModalSubtasks() {
                     else if (grupo === 'B') color = '#dbe7ff';
                     else if (grupo === 'C') color = '#fff4c2';
                     else if (grupo === 'D') color = '#ffdced';
-                    html += `<div class="slot" style="background:${color};" onclick="assignENMS(${currentWeek}, ${idx})" title="${grupo ? getProfesorForGrupo(grupo) : 'Asignar materia'}">${grupo}</div>`;
+                    html += `<td style="background:${color}; cursor:pointer;" onclick="assignENMS(${currentWeek}, ${idx})" title="${grupo ? getProfesorForGrupo(grupo) : 'Asignar materia'}">${grupo}</td>`;
                 }
+                html += '</tr>';
             }
-            html += '</div>';
-            
-            // Add events
-            const events = appState.tasks.filter(t => t.type === 'event' && t.category === 'escolar' && t.startTime && t.endTime && t.dayOfWeek !== undefined);
-            events.forEach(event => {
-                const startHour = parseInt(event.startTime.split(':')[0]);
-                const endHour = parseInt(event.endTime.split(':')[0]);
-                const rowStart = (startHour - 8) + 2; // +1 for header row, +1 for 0-based
-                const rowSpan = endHour - startHour;
-                const colStart = event.dayOfWeek + 2; // +1 for time column, +1 for 0-based
-                html += `<div class="event-block" style="grid-row: ${rowStart} / span ${rowSpan}; grid-column: ${colStart}; background: var(--accent); color: white; padding: 4px; border-radius: 4px; font-size: 0.8em; overflow: hidden;">${event.title}</div>`;
-            });
-            
+            html += '</tbody></table>';
             container.innerHTML = html;
         }
 
