@@ -112,10 +112,10 @@
                 gap: 16px !important;
                 align-items: stretch !important;
                 
-                /* 🗺️ MAPA NUEVO: Abajo todo mide 3 columnas (Tareas, Eventos, Menú, Hábitos) */
+                /* 🗺️ EL MAPA: Tareas(4), Eventos(3), Menú(2), Hábitos(3) */
                 grid-template-areas: 
                     "bien bien bien cal cal cal cal cal hora hora hora hora"
-                    "tar  tar  tar  eve  eve  eve  menu menu menu hab  hab  hab" !important;
+                    "tar  tar  tar  tar  eve  eve  eve  menu menu hab  hab  hab" !important;
             }
 
             .dashboard-grid > section.widget-card {
@@ -128,36 +128,11 @@
 
             .widget-card:has(#clock-widget) { grid-area: bien !important; justify-content: space-between !important; }
             .widget-card:has(#cal-dashboard) { grid-area: cal !important; }
-            .widget-card:has(#weekly-schedule-grid) { grid-area: hora !important; }
+            .widget-card:has(#weekly-schedule-header) { grid-area: hora !important; }
             .widget-card:has(#dashboard-tasks-list) { grid-area: tar !important; }
             .widget-card:has(#dashboard-events-list) { grid-area: eve !important; }
             .widget-card:has(#dashboard-habits-list) { grid-area: hab !important; }
             .widget-card:has(#meal-calendar) { grid-area: menu !important; }
-        }
-
-        /* 🕰️ ESTILO RELOJ FLIP Y FRASES MINI 🕰️ */
-        #clock-widget {
-            display: flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-            font-size: 2.2em !important;
-            margin-bottom: 5px !important;
-        }
-        .flip-unit {
-            background: rgba(0, 0, 0, 0.08);
-            padding: 4px 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 4px 8px rgba(0,0,0,0.05);
-            min-width: 50px;
-            text-align: center;
-            color: var(--color-p4);
-        }
-        #lyric-quote {
-            font-size: 0.85em !important; /* Letra más chiquita */
-            line-height: 1.4 !important;
-            max-height: 80px; /* Evita que se desborde */
-            overflow-y: auto;
         }
 
         /* ========================================= */
@@ -3365,28 +3340,31 @@ function renderModalSubtasks() {
             }
         }
 
-        function renderMealCalendar() {
+ function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
             let recipes = appState.tasks.filter(t => t.category === 'personal' && t.subcategory === 'Recetas');
             let days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+            
+            // Reducido a 3 comidas con emojis
             let meals = [
-                { label: 'Desayuno', key: 'desayuno' },
-                { label: 'Comida', key: 'almuerzo' },
-                { label: 'Cena', key: 'cena' },
-                { label: 'Snacks 🍓', key: 'snack' }
+                { label: '🍳', key: 'desayuno' }, 
+                { label: '🍝', key: 'almuerzo' }, 
+                { label: '🌙', key: 'cena' }      
             ];
-            let html = '<div class="meal-label">Comida</div>';
+            
+            let html = '<div class="meal-label" style="background:transparent; border:none;"></div>';
             days.forEach(d => html += `<div class="meal-header">${d}</div>`);
+            
             meals.forEach(meal => {
-                html += `<div class="meal-label">${meal.label}</div>`;
+                html += `<div class="meal-label" style="text-align:center; font-size:1.3em; background:transparent; border:none; padding:0;">${meal.label}</div>`;
                 days.forEach((d, i) => {
                     let jsDay = i === 6 ? 0 : i + 1;
                     let key = `${jsDay}-${meal.key}`;
                     let recId = appState.weeklyMenu[key];
                     let rec = recId ? recipes.find(r => r.id === recId) : null;
                     let cellClass = rec ? 'meal-cell meal-cell-filled' : 'meal-cell';
-                    html += `<div class="${cellClass}" onclick="openMealSelector(${jsDay}, '${meal.key}', '${d}')" title="${rec ? rec.title : 'Agregar receta'}" style="font-size: 1.2em;">${rec ? '✅' : `<span style=\"color:#aaa;\">+</span>`}</div>`;
+                    html += `<div class="${cellClass}" onclick="openMealSelector(${jsDay}, '${meal.key}', '${d}')" title="${rec ? rec.title : 'Agregar receta'}">${rec ? '✅' : `<span style="color:#aaa;">+</span>`}</div>`;
                 });
             });
             container.innerHTML = html;
@@ -3671,20 +3649,24 @@ function renderModalSubtasks() {
         let currentWeek = 0;
         function renderWeeklySchedule() {
             const container = document.getElementById('weekly-schedule-grid');
-            if(!container) return;
+            const header = document.getElementById('weekly-schedule-header');
+            if(!container || !header) return;
             const weekData = appState.enmsWeekPlan[currentWeek] || '';
-            let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px;">
-                <button class="widget-action-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
-                <span style="font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; color: var(--color-p6);">Semana ${currentWeek + 1}</span>
-                <button class="widget-action-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
-            </div>`;
-            html += '<table class="lab-schedule-table">';
-            // Añadimos S (Sábado) y D (Domingo)
-            html += '<thead><tr><th>Hora</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
-            // Extendemos hasta las 22:00 (10 PM)
+            
+            // Movemos los controles al Header de la tarjeta para ahorrar espacio
+            header.innerHTML = `
+                <h3 class="widget-title">Horario Semanal</h3>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <button class="widget-action-btn" onclick="currentWeek = Math.max(0, currentWeek-1); renderWeeklySchedule();" ${currentWeek === 0 ? 'disabled' : ''}>❮</button>
+                    <span style="font-size: 0.85em; font-weight: 600; color: var(--color-p6);">Sem 0${currentWeek + 1}</span>
+                    <button class="widget-action-btn" onclick="currentWeek = Math.min(5, currentWeek+1); renderWeeklySchedule();" ${currentWeek === 5 ? 'disabled' : ''}>❯</button>
+                </div>
+            `;
+
+            let html = '<table class="lab-schedule-table">';
+            html += '<thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
             for(let hour = 8; hour <= 22; hour++) {
                 html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
-                // Cambiamos a 7 días en lugar de 5
                 for(let day = 1; day <= 7; day++) {
                     const idx = (hour - 8) * 7 + (day - 1); 
                     const grupo = weekData[idx] || '';
