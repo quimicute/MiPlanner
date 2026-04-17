@@ -102,22 +102,23 @@
             overflow-x: hidden;
             min-height: 0;
         }
-
+/* ========================================= */
         /* 🚀 EL GRID BENTO PANORÁMICO DEFINITIVO 🚀 */
+        /* ========================================= */
         @media (min-width: 1024px) {
             .dashboard-grid {
                 display: grid !important;
                 grid-template-columns: repeat(12, 1fr) !important;
-                
-                /* ✨ Fila 1 más alta (1.4fr) y Fila 2 normal (1fr) */
                 grid-template-rows: 1.4fr 1fr !important; 
-                height: 86vh !important; 
-                gap: 18px !important;
+                
+                /* ✨ Aumentamos a 90vh para que se estire y elimine el hueco de abajo */
+                height: 90vh !important; 
+                gap: 16px !important; /* Un pelito menos de espacio entre tarjetas */
                 align-items: stretch !important;
                 
-                /* 🗺️ EL MAPA EXACTO QUE DISEÑASTE */
+                /* 🗺️ EL NUEVO MAPA: Bienvenida más chica (3), Horario más ancho (4) */
                 grid-template-areas: 
-                    "bien bien bien bien cal cal cal cal cal hora hora hora"
+                    "bien bien bien cal cal cal cal cal hora hora hora hora"
                     "tar  tar  eve  eve  menu menu menu menu menu hab  hab  hab" !important;
             }
 
@@ -129,7 +130,6 @@
                 max-height: 100% !important;
             }
 
-            /* 🎯 REPARTICIÓN INFALIBLE POR CONTENIDO (Ignora el orden del HTML) */
             .widget-card:has(#clock-widget) { grid-area: bien !important; justify-content: space-between !important; }
             .widget-card:has(#cal-dashboard) { grid-area: cal !important; }
             .widget-card:has(#weekly-schedule-grid) { grid-area: hora !important; }
@@ -139,13 +139,36 @@
             .widget-card:has(#meal-calendar) { grid-area: menu !important; }
         }
 
-        /* 📉 TÍTULOS DE LA FILA INFERIOR MÁS CHICOS 📉 */
+        /* ========================================= */
+        /* 📉 MATAR HUECOS Y ACHICAR HEADERS 📉 */
+        /* ========================================= */
+
+        /* 1. Eliminamos los márgenes invisibles del fondo de la página */
+        body { padding-bottom: 12px !important; }
+        #dashboard-container { padding-bottom: 10px !important; padding-top: 15px !important; }
+
+        /* 2. Reducimos al mínimo el espacio del encabezado en la fila de abajo */
+        .widget-card:has(#dashboard-habits-list) .widget-header,
+        .widget-card:has(#meal-calendar) .widget-header,
+        .widget-card:has(#dashboard-tasks-list) .widget-header,
+        .widget-card:has(#dashboard-events-list) .widget-header {
+            margin-bottom: 4px !important; 
+        }
+
+        /* 3. Letra más chiquita en los títulos para que no aplasten el contenido */
         .widget-card:has(#dashboard-habits-list) .widget-title,
         .widget-card:has(#meal-calendar) .widget-title,
         .widget-card:has(#dashboard-tasks-list) .widget-title,
         .widget-card:has(#dashboard-events-list) .widget-title {
-            font-size: 0.92rem !important;
+            font-size: 0.85rem !important; /* Súper compacto */
             color: #6a5876 !important; 
+        }
+
+        /* 4. Los botones de "+" se hacen miniaturas para estorbar menos */
+        .widget-action-btn {
+            padding: 2px 6px !important;
+            font-size: 0.75em !important;
+            line-height: 1 !important;
         }
 
         /* RESPONSIVO: En pantallas medianas y chicas, todo a 1 columna */
