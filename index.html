@@ -3118,7 +3118,11 @@ function renderModalSubtasks() {
                 document.getElementById('m-recurring').checked = false; toggleRecurrence();
                 // Clear custom fields
                 document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
-                document.getElementById('m-enms-materia').value = ''; document.getElementById('m-enms-profesor').value = ''; document.getElementById('m-enms-grupo').value = ''; document.getElementById('m-enms-practica').value = '';
+                let enmsMateria = document.getElementById('m-enms-materia'); if(enmsMateria) enmsMateria.value = '';
+                let enmsProfesor = document.getElementById('m-enms-profesor'); if(enmsProfesor) enmsProfesor.value = '';
+                let enmsGrupo = document.getElementById('m-enms-grupo'); if(enmsGrupo) enmsGrupo.value = '';
+                let enmsPractica = document.getElementById('m-enms-practica'); if(enmsPractica) enmsPractica.value = '';
+                let enmsMateriales = document.getElementById('m-enms-materiales'); if(enmsMateriales) enmsMateriales.value = '';
                 // Limpiar días personalizados
                 document.getElementById('m-recurrence-start').value = '';
                 document.getElementById('m-recurrence-end').value = '';
