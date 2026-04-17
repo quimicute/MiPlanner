@@ -49,7 +49,7 @@
         .nav-icon-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 10px rgba(147, 112, 219, 0.2); margin: 0 5px;}
         .nav-icon-btn:hover { transform: scale(1.15); background: var(--accent-hover); }
 
-        .nav-btn-minimal { background: rgba(255,255,255,0.2); color: var(--text-dark); border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2em; transition: 0.2s ease; }
+        .nav-btn-minimal { background: rgba(255,255,255,0.2); color: var(--text-dark); border: 1px solid rgba(255,255,255,0.4); border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2em; transition: 0.2s ease; }
         .nav-btn-minimal:hover { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.6); transform: translateY(-2px); }
 
         .view-section { display: none; animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -82,7 +82,7 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 24px;
-            padding: 24px;
+            padding: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
             color: var(--text-dark);
             display: flex;
@@ -975,8 +975,8 @@
         }
 
         /* 2. Textos generales más chicos para ahorrar espacio */
-        .widget-header { margin-bottom: 2px !important; }
-        .widget-title { font-size: 1.05rem !important; }
+        .widget-header { margin-bottom: 10px !important; }
+        .widget-title { font-size: 1.15rem !important; }
         #clock-widget { font-size: 2.6em !important; margin-bottom: 0 !important; }
         #date-widget { font-size: 0.8em !important; margin-bottom: 4px !important; }
         .nav-btn-minimal { width: 28px !important; height: 28px !important; font-size: 0.9em !important; }
@@ -1375,11 +1375,11 @@
             <div class="widget-header">
 
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex: 1;">
                 <div style="flex: 1;">
-                    <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 3.4em; font-weight: 800; color: var(--color-p4); line-height: 1; margin-bottom: 10px;"></div>
-                    <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 0.95em; color: #66587c; margin-bottom: 20px;"></div>
-                    <div id="lyric-quote" style="padding: 18px 12px 0 12px; border-top: 1px solid rgba(123,104,238,0.12); flex: 1; overflow-y: auto;"></div>
+                    <div id="clock-widget" style="font-family: 'Inter', sans-serif; font-size: 2.8em; font-weight: 800; color: var(--color-p4); line-height: 1; margin-bottom: 10px;"></div>
+                    <div id="date-widget" style="font-family: 'Inter', sans-serif; font-size: 0.85em; color: #66587c; margin-bottom: 20px;"></div>
+                    <div id="lyric-quote" style="padding: 12px 8px 0 8px; border-top: 1px solid rgba(123,104,238,0.12); flex: 1; overflow-y: auto;"></div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;">
                     <button class="nav-btn-minimal" onclick="openCategoryGalleryModal('personal')" title="Personal" style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--text-dark); font-size: 1.2em;">✧</button>
@@ -1398,9 +1398,9 @@
 
         <section class="widget-card span-6">
             <div class="calendar-controls" style="justify-content: center; margin-bottom: 8px !important;">
-                <div class="widget-row" style="gap: 20px;">
+                <div class="widget-row" style="gap: 15px;">
                     <button class="widget-action-btn" onclick="prevMonth()" style="background: transparent; border: none; box-shadow: none; font-size: 1.2em; padding: 0 !important; color: var(--color-p6);">❮</button>
-                    <span class="month-label month-display" style="font-family: 'Playfair Display', serif; font-size: 1.4em; font-weight: 600; color: var(--color-p6); text-transform: capitalize;"></span>
+                    <span class="month-label month-display" style="font-family: 'Playfair Display', serif; font-size: 1.2em; font-weight: 600; color: var(--color-p6); text-transform: capitalize;"></span>
                     <button class="widget-action-btn" onclick="nextMonth()" style="background: transparent; border: none; box-shadow: none; font-size: 1.2em; padding: 0 !important; color: var(--color-p6);">❯</button>
                 </div>
             </div>
@@ -1410,7 +1410,7 @@
         <section class="widget-card span-3">
             <div class="widget-header">
                 <h3 class="widget-title">Mis Tareas</h3>
-                <div style="display: flex; gap: 5px;">
+                <div style="display: flex; gap: 3px;">
                     <button class="widget-action-btn" onclick="openFocusKanban()" title="Abrir Kanban Completo">📋</button>
                     <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
                 </div>
