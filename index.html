@@ -3109,21 +3109,22 @@
                         <textarea id="m-enms-reactivos" placeholder="Reactivos..." rows="2" style="flex:1; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-color); color:var(--text-dark); resize:vertical;"></textarea>
                     </div>
                 `;
-            } else {
-        }
-
-        let currentSubtasks = [];
-        function setQuickDate(type) {
-            const dateInput = document.getElementById('m-date');
-            const today = new Date();
-            let target = new Date(today);
-            if (type === 'tomorrow') {
-                target.setDate(today.getDate() + 1);
-            } else if (type === 'next-week') {
-                target.setDate(today.getDate() + 7);
+           } else {
+                    let customization = appState.categories[cat]; 
+                    if(customization && customization.customFields && customization.customFields.length > 0) { 
+                        customEl.style.display = 'flex'; 
+                        titleEl.innerText = cat === 'escolar' ? '📚 Datos Académicos' : cat === 'profesional' ? '💼 Datos Profesionales' : 'Campos Personalizados'; 
+                        container.innerHTML = customization.customFields.map(field => { 
+                            let placeholder = field.charAt(0).toUpperCase() + field.slice(1); 
+                            return `<input type="text" id="m-custom-${field}" placeholder="${placeholder}" style="flex:1; min-width:140px;">`; 
+                        }).join(''); 
+                    } else { 
+                        customEl.style.display = 'none'; 
+                    } 
+                }
             }
-            dateInput.value = target.toISOString().slice(0, 10);
-        }
+
+            let currentSubtasks = [];
 
         function addSubtaskFromModal() {
             const input = document.getElementById('m-new-subtask');
@@ -3810,7 +3811,6 @@ function renderModalSubtasks() {
             });
         }
 
-        let currentWeek = 0;
         let currentWeek = 0;
         function renderWeeklySchedule() {
             const container = document.getElementById('weekly-schedule-grid');
