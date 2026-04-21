@@ -1333,7 +1333,7 @@
         }
 
 
-        function openCategoryGalleryModal(catKey) {
+    function openCategoryGalleryModal(catKey) {
     let cat = appState.categories[catKey];
     if (!cat) return;
     let modal = document.getElementById('categoryGalleryModal');
@@ -1369,10 +1369,14 @@
     if(cat.subcats.length === 0) {
         contentEl.innerHTML = '<p style="color:#888; grid-column: 1/-1; text-align:center; padding: 40px;">No tienes módulos aquí aún. Haz clic derecho para crear uno.</p>';
     }
-    
-    // Usamos la función centralizada que ya tienes para abrir
-    openModal('categoryGalleryModal');
-}
+		// Usamos la función centralizada que ya tienes para abrir
+		    openModal('categoryGalleryModal');
+		} // <--- Aquí termina la función openCategoryGalleryModal
+		
+		// AQUÍ ES EL LUGAR CORRECTO PARA LA NUEVA VECINA:
+		function closeCategoryGalleryModal() {
+		    closeModal('categoryGalleryModal');
+		}
         // Registrar el dashboard en la carga inicial
         window.addEventListener('DOMContentLoaded', (event) => {
             history.replaceState({ view: 'dashboard' }, "", "#dashboard");
