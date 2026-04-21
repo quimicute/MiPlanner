@@ -2105,10 +2105,10 @@ function renderDashboardModules() {
             if (quoteEl) {
                 const item = MIS_LYRICS[Math.floor(Math.random() * MIS_LYRICS.length)];
                 quoteEl.innerHTML = `
-                    <div style="font-family: 'Playfair Display', serif; font-size: 1.18em; color: var(--text-dark); line-height: 1.45;">
+                    <div style="font-family: 'Playfair Display', serif; font-size: 0.95em; color: var(--text-dark); line-height: 1.5; font-style: italic; opacity: 0.9;">
                         "${item.texto}"
                     </div>
-                    <div style="text-align: right; margin-top: 12px; font-size: 0.86em; color: rgba(59,23,35,0.92); font-weight: 600; font-family: 'Inter', sans-serif;">
+                    <div style="text-align: right; margin-top: 8px; font-size: 0.75em; color: var(--color-p6); font-weight: 700; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; opacity: 0.8;">
                         — ${item.autor}
                     </div>
                 `;
