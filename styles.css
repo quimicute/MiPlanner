@@ -645,16 +645,7 @@
         .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .color-dot:hover { transform: scale(1.2); }
 
-        /* BLUR BACKGROUND CON GLASSMORPHISM */
-        body.blur-background {
-            filter: blur(8px);
-            transition: filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        body.dark-mode.blur-background {
-            filter: blur(8px) brightness(0.95);
-        }
-
+       
        /* MODAL BASE */
         .modal-overlay { 
             display: none; 
