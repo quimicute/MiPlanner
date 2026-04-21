@@ -1584,107 +1584,67 @@ function renderModalSubtasks() {
             editingTaskId = taskId; openModal('taskModal'); 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category || ''; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory || ''; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
+                document.getElementById('m-title').value = task.title; 
+                document.getElementById('m-type').value = task.type || 'task'; 
+                document.getElementById('m-category').value = task.category || ''; 
+                updateSubcatDropdown(); 
+                document.getElementById('m-subcategory').value = task.subcategory || ''; 
+                showSocialTip(); 
+                renderSubcategoryCustomFields(); 
+                document.getElementById('m-date').value = task.date || ''; 
+                document.getElementById('m-time').value = task.time || ''; 
+                document.getElementById('m-notes').value = task.notes || ''; 
                 currentSubtasks = Array.isArray(task.subtasks) ? task.subtasks.map(s => ({ text: s.text || '', done: !!s.done })) : [];
                 renderModalSubtasks();
-                document.getElementById('m-recurring').checked = !!task.recurring; toggleRecurrence();
+                document.getElementById('m-recurring').checked = !!task.recurring; 
+                toggleRecurrence();
                 document.getElementById('m-my-day').checked = !!task.myDay;
+                
                 if(task.recurring) {
                     document.getElementById('m-recurrence-type').value = task.recurrenceType;
                     document.getElementById('m-recurrence-start').value = task.recurrenceStart || '';
                     document.getElementById('m-recurrence-end').value = task.recurrenceEnd || '';
-                    // Cargar datos según tipo de recurrencia
-                    if(task.recurrenceType === 'weekly' && task.weeklyDay) {
-                        document.getElementById('m-weekly-' + task.weeklyDay).checked = true;
-                    }
-                    if(task.recurrenceType === 'monthly' && task.monthlyDay) {
-                        document.getElementById('m-monthly-day').value = task.monthlyDay;
-                    }
-                    if(task.recurrenceType === 'yearly' && task.yearlyMonth && task.yearlyDay) {
-                        document.getElementById('m-yearly-month').value = task.yearlyMonth;
-                        document.getElementById('m-yearly-day').value = task.yearlyDay;
-                    }
-                    if(task.customDays) {
-                        task.customDays.forEach(day => {
-                            let cb = document.getElementById('m-day-' + day);
-                            if(cb) cb.checked = true;
-                        });
-                    }
+                    if(task.recurrenceType === 'weekly' && task.weeklyDay !== undefined) document.getElementById('h-weekly-' + task.weeklyDay).checked = true;
                     toggleTaskCustomFields();
                 }
-                // Populate custom fields
-                if(task.customFields) {
-                    Object.keys(task.customFields).forEach(field => {
-                        let el = document.getElementById('m-custom-' + field);
-                        if(el) el.value = task.customFields[field] || '';
-                    });
-                }
-                // Populate subcategory custom fields
-                if(task.customData) {
-                    Object.keys(task.customData).forEach(field => {
-                        let el = document.getElementById('m-custom-' + field);
-                        if(el) el.value = task.customData[field] || '';
-                    });
-                }
-                // Legacy ENMS
-                let enmsMateriaEl = document.getElementById('m-enms-materia'); if(enmsMateriaEl) enmsMateriaEl.value = task.enmsMateria || '';
-                let enmsProfesorEl = document.getElementById('m-enms-profesor'); if(enmsProfesorEl) enmsProfesorEl.value = task.enmsProfesor || '';
-                let enmsGrupoEl = document.getElementById('m-enms-grupo'); if(enmsGrupoEl) enmsGrupoEl.value = task.enmsGrupo || '';
-                let enmsPracticaEl = document.getElementById('m-enms-practica'); if(enmsPracticaEl) enmsPracticaEl.value = task.enmsPractica || '';
-                let enmsMaterialesEl = document.getElementById('m-enms-materiales'); if(enmsMaterialesEl) enmsMaterialesEl.value = task.enmsMateriales || '';
+
+                // Cargar datos de laboratorio si existen
+                setTimeout(() => {
+                    if(document.getElementById('m-enms-materia')) document.getElementById('m-enms-materia').value = task.enmsMateria || '';
+                    if(document.getElementById('m-enms-profesor')) document.getElementById('m-enms-profesor').value = task.enmsProfesor || '';
+                    if(document.getElementById('m-enms-grupo')) document.getElementById('m-enms-grupo').value = task.enmsGrupo || '';
+                    if(document.getElementById('m-enms-practica')) document.getElementById('m-enms-practica').value = task.enmsPractica || '';
+                }, 10);
+
             } else { 
-                document.getElementById('m-title').value = ''; document.getElementById('m-date').value = ''; document.getElementById('m-time').value = ''; document.getElementById('m-notes').value = ''; document.getElementById('m-enms-materiales') && (document.getElementById('m-enms-materiales').value = '');
+                // Reset campos nuevo registro
+                document.getElementById('m-title').value = ''; 
+                document.getElementById('m-date').value = ''; 
+                document.getElementById('m-time').value = ''; 
+                document.getElementById('m-notes').value = ''; 
                 currentSubtasks = [];
                 renderModalSubtasks();
                 document.getElementById('m-my-day').checked = false;
-                if(forceType) {
-                    document.getElementById('m-type').value = forceType;
-                    document.getElementById('m-type').disabled = true;
-                } else {
-                    document.getElementById('m-type').disabled = false;
-                }
+                
+                if(forceType) { document.getElementById('m-type').value = forceType; document.getElementById('m-type').disabled = true; } 
+                else { document.getElementById('m-type').disabled = false; }
 
                 if(forceCat) { 
                     document.getElementById('m-category').value = forceCat; 
                     document.getElementById('m-category').disabled = true;
                     updateSubcatDropdown(); 
-                    if(forceSubCat) {
-                        document.getElementById('m-subcategory').value = forceSubCat;
-                        document.getElementById('m-subcategory').disabled = true;
-                    } else {
-                        document.getElementById('m-subcategory').disabled = false;
-                    }
+                    if(forceSubCat) { document.getElementById('m-subcategory').value = forceSubCat; document.getElementById('m-subcategory').disabled = true; }
                 } else { 
                     document.getElementById('m-category').disabled = false;
                     document.getElementById('m-subcategory').disabled = false;
                     updateSubcatDropdown(); 
                 }
-                showSocialTip(); renderSubcategoryCustomFields(); 
                 setModalPriority('none');
-                document.getElementById('m-recurring').checked = false; toggleRecurrence();
-                // Clear custom fields
-                document.querySelectorAll('#custom-fields-container input').forEach(input => input.value = '');
-                let enmsMateria = document.getElementById('m-enms-materia'); if(enmsMateria) enmsMateria.value = '';
-                let enmsProfesor = document.getElementById('m-enms-profesor'); if(enmsProfesor) enmsProfesor.value = '';
-                let enmsGrupo = document.getElementById('m-enms-grupo'); if(enmsGrupo) enmsGrupo.value = '';
-                let enmsPractica = document.getElementById('m-enms-practica'); if(enmsPractica) enmsPractica.value = '';
-                let enmsMateriales = document.getElementById('m-enms-materiales'); if(enmsMateriales) enmsMateriales.value = '';
-                // Limpiar días personalizados
-                document.getElementById('m-recurrence-start').value = '';
-                document.getElementById('m-recurrence-end').value = '';
-                for(let i=0; i<7; i++) {
-                    let cb = document.getElementById('m-day-' + i);
-                    if(cb) cb.checked = false;
-                    let rbw = document.getElementById('m-weekly-' + i);
-                    if(rbw) rbw.checked = false;
-                }
-                document.getElementById('m-monthly-day').value = '';
-                document.getElementById('m-yearly-month').value = '';
-                document.getElementById('m-yearly-day').value = '';
+                document.getElementById('m-recurring').checked = false; 
+                toggleRecurrence();
             } 
-            // Busca la última línea de esta función y cámbiala por esta:
-            renderSubcategoryCustomFields(); window.currentEditId = taskId;
-        }
+            renderSubcategoryCustomFields(); 
+            window.currentEditId = taskId;
         }
         
         function closeTaskModal() { closeModal('taskModal'); }
@@ -1826,18 +1786,46 @@ function renderModalSubtasks() {
                     if(el) taskData.customData[field.name] = el.value;
                 });
             }
-            // Legacy ENMS
-           // Dentro de saveTask(), busca la parte de ENMS y cámbiala por esta:
-			if(taskData.subcategory === 'ENMS Labs' || taskData.subcategory === 'ENMS | Laboratorio de Química') { 
-			    taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
-			    taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
-			    taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
-			    taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
-			}
-            // --- NUEVO: Sincronización con Google ---
-            if (taskData.type === 'event' && taskData.date) {
-                addEventToGoogle(taskData);
+            function saveTask() { 
+            let title = document.getElementById('m-title').value; if(!title) return; 
+            let cat = document.getElementById('m-category').value;
+            let subcat = document.getElementById('m-subcategory').value;
+            let isRec = document.getElementById('m-recurring').checked;
+            
+            let taskData = { 
+                type: document.getElementById('m-type').value, 
+                title: title, 
+                category: cat, 
+                subcategory: subcat, 
+                date: document.getElementById('m-date').value, 
+                time: document.getElementById('m-time').value, 
+                notes: document.getElementById('m-notes').value, 
+                priority: currentModalPriority, 
+                myDay: document.getElementById('m-my-day').checked,
+                subtasks: [...currentSubtasks],
+                recurring: isRec,
+                recurrenceType: isRec ? document.getElementById('m-recurrence-type').value : null
+            }; 
+
+            // GUARDAR DATOS DE LABORATORIO
+            if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
+                taskData.type = 'event'; // Forzamos que sea evento/clase
+                taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
+                taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
+                taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
+                taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
             }
+
+            if (window.currentEditId) { 
+                let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
+                appState.tasks[index] = { ...appState.tasks[index], ...taskData }; 
+            } else { 
+                taskData.id = taskIdCounter++; 
+                taskData.status = 'todo'; 
+                appState.tasks.push(taskData); 
+            } 
+            saveToMemory(); closeTaskModal(); renderAll(); 
+       		 }
 
             if (window.currentEditId) { 
                 let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
