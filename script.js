@@ -1481,24 +1481,24 @@
         return;
     }
 
-		    // Lógica para otros módulos (Recetas, etc.)
-		    let fields = subcategoryCustomFields[subcat] || [];
-		    if (fields.length === 0) { container.innerHTML = ''; return; }
-		    
-		    let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
-		    fields.forEach(field => {
-		        html += `<div style="margin-bottom: 10px;"><label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
-		        if (field.type === 'select') {
-		            html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"><option value="">Seleccionar...</option>`;
-		            field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
-		            html += '</select>';
-		        } else {
-		            html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
-		        }
-		        html += '</div>';
-		    });
-		    container.innerHTML = html;
-		}
+    // Lógica para otros módulos (Recetas, etc.)
+    let fields = subcategoryCustomFields[subcat] || [];
+    if (fields.length === 0) { container.innerHTML = ''; return; }
+    
+    let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
+    fields.forEach(field => {
+        html += `<div style="margin-bottom: 10px;"><label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
+        if (field.type === 'select') {
+            html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"><option value="">Seleccionar...</option>`;
+            if(field.options) field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+            html += '</select>';
+        } else {
+            html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
+        }
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
 
         function onTypeChange() {
             let type = document.getElementById('m-type').value;
@@ -1682,7 +1682,9 @@ function renderModalSubtasks() {
                 document.getElementById('m-yearly-month').value = '';
                 document.getElementById('m-yearly-day').value = '';
             } 
-            toggleCustomFields(); window.currentEditId = taskId;
+            // Busca la última línea de esta función y cámbiala por esta:
+            renderSubcategoryCustomFields(); window.currentEditId = taskId;
+        }
         }
         
         function closeTaskModal() { closeModal('taskModal'); }
@@ -1739,7 +1741,7 @@ function renderModalSubtasks() {
             saveToMemory();
             renderAll();
         }
-        function updateSubcatDropdown() { 
+       function updateSubcatDropdown() { 
             let cat = document.getElementById('m-category').value; 
             let dd = document.getElementById('m-subcategory'); 
             if(dd) { 
@@ -1748,7 +1750,8 @@ function renderModalSubtasks() {
                 } else { 
                     dd.innerHTML = ''; 
                 } 
-                toggleCustomFields(); 
+                // Cambiamos la llamada vieja por la nueva
+                renderSubcategoryCustomFields(); 
                 renderModalTags();
             } 
         }
