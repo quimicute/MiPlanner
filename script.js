@@ -1334,34 +1334,45 @@
 
 
         function openCategoryGalleryModal(catKey) {
-            let cat = appState.categories[catKey];
-            if (!cat) return;
-            let modal = document.getElementById('categoryGalleryModal');
-            let titleEl = document.getElementById('gallery-modal-title');
-            let contentEl = document.getElementById('gallery-modal-content');
-            
-            titleEl.innerText = 'Módulos de ' + cat.label;
-            titleEl.style.color = cat.color || 'var(--accent)';
-            
-            contentEl.innerHTML = cat.subcats.map(subcat => {
-                let pageInfo = appState.pageData[subcat] || { icon: "¶", cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" }; 
-                return `
-        <div class="gallery-card" onclick="closeCategoryGalleryModal(); openSubpage('${catKey}', '${subcat}')" style="border-top-color: ${pageInfo.color || 'var(--accent)'}; border-top-width: 4px;">
-            <img src="${pageInfo.cover}" class="gallery-cover" style="height: 100px;">
-            <div style="padding: 20px 15px; position: relative;">
-                <div class="gallery-icon" style="top: -30px;">${pageInfo.icon}</div>
-                <h3 style="margin: 10px 0 0 0; font-family: 'Playfair Display', serif; font-size: 1.2em; text-align: center;">${subcat}</h3>
+    let cat = appState.categories[catKey];
+    if (!cat) return;
+    let modal = document.getElementById('categoryGalleryModal');
+    let titleEl = document.getElementById('gallery-modal-title');
+    let contentEl = document.getElementById('gallery-modal-content');
+    
+    titleEl.innerText = 'Módulos de ' + cat.label;
+    titleEl.style.color = cat.color || 'var(--accent)';
+    
+    // Generamos la galería visual con portadas
+    contentEl.innerHTML = cat.subcats.map(subcat => {
+        let pageInfo = appState.pageData[subcat] || { 
+            icon: "📂", 
+            cover: "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?auto=format&fit=crop&w=1000&q=80" 
+        }; 
+        
+        // Filtramos para no mostrar módulos archivados
+        if (pageInfo.archived) return '';
+
+        return `
+        <div class="gallery-card" onclick="closeCategoryGalleryModal(); openSubpage('${catKey}', '${subcat}')" 
+             style="border-top: 5px solid ${cat.color}; height: 200px; position: relative; overflow: hidden; border-radius: 15px; cursor: pointer; transition: 0.3s ease;">
+            <img src="${pageInfo.cover}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 10px 10px 0 0;">
+            <div style="padding: 15px; background: white; height: 100%;">
+                <div style="position: absolute; top: 75px; left: 15px; font-size: 2.2em; background: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid white;">
+                    ${pageInfo.icon}
+                </div>
+                <h3 style="margin: 25px 0 0 0; font-family: 'Playfair Display', serif; font-size: 1.15em; color: var(--text-dark);">${subcat}</h3>
             </div>
         </div>`;
-            }).join('');
-            
-            if(cat.subcats.length === 0) {
-                contentEl.innerHTML = '<p style="color:#888; grid-column: 1/-1; text-align:center;">No tienes módulos aquí aún.</p>';
-            }
-            openModal('categoryGalleryModal');
-            closeModal('categoryGalleryModal');
-        }
-
+    }).join('');
+    
+    if(cat.subcats.length === 0) {
+        contentEl.innerHTML = '<p style="color:#888; grid-column: 1/-1; text-align:center; padding: 40px;">No tienes módulos aquí aún. Haz clic derecho para crear uno.</p>';
+    }
+    
+    // Usamos la función centralizada que ya tienes para abrir
+    openModal('categoryGalleryModal');
+}
         // Registrar el dashboard en la carga inicial
         window.addEventListener('DOMContentLoaded', (event) => {
             history.replaceState({ view: 'dashboard' }, "", "#dashboard");
@@ -1889,7 +1900,7 @@ function renderDashboardModules() {
                 }
                 
                 html += `
-                <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 16px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.02);" onclick="switchView('mod-${cat.id}')" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)'">
+                <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 16px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.02);" onclick="openCategoryGalleryModal('${cat.id}')" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)'">
                     <div style="display: flex; align-items: center; gap: 14px;">
                         <div style="width: 42px; height: 42px; border-radius: 12px; background: ${cat.color}; display: flex; align-items: center; justify-content: center; font-size: 1.3em; color: white; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);">
                             ${cat.icon}
@@ -2246,66 +2257,6 @@ function renderDashboardModules() {
             });
         }
 
-        let currentWeek = 0;
-        function renderWeeklySchedule() {
-            const container = document.getElementById('weekly-schedule-grid');
-            const header = document.getElementById('weekly-schedule-header');
-            if(!container || !header) return;
-
-            // Cálculo de fechas reales
-            const today = new Date();
-            const first = today.getDate() - today.getDay() + 1 + (currentWeek * 7);
-            const startDay = new Date(new Date().setDate(first));
-            const endDay = new Date(new Date().setDate(first + 6));
-            const rangeStr = `${startDay.getDate()} al ${endDay.getDate()} de ${startDay.toLocaleDateString('es-ES', {month:'short'})}`;
-            
-            header.innerHTML = `
-                <h3 class="widget-title">Horario Semanal</h3>
-                <div style="display:flex; gap:5px; align-items:center;">
-                    <button class="widget-action-btn" onclick="currentWeek--; renderWeeklySchedule();">❮</button>
-                    <span style="font-size: 0.75em; font-weight: 700; color: var(--color-p6); min-width: 100px; text-align:center;">${rangeStr}</span>
-                    <button class="widget-action-btn" onclick="currentWeek++; renderWeeklySchedule();">❯</button>
-                </div>
-            `;
-
-            // Tabla Estilo Excel
-            let html = '<table class="lab-schedule-table"><thead><tr><th>Hr</th><th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th></tr></thead><tbody>';
-            for(let hour = 8; hour <= 22; hour++) {
-                html += `<tr><td style="font-weight:600;">${hour}:00</td>`;
-                for(let day = 1; day <= 7; day++) {
-                    // Aquí podrías filtrar tareas de tipo 'class' que coincidan con la hora y día
-                    html += `<td style="min-height:30px;"></td>`;
-                }
-                html += '</tr>';
-            }
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        function assignENMS(week, idx) {
-            let materia = prompt("Elegir materia: 1-Experimentación, 2-Orgánica, 3-Química II");
-            let grupo = '';
-            if(materia === '1') grupo = 'A';
-            else if(materia === '2') grupo = 'B';
-            else if(materia === '3') grupo = 'C';
-            if(grupo) {
-                if(!appState.enmsWeekPlan) appState.enmsWeekPlan = ['', '', '', '', '', ''];
-                if(!appState.enmsWeekPlan[week]) appState.enmsWeekPlan[week] = '';
-                let arr = appState.enmsWeekPlan[week].split('');
-                while(arr.length <= idx) arr.push('');
-                arr[idx] = grupo;
-                appState.enmsWeekPlan[week] = arr.join('');
-                saveToMemory();
-                renderWeeklySchedule();
-            }
-        }
-
-        function getProfesorForGrupo(grupo) {
-            if(grupo === 'A') return 'Prof. Experimentación';
-            if(grupo === 'B') return 'Prof. Orgánica';
-            if(grupo === 'C') return 'Prof. Química II';
-            return '';
-        }
 
         // Inicializar reloj y lyric
         mostrarFraseAleatoria();
