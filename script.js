@@ -1,4 +1,4 @@
-﻿	const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
+	const firebaseConfig = { apiKey: "AIzaSyArL6R5QO6GwYqyxIF7YaiQW_BwtC7LzfA", authDomain: "lucia-s-life-planner.firebaseapp.com", projectId: "lucia-s-life-planner", storageBucket: "lucia-s-life-planner.firebasestorage.app", messagingSenderId: "472761243764", appId: "1:472761243764:web:a32216ca8544098e759921", measurementId: "G-DG8SRHEWYY" };
         let db = null;
         try {
             if (window.firebase && typeof firebase.initializeApp === 'function') {
@@ -35,6 +35,50 @@
                 });
             } catch(err) { console.warn('Error overlay not installed', err); }
         })();
+        
+        // ========== FUNCIONES CENTRALIZADAS PARA MODALES ==========
+        let activeModalCount = 0;
+        
+        function toggleModalBlur(show) {
+            if (show) {
+                activeModalCount++;
+                document.body.classList.add('blur-background');
+                document.body.style.overflow = 'hidden';
+            } else {
+                activeModalCount--;
+                if (activeModalCount <= 0) {
+                    activeModalCount = 0;
+                    document.body.classList.remove('blur-background');
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                toggleModalBlur(true);
+            }
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                toggleModalBlur(false);
+            }
+        }
+        
+        // Permitir cerrar modales al clickear fuera (en el overlay)
+        document.addEventListener('click', function(event) {
+            if (event.target.classList && event.target.classList.contains('modal-overlay')) {
+                const modal = event.target;
+                if (modal.id) closeModal(modal.id);
+            }
+        });
+        // =======================================================
+        
         const predefinedTagsList = ['urgente', 'compras', 'reunión', 'trámites', 'salud', 'ideas', 'finanzas', 'desayuno', 'almuerzo', 'cena', 'postre'];
         let currentModalTags = []; let currentModalPriority = 'none';
         let monthOffset = 0;
@@ -232,8 +276,8 @@
         function addQuickNote() { let t = document.getElementById('quick-note-input'); let i = document.getElementById('quick-note-img'); if(t.value.trim() || i.value.trim()) { let d = new Date(); let dStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); if(!appState.quickNotesList) appState.quickNotesList = []; appState.quickNotesList.unshift({ text: t.value.trim(), img: i.value.trim(), date: dStr }); t.value = ''; i.value = ''; saveToMemory(); renderQuickNotes(); } }
         function deleteQuickNote(idx) { customConfirm("¿Borrar nota?", () => { appState.quickNotesList.splice(idx, 1); saveToMemory(); renderQuickNotes(); }); }
 
-        function customConfirm(message, callback) { const overlay = document.getElementById('confirmModalOverlay'); if(!overlay) { if(confirm(message)) callback(); return; } overlay.querySelector('.confirm-message').innerText = message; overlay.style.display = 'flex'; window._confirmCallback = callback; }
-        function closeConfirmModal() { const overlay = document.getElementById('confirmModalOverlay'); if(overlay) overlay.style.display = 'none'; window._confirmCallback = null; document.body.style.filter = ''; document.body.style.overflow = ''; }
+        function customConfirm(message, callback) { const overlay = document.getElementById('confirmModalOverlay'); if(!overlay) { if(confirm(message)) callback(); return; } overlay.querySelector('.confirm-message').innerText = message; openModal('confirmModalOverlay'); window._confirmCallback = callback; }
+        function closeConfirmModal() { closeModal('confirmModalOverlay'); window._confirmCallback = null; }
         function confirmModalYes() { if(window._confirmCallback) window._confirmCallback(); closeConfirmModal(); }
 
         function addKitchenItem(type) {
@@ -267,7 +311,7 @@
             selector.innerHTML = '<option value="">-- Ninguna --</option>' + recipes.map(r => `<option value="${r.id}" ${current == r.id ? 'selected' : ''}>${r.title}</option>`).join('');
             title.textContent = `Seleccionar receta para ${dayName} - ${meal.charAt(0).toUpperCase() + meal.slice(1)}`;
             window.currentMealSelectorKey = key;
-            document.getElementById('mealSelectorModal').style.display = 'flex';
+            openModal('mealSelectorModal');
         }
 
         function saveMealSelection() {
@@ -278,12 +322,8 @@
         }
 
         function closeMealSelectorModal() {
-            let modal = document.getElementById('mealSelectorModal');
-            if (modal) {
-                modal.style.display = 'none';
-                localStorage.removeItem('mealSelectorOpen');
-            }
-            document.body.style.filter = '';
+            closeModal('mealSelectorModal');
+            localStorage.removeItem('mealSelectorOpen');
             document.body.style.overflow = '';
         }
 
@@ -420,7 +460,7 @@
         }
 
         function openHabitModal(id = null) {
-            currentEditHabitId = id; let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'flex';
+            currentEditHabitId = id; openModal('habitModal');
             if(id) {
                 let h = appState.habits.find(x => x.id === id);
                 document.getElementById('h-title').value = h.title; 
@@ -460,7 +500,7 @@
             }
             toggleHabitCustomFields();
         }
-        function closeHabitModal() { let modal = document.getElementById('habitModal'); if(modal) modal.style.display = 'none'; document.body.style.filter = ''; document.body.style.overflow = ''; }
+        function closeHabitModal() { closeModal('habitModal'); }
         function toggleHabitCustomFields() {
             let freq = document.getElementById('h-freq').value;
             let customEl = document.getElementById('habit-custom-fields');
@@ -520,12 +560,11 @@
         let currentConfigCat = null;
         function openCategoryConfig(catKey) {
             currentConfigCat = catKey;
-            let modal = document.getElementById('categoryConfigModal');
-            if(modal) modal.style.display = 'flex';
+            openModal('categoryConfigModal');
             document.getElementById('config-modal-title').innerText = 'Configurar Etiquetas - ' + getCatLabel(catKey);
             renderTagsList();
         }
-        function closeCategoryConfigModal() { let modal = document.getElementById('categoryConfigModal'); if(modal) modal.style.display = 'none'; currentConfigCat = null; }
+        function closeCategoryConfigModal() { closeModal('categoryConfigModal'); currentConfigCat = null; }
         function renderTagsList() {
             let list = document.getElementById('tags-list');
             if(!list || !currentConfigCat) return;
@@ -554,12 +593,11 @@
         let currentConfigSubcat = null;
         function openSubcatConfig() {
             currentConfigSubcat = currentSubcatOpened;
-            let modal = document.getElementById('subcatConfigModal');
-            if(modal) modal.style.display = 'flex';
+            openModal('subcatConfigModal');
             document.getElementById('subcat-config-modal-title').innerText = 'Configurar Campos - ' + currentConfigSubcat;
             renderFieldsList();
         }
-        function closeSubcatConfigModal() { let modal = document.getElementById('subcatConfigModal'); if(modal) modal.style.display = 'none'; currentConfigSubcat = null; document.body.style.filter = ''; document.body.style.overflow = ''; }
+        function closeSubcatConfigModal() { closeModal('subcatConfigModal'); currentConfigSubcat = null; }
         function renderFieldsList() {
             let list = document.getElementById('fields-list');
             if(!list || !currentConfigSubcat) return;
@@ -1189,14 +1227,8 @@
                     <div>${t.date || ''} ${t.time || ''}</div>
                 </div>
             `).join('');
-            modal.style.display = 'flex';
-        }
-
-        function closeModuleModal() {
-            const modal = document.getElementById('moduleModal');
-            modal.style.display = 'none';
-            document.body.style.filter = '';
-            document.body.style.overflow = '';
+            openModal('moduleModal');
+            closeModal('moduleModal');
         }
 
         // Cerrar popovers al hacer clic fuera
@@ -1312,10 +1344,8 @@
             if(cat.subcats.length === 0) {
                 contentEl.innerHTML = '<p style="color:#888; grid-column: 1/-1; text-align:center;">No tienes módulos aquí aún.</p>';
             }
-            modal.style.display = 'flex';
-        }
-        function closeCategoryGalleryModal() {
-            document.getElementById('categoryGalleryModal').style.display = 'none';
+            openModal('categoryGalleryModal');
+            closeModal('categoryGalleryModal');
         }
 
         // Registrar el dashboard en la carga inicial
@@ -1517,7 +1547,7 @@ function renderModalSubtasks() {
 }
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
-            editingTaskId = taskId; let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'flex'; 
+            editingTaskId = taskId; openModal('taskModal'); 
             if (taskId) { 
                 let task = appState.tasks.find(t => t.id === taskId); 
                 document.getElementById('m-title').value = task.title; document.getElementById('m-type').value = task.type || 'task'; document.getElementById('m-category').value = task.category || ''; updateSubcatDropdown(); document.getElementById('m-subcategory').value = task.subcategory || ''; showSocialTip(); renderSubcategoryCustomFields(); document.getElementById('m-date').value = task.date || ''; document.getElementById('m-time').value = task.time || ''; document.getElementById('m-notes').value = task.notes || ''; 
@@ -1621,7 +1651,7 @@ function renderModalSubtasks() {
             toggleCustomFields(); window.currentEditId = taskId;
         }
         
-        function closeTaskModal() { let modal = document.getElementById('taskModal'); if(modal) modal.style.display = 'none'; document.body.style.filter = ''; document.body.style.overflow = ''; }
+        function closeTaskModal() { closeModal('taskModal'); }
 
         function openTaskDetails(taskId) {
             window.currentTaskId = taskId;
@@ -1651,11 +1681,10 @@ function renderModalSubtasks() {
             
             document.getElementById('task-details-notes').textContent = task.notes || 'Sin notas adicionales.';
             
-            let modal = document.getElementById('taskDetailsModal');
-            if (modal) modal.style.display = 'flex';
+            openModal('taskDetailsModal');
         }
 
-        function closeTaskDetailsModal() { let modal = document.getElementById('taskDetailsModal'); if(modal) modal.style.display = 'none'; }
+        function closeTaskDetailsModal() { closeModal('taskDetailsModal'); }
 
         function editTaskFromDetails() {
             closeTaskDetailsModal();
@@ -2120,19 +2149,17 @@ function renderModalSubtasks() {
                     </div>`;
                 });
             }
-            document.getElementById('historyModal').style.display = 'flex';
+            openModal('historyModal');
         }
-        function closeHistoryModal() { document.getElementById('historyModal').style.display = 'none'; }
+        function closeHistoryModal() { closeModal('historyModal'); }
 
         function openFocusKanbanModal() { 
-            document.getElementById('focus-kanban-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; 
+            openModal('focus-kanban-modal');
             renderFocusKanban(); 
             renderCalendar('cal-focus-mini', 'all'); 
         }
         function closeFocusKanbanModal() {
-            document.getElementById('focus-kanban-modal').style.display = 'none';
-            document.body.style.overflow = 'auto'; 
+            closeModal('focus-kanban-modal');
         }
 
         function toggleDashboardCompleted() {
