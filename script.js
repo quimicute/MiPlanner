@@ -918,9 +918,9 @@
                             // MAGIA NUEVA: Si es clase de laboratorio, mostramos un puntito de color
                             if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
                                 let dotColor = '#ccc';
-                                if (t.enmsMateria === 'Experimentación') dotColor = '#4ade80'; // Verde
-                                else if (t.enmsMateria === 'Química Orgánica') dotColor = '#1e3a8a'; // Azul
-                                else if (t.enmsMateria === 'Química II') dotColor = '#fef08a'; // Amarillo
+                                if (t.enmsMateria === 'Experimentación') dotColor = '#4CA780'; // Verde
+                                else if (t.enmsMateria === 'Química Orgánica') dotColor = '#2A90A9'; // Azul
+                                else if (t.enmsMateria === 'Química II') dotColor = '#FFB745'; // Amarillo
                                 
                                 return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();"></div>`;
                             }
