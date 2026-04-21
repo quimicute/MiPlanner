@@ -914,15 +914,25 @@
                 let currentDayObj = new Date(year, month, day);
                 let dayOfWeek = currentDayObj.getDay();
                 let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : '';
-                if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
-                    let taskBars = dayTasks.map(t => { 
-                        if (containerId === 'cal-dashboard') {
+               if (containerId === 'cal-dashboard') {
+                            // MAGIA NUEVA: Si es clase de laboratorio, mostramos un puntito de color
+                            if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
+                                let dotColor = '#ccc';
+                                if (t.enmsMateria === 'Experimentación') dotColor = '#4ade80'; // Verde
+                                else if (t.enmsMateria === 'Química Orgánica') dotColor = '#1e3a8a'; // Azul
+                                else if (t.enmsMateria === 'Química II') dotColor = '#fef08a'; // Amarillo
+                                
+                                return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();"></div>`;
+                            }
+                            
+                            // Lógica normal para los demás eventos (cumples, etc)
                             let sym = '';
                             if (t.type === 'birthday') sym = '🎂';
-							else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
-							else if (t.category === 'personal') sym = '💕';
-							else if (t.category === 'escolar') sym = '🧪';
-							else sym = '💼'; // Profesional;
+                            else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
+                            else if (t.category === 'personal') sym = '💕';
+                            else if (t.category === 'escolar') sym = '🧪';
+                            else sym = '💼'; // Profesional
+                            
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
