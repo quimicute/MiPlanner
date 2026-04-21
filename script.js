@@ -1870,6 +1870,42 @@ function renderModalSubtasks() {
             }
         }
 
+function renderDashboardModules() {
+            const container = document.getElementById('dashboard-modules-scroll');
+            if(!container) return;
+            
+            // Tus 3 ámbitos principales con tus colores y emojis oficiales
+            const catInfo = [
+                { id: 'personal', title: 'Personal', icon: '💕', color: 'var(--color-p1)' },
+                { id: 'escolar', title: 'Académico', icon: '🧪', color: '#c8a2c8' },
+                { id: 'profesional', title: 'Profesional', icon: '💼', color: '#ff9aa2' }
+            ];
+
+            let html = '';
+            catInfo.forEach(cat => {
+                let subcatsCount = 0;
+                if(appState.categories[cat.id] && appState.categories[cat.id].subcats) {
+                    subcatsCount = appState.categories[cat.id].subcats.filter(s => !(appState.pageData[s] && appState.pageData[s].archived)).length;
+                }
+                
+                html += `
+                <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 16px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.02);" onclick="switchView('mod-${cat.id}')" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)'">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div style="width: 42px; height: 42px; border-radius: 12px; background: ${cat.color}; display: flex; align-items: center; justify-content: center; font-size: 1.3em; color: white; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);">
+                            ${cat.icon}
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 1.05em; color: var(--text-dark); font-family: 'Playfair Display', serif;">${cat.title}</h4>
+                            <span style="font-size: 0.75em; color: #888; font-weight: 500;">${subcatsCount} módulos activos</span>
+                        </div>
+                    </div>
+                    <span style="color: #ccc; font-weight: bold; font-size: 1.2em;">❯</span>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
  function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
@@ -1935,7 +1971,7 @@ function renderModalSubtasks() {
             safeRender(renderRecetasWidget); 
             safeRender(renderHabitsWidget);
             safeRender(renderDashboardHabits);
-            safeRender(renderWeeklySchedule);
+            safeRender(renderDashboardModules);
             safeRender(() => renderModule('personal', 'render-personal')); 
             safeRender(() => renderModule('escolar', 'render-escolar')); 
             safeRender(() => renderModule('profesional', 'render-profesional')); 
