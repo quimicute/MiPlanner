@@ -1909,7 +1909,7 @@ function renderDashboardModules() {
                     // Tonos morados, rosas y azules pastel (Vibra Aura)
                     gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
                     textColor: '#3b1723', // Texto oscuro para contraste en pastel
-                    accentColor: 'transparent'
+                    accentColor: '#D4AF37' // Dorado para acento
                 },
                 { 
                     id: 'escolar', title: 'Académico', icon: '🎓', 
