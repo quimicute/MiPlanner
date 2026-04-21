@@ -919,10 +919,10 @@
                         if (containerId === 'cal-dashboard') {
                             let sym = '';
                             if (t.type === 'birthday') sym = '🎂';
-                            else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
-                            else if (t.category === 'personal') sym = '✧';
-                            else if (t.category === 'escolar') sym = '⌬';
-                            else sym = '◈';
+							else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
+							else if (t.category === 'personal') sym = '💕';
+							else if (t.category === 'escolar') sym = '🧪';
+							else sym = '💼'; // Profesional;
                             let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
                             return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                                         <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
