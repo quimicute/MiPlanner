@@ -895,7 +895,7 @@
             }
         }
 
-        function renderCalendar(containerId, filterCat) { 
+       function renderCalendar(containerId, filterCat) { 
             const calGrid = document.getElementById(containerId); 
             if(!calGrid) return; 
             updateMonthLabels();
@@ -914,7 +914,10 @@
                 let currentDayObj = new Date(year, month, day);
                 let dayOfWeek = currentDayObj.getDay();
                 let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : '';
-               if (containerId === 'cal-dashboard') {
+                
+                if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
+                    let taskBars = dayTasks.map(t => { 
+                        if (containerId === 'cal-dashboard') {
                             // MAGIA NUEVA: Si es clase de laboratorio, mostramos un puntito de color
                             if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
                                 let dotColor = '#ccc';
@@ -923,6 +926,7 @@
                                 else if (t.enmsMateria === 'Química II') dotColor = '#FFB745'; // Amarillo
                                 
                                 return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();"></div>`;
+                            }
                             
                             // Lógica normal para los demás eventos (cumples, etc)
                             let sym = '';
@@ -979,7 +983,8 @@
                 } 
             } 
         }
-        function filterByTag(tag) { switchView('master-view'); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+		function filterByTag(tag) { switchView('master-view'); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
         function setSubpageView(mode) { subpageViewMode = mode; document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active')); let tab = document.getElementById('tab-' + mode); if(tab) tab.classList.add('active'); renderSubpageTasks(currentParentView.replace('mod-',''), currentSubcatOpened); }
