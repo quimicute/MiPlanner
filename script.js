@@ -2496,8 +2496,6 @@ function renderModalSubtasks() {
                     console.log('Service Worker registrado correctamente', reg);
                 }).catch(err => console.log('Error al registrar Service Worker', err));
             });
-        }
-
         window.addEventListener('load', () => {
             const hash = window.location.hash.substring(1);
             if (hash) {
