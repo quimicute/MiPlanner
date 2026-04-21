@@ -356,10 +356,21 @@
         }
 
         function applyGlobalBackground() {
-            let bgUrl = (appState.dashboard && appState.dashboard.bgImage) ? appState.dashboard.bgImage : 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80';
+            const BEACH_BGS = [
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80', // Playa blanca
+                'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1920&q=80', // Palmeras al atardecer
+                'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1920&q=80', // Olas turquesas
+                'https://images.unsplash.com/photo-1505118380757-91f5f45d8de2?auto=format&fit=crop&w=1920&q=80', // Vista aérea de arrecife
+                'https://images.unsplash.com/photo-1520113526710-44484606775d?auto=format&fit=crop&w=1920&q=80'  // Mar picado relajante
+            ];
+            
+            // Elegir una imagen al azar de la lista
+            let bgUrl = BEACH_BGS[Math.floor(Math.random() * BEACH_BGS.length)];
+            
             let bgDiv = document.getElementById('app-global-bg');
             if(bgDiv) {
                 bgDiv.style.backgroundImage = 'url(' + bgUrl + ')';
+                bgDiv.style.opacity = '0.7'; // Ajuste sutil de brillo
             }
         }
 
@@ -1889,11 +1900,19 @@ function renderDashboardModules() {
             const container = document.getElementById('dashboard-modules-scroll');
             if(!container) return;
             
-            // Tus 3 ámbitos principales con tus colores y emojis oficiales
             const catInfo = [
-                { id: 'personal', title: 'Personal', icon: '💕', color: 'var(--color-p1)' },
-                { id: 'escolar', title: 'Académico', icon: '🧪', color: '#c8a2c8' },
-                { id: 'profesional', title: 'Profesional', icon: '💼', color: '#ff9aa2' }
+                { 
+                    id: 'personal', title: 'Personal', icon: '💕', color: '#ffb3c6',
+                    img: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=400&q=80' 
+                },
+                { 
+                    id: 'escolar', title: 'Académico', icon: '🧪', color: '#c8a2c8',
+                    img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80' 
+                },
+                { 
+                    id: 'profesional', title: 'Profesional', icon: '💼', color: '#ff9aa2',
+                    img: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=400&q=80' 
+                }
             ];
 
             let html = '';
@@ -1903,24 +1922,34 @@ function renderDashboardModules() {
                     subcatsCount = appState.categories[cat.id].subcats.filter(s => !(appState.pageData[s] && appState.pageData[s].archived)).length;
                 }
                 
+                // Estilo con imagen de fondo blurreada y filtro blanco
                 html += `
-                <div style="background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 16px; padding: 14px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.02);" onclick="openCategoryGalleryModal('${cat.id}')" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)'">
-                    <div style="display: flex; align-items: center; gap: 14px;">
-                        <div style="width: 42px; height: 42px; border-radius: 12px; background: ${cat.color}; display: flex; align-items: center; justify-content: center; font-size: 1.3em; color: white; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);">
-                            ${cat.icon}
+                <div style="position: relative; border-radius: 18px; margin-bottom: 12px; height: 85px; cursor: pointer; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s ease;" 
+                     onclick="openCategoryGalleryModal('${cat.id}')"
+                     onmouseover="this.style.transform='scale(1.02)'" 
+                     onmouseout="this.style.transform='scale(1)'">
+                    
+                    <div style="position: absolute; inset: 0; background-image: url('${cat.img}'); background-size: cover; background-position: center; filter: blur(1.5px);"></div>
+                    
+                    <div style="position: absolute; inset: 0; background: rgba(255,255,255,0.65);"></div>
+
+                    <div style="position: relative; z-index: 2; padding: 15px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 45px; height: 45px; border-radius: 12px; background: ${cat.color}; display: flex; align-items: center; justify-content: center; font-size: 1.4em; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                                ${cat.icon}
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 1.15em; color: var(--text-dark); font-family: 'Playfair Display', serif; font-weight: 700;">${cat.title}</h4>
+                                <span style="font-size: 0.8em; color: #444; font-weight: 600;">${subcatsCount} módulos activos</span>
+                            </div>
                         </div>
-                        <div>
-                            <h4 style="margin: 0; font-size: 1.05em; color: var(--text-dark); font-family: 'Playfair Display', serif;">${cat.title}</h4>
-                            <span style="font-size: 0.75em; color: #888; font-weight: 500;">${subcatsCount} módulos activos</span>
-                        </div>
+                        <span style="color: #666; font-weight: bold; font-size: 1.2em;">❯</span>
                     </div>
-                    <span style="color: #ccc; font-weight: bold; font-size: 1.2em;">❯</span>
                 </div>`;
             });
             
             container.innerHTML = html;
         }
-
  function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
