@@ -907,93 +907,90 @@
         }
 
        function renderCalendar(containerId, filterCat) { 
-            const calGrid = document.getElementById(containerId); 
-            if(!calGrid) return; 
-            updateMonthLabels();
-            const monthDate = getCalendarMonthDate();
-            const year = monthDate.getFullYear();
-            const month = monthDate.getMonth();
-            const totalDays = new Date(year, month + 1, 0).getDate();
-            const startWeekday = new Date(year, month, 1).getDay();
-            const iconMap = { 'personal': '💕', 'escolar': '🧪', 'profesional': '💼', 'default': '•' };
-            calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
-            for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
-            for(let day=1; day<=totalDays; day++) { 
-                let dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; 
-                let dayTasks = getTasksForDate(dateStr, filterCat, containerId);
-                let isToday = dateStr === getTodayStr() ? 'today' : '';
-                let currentDayObj = new Date(year, month, day);
-                let dayOfWeek = currentDayObj.getDay();
-                let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : '';
+		    const calGrid = document.getElementById(containerId); 
+		    if(!calGrid) return; 
+		    updateMonthLabels();
+		    const monthDate = getCalendarMonthDate();
+		    const year = monthDate.getFullYear();
+		    const month = monthDate.getMonth();
+		    const totalDays = new Date(year, month + 1, 0).getDate();
+		    const startWeekday = new Date(year, month, 1).getDay();
+		    
+		    // Iconos actualizados para tus ámbitos
+		    const iconMap = { 'personal': '💕', 'escolar': '🧪', 'profesional': '💼', 'default': '•' };
+		    
+		    calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
+		    
+		    for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
+		    
+		    for(let day=1; day<=totalDays; day++) { 
+		        let dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`; 
+		        let dayTasks = getTasksForDate(dateStr, filterCat, containerId);
+		        let isToday = dateStr === getTodayStr() ? 'today' : '';
+		        let currentDayObj = new Date(year, month, day);
+		        let dayOfWeek = currentDayObj.getDay();
+		        let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : '';
+		        
+		        if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
+		            let taskBars = dayTasks.map(t => { 
+		                if (containerId === 'cal-dashboard') {
+		                    // 🔬 LÓGICA DE PUNTOS PARA LABORATORIO
+		                    if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
+		                        let dotColor = '#ccc'; // Gris si no hay materia
+		                        
+		                        if (t.enmsMateria === 'Experimentación') dotColor = '#4CA780';      // Verde
+		                        else if (t.enmsMateria === 'Química Orgánica') dotColor = '#2A90A9'; // Azul
+		                        else if (t.enmsMateria === 'Química II') dotColor = '#FFB745';      // Amarillo/Naranja
+		                        
+		                        return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;" 
+		                                     title="${t.enmsMateria}: ${t.title}" 
+		                                     onclick="openTaskDetails(${t.id}); event.stopPropagation();">
+		                                </div>`;
+		                    }
+		                    
+		                    // 🌸 LÓGICA NORMAL PARA OTROS EVENTOS (CUMPLES, ETC)
+		                    let sym = '';
+		                    if (t.type === 'birthday') sym = '🎂';
+		                    else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
+		                    else if (t.category === 'personal') sym = '💕';
+		                    else if (t.category === 'escolar') sym = '🧪';
+		                    else sym = '💼'; 
+		                    
+		                    let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
+		                    return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
+		                                <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
+		                                <div class="aesthetic-tooltip">
+		                                    <b style="color: ${getCatColor(t.category)};">${t.title}</b>
+		                                    <span style="color: #888;">${tHora}</span>
+		                                </div>
+		                            </div>`;
+		                }
                 
-                if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
-                    let taskBars = dayTasks.map(t => { 
-                        if (containerId === 'cal-dashboard') {
-                            // MAGIA NUEVA: Si es clase de laboratorio, mostramos un puntito de color
-                            if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
-                                let dotColor = '#ccc';
-                                if (t.enmsMateria === 'Experimentación') dotColor = '#4CA780'; // Verde
-                                else if (t.enmsMateria === 'Química Orgánica') dotColor = '#2A90A9'; // Azul
-                                else if (t.enmsMateria === 'Química II') dotColor = '#FFB745'; // Amarillo
-                                
-                                return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();"></div>`;
-                            }
-                            
-                            // Lógica normal para los demás eventos (cumples, etc)
-                            let sym = '';
-                            if (t.type === 'birthday') sym = '🎂';
-                            else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
-                            else if (t.category === 'personal') sym = '💕';
-                            else if (t.category === 'escolar') sym = '🧪';
-                            else sym = '💼'; // Profesional
-                            
-                            let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
-                            return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
-                                        <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
-                                        <div class="aesthetic-tooltip">
-                                            <b style="color: ${getCatColor(t.category)};">${t.title}</b>
-                                            <span style="color: #888;">${tHora}</span>
-                                        </div>
-                                    </div>`;
-                        }
-                        let icon = t.type === 'birthday' ? '🎂' : (iconMap[t.category] || iconMap['default']); 
-                        return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
-                    }).join(''); 
-                    calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}" style="${containerId==='cal-dashboard'?'min-height:80px; padding:8px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
-                } else { 
-                    let indicators = '';
-                    if (containerId === 'cal-personal') {
-                        indicators = dayTasks.map(t => {
-                            let icon = '👥', color = 'var(--color-p3)';
-                            if (t.type === 'birthday') {
-                                icon = '🎂';
-                            } else if (t.customData && t.customData.eventType) {
-                                let et = t.customData.eventType;
-                                if (et === 'Cumpleaños') icon = '🎂';
-                                else if (et === 'Salida' || et === 'Reunión') icon = '🥂';
-                                else if (et === 'Fiesta') icon = '🎉';
-                            } else {
-                                let titleLower = t.title.toLowerCase();
-                                if (titleLower.includes('cumple') || titleLower.includes('cumpleaños')) icon = '🎂';
-                                else if (titleLower.includes('salida') || titleLower.includes('fiesta') || titleLower.includes('reunión')) icon = '🥂';
-                            }
-                            return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
-                                        <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
-                                        <div class="aesthetic-tooltip">
-                                            <b style="color: ${color};">${t.title}</b>
-                                        </div>
-                                    </div>`;
-                        }).join('');
-                    } else {
-                        indicators = dayTasks.map(t => { 
-                            let icon = iconMap[t.category] || iconMap['default']; 
-                            return `<button class="task-indicator" style="background:${getCatColor(t.category)}; border:none; font-size:1.2em; padding:0; margin:0;" title="${t.title}" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon}</button>`; 
-                        }).join('');
-                    }
-                    calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
-                } 
-            } 
-        }
+                // VISTA DE CALENDARIO MAESTRO (Barras completas)
+                let icon = t.type === 'birthday' ? '🎂' : (iconMap[t.category] || iconMap['default']); 
+                return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
+            }).join(''); 
+            
+            calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}" style="${containerId==='cal-dashboard'?'min-height:45px; padding:4px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
+        } else { 
+            // VISTAS FILTRADAS (PERSONAL, ETC)
+            let indicators = dayTasks.map(t => {
+                let icon = '•', color = getCatColor(t.category);
+                if (t.category === 'personal') icon = '💕';
+                if (t.type === 'birthday') icon = '🎂';
+                
+                return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
+                            <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
+                            <div class="aesthetic-tooltip">
+                                <b style="color: ${color};">${t.title}</b>
+                            </div>
+                        </div>`;
+            }).join('');
+            
+            calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
+        } 
+    } 
+}
 
 		function filterByTag(tag) { switchView('master-view'); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
@@ -1450,37 +1447,58 @@
         };
 
         function renderSubcategoryCustomFields() {
-            let subcat = document.getElementById('m-subcategory').value;
-            let container = document.getElementById('subcategory-custom-fields');
-            if (!container) return;
-            let fields = [];
-            if (appState.pageData[subcat] && appState.pageData[subcat].customFields) {
-                fields = appState.pageData[subcat].customFields.map(field => ({ name: field, label: field.charAt(0).toUpperCase() + field.slice(1), type: 'text', placeholder: '' }));
-            } else {
-                fields = subcategoryCustomFields[subcat] || [];
-            }
-            if (fields.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-            let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
-            fields.forEach(field => {
-                html += '<div style="margin-bottom: 10px;">';
-                html += `<label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
-                if (field.type === 'select') {
-                    html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
-                    html += `<option value="">Seleccionar...</option>`;
-                    field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
-                    html += '</select>';
-                } else if (field.type === 'textarea') {
-                    html += `<textarea id="m-custom-${field.name}" placeholder="${field.placeholder}" rows="2" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"></textarea>`;
-                } else {
-                    html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
-                }
-                html += '</div>';
-            });
-            container.innerHTML = html;
-        }
+    let subcat = document.getElementById('m-subcategory').value;
+    let container = document.getElementById('subcategory-custom-fields');
+    if (!container) return;
+
+    // LÓGICA ESPECIAL PARA LABORATORIO
+    if (subcat === 'ENMS | Laboratorio de Química' || subcat === 'ENMS Labs') {
+        container.innerHTML = `
+            <div style="font-size: 0.85em; color: var(--accent); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px;">🔬 Sesión de Laboratorio</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-size:0.75em; color:#888;">Materia</label>
+                    <select id="m-enms-materia" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                        <option value="Química Orgánica">Química Orgánica 🧪</option>
+                        <option value="Experimentación">Experimentación 🔬</option>
+                        <option value="Química II">Química II ⚗️</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.75em; color:#888;">Grupo</label>
+                    <input type="text" id="m-enms-grupo" placeholder="Ej: 602-A" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                </div>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size:0.75em; color:#888;">Profesor</label>
+                <input type="text" id="m-enms-profesor" placeholder="Nombre del docente" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size:0.75em; color:#888;">Práctica / Título</label>
+                <input type="text" id="m-enms-practica" placeholder="Nombre de la práctica" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+            </div>
+        `;
+        return;
+    }
+
+		    // Lógica para otros módulos (Recetas, etc.)
+		    let fields = subcategoryCustomFields[subcat] || [];
+		    if (fields.length === 0) { container.innerHTML = ''; return; }
+		    
+		    let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
+		    fields.forEach(field => {
+		        html += `<div style="margin-bottom: 10px;"><label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
+		        if (field.type === 'select') {
+		            html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"><option value="">Seleccionar...</option>`;
+		            field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+		            html += '</select>';
+		        } else {
+		            html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
+		        }
+		        html += '</div>';
+		    });
+		    container.innerHTML = html;
+		}
 
         function onTypeChange() {
             let type = document.getElementById('m-type').value;
@@ -1518,31 +1536,7 @@
             else if(recType === 'yearly') document.getElementById('yearly-fields').style.display = 'block';
             else if(recType === 'personalizado') document.getElementById('personalizado-fields').style.display = 'block';
         }
-        function toggleCustomFields() { 
-            let cat = document.getElementById('m-category').value; 
-            let subcat = document.getElementById('m-subcategory').value; 
-            let customEl = document.getElementById('custom-fields'); 
-            let container = document.getElementById('custom-fields-container'); 
-            let titleEl = document.getElementById('custom-fields-title'); 
-            if(!customEl || !container || !titleEl) return; 
-            if(subcat === 'ENMS Labs') {
-                customEl.style.display = 'flex'; 
-                titleEl.innerText = '⌬ Datos de Laboratorio'; 
-                container.innerHTML = `<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px;"><input type="text" id="m-enms-materia" placeholder="Materia" style="flex:1; min-width:140px;"><input type="text" id="m-enms-profesor" placeholder="Profesor" style="flex:1; min-width:140px;"><input type="text" id="m-enms-grupo" placeholder="Grupo" style="flex:1; min-width:100px;"><input type="text" id="m-enms-practica" placeholder="Práctica" style="flex:1; min-width:100px;"></div><textarea id="m-enms-materiales" placeholder="Materiales & Preparación" rows="4" style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-color); color:var(--text-dark);"></textarea>`;
-            } else {
-                let customization = appState.categories[cat]; 
-                if(customization && customization.customFields && customization.customFields.length > 0) { 
-                    customEl.style.display = 'flex'; 
-                    titleEl.innerText = cat === 'escolar' ? '📚 Datos Académicos' : cat === 'profesional' ? '💼 Datos Profesionales' : 'Campos Personalizados'; 
-                    container.innerHTML = customization.customFields.map(field => { 
-                        let placeholder = field.charAt(0).toUpperCase() + field.slice(1); 
-                        return `<input type="text" id="m-custom-${field}" placeholder="${placeholder}" style="flex:1; min-width:140px;">`; 
-                    }).join(''); 
-                } else { 
-                    customEl.style.display = 'none'; 
-                } 
-            }
-        }
+
 
         let currentSubtasks = [];
         function setQuickDate(type) {
