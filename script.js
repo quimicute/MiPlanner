@@ -904,7 +904,7 @@
             const month = monthDate.getMonth();
             const totalDays = new Date(year, month + 1, 0).getDate();
             const startWeekday = new Date(year, month, 1).getDay();
-            const iconMap = { 'personal': '✧', 'escolar': '⌬', 'profesional': '◈', 'default': '•' };
+            const iconMap = { 'personal': '💕', 'escolar': '🧪', 'profesional': '💼', 'default': '•' };
             calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
             for(let i=0; i<startWeekday; i++) calGrid.innerHTML += `<div class="cal-day empty"></div>`; 
             for(let day=1; day<=totalDays; day++) { 
