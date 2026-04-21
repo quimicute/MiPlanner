@@ -110,7 +110,7 @@
 
             .widget-card:has(#lyric-quote) { grid-area: bien !important; justify-content: space-between !important; background: white !important; backdrop-filter: none !important; }
             .widget-card:has(#cal-dashboard) { grid-area: cal !important; }
-            .widget-card:has(#weekly-schedule-header) { grid-area: hora !important; }
+            .widget-card:has(#dashboard-modules-scroll) { grid-area: hora !important; }
             .widget-card:has(#dashboard-tasks-list) { grid-area: tar !important; }
             .widget-card:has(#dashboard-events-list) { grid-area: eve !important; }
             .widget-card:has(#dashboard-habits-list) { grid-area: hab !important; }
