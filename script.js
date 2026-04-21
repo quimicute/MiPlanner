@@ -1827,8 +1827,13 @@ function renderModalSubtasks() {
                 });
             }
             // Legacy ENMS
-            if(taskData.subcategory === 'ENMS Labs') { taskData.enmsMateria = document.getElementById('m-enms-materia').value; taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; taskData.enmsPractica = document.getElementById('m-enms-practica').value; taskData.enmsMateriales = document.getElementById('m-enms-materiales').value; }
-            
+           // Dentro de saveTask(), busca la parte de ENMS y cámbiala por esta:
+			if(taskData.subcategory === 'ENMS Labs' || taskData.subcategory === 'ENMS | Laboratorio de Química') { 
+			    taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
+			    taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
+			    taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
+			    taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
+			}
             // --- NUEVO: Sincronización con Google ---
             if (taskData.type === 'event' && taskData.date) {
                 addEventToGoogle(taskData);
