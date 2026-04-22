@@ -69,24 +69,24 @@
             <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
 
             <div id="clase-enms-fields" style="display: none; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px;">
-                <label style="font-size:0.75em; color:var(--accent); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">🧪 Laboratorio ENMS</label>
+                <label style="font-size:0.75em; color:var(--accent); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">🧪 Sesión de Laboratorio</label>
+                
+                <label style="font-size:0.75em; color:#888; margin-bottom: 5px; display: block;">Materia</label>
+                <div id="enms-materia-pills" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+                    </div>
+                <input type="hidden" id="m-enms-materia-val" value="">
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                     <div>
-                        <label style="font-size:0.75em; color:#888;">Materia</label>
-                        <select id="m-enms-materia" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
-                            <option value="Química Orgánica">Química Orgánica</option>
-                            <option value="Experimentación">Experimentación</option>
-                            <option value="Química 2">Química 2</option>
+                        <label style="font-size:0.75em; color:#888;">Grupo</label>
+                        <select id="m-enms-grupo" onchange="onEnmsGrupoChange()" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                            <option value="">Elige materia...</option>
                         </select>
                     </div>
                     <div>
-                        <label style="font-size:0.75em; color:#888;">Grupo</label>
-                        <input type="text" id="m-enms-grupo" placeholder="Ej: 602-A" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                        <label style="font-size:0.75em; color:#888;">Profesor</label>
+                        <input type="text" id="m-enms-profesor" readonly placeholder="Se llena automático" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color); background: rgba(0,0,0,0.04); color: #555; font-weight: 600;">
                     </div>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <label style="font-size:0.75em; color:#888;">Profesor</label>
-                    <input type="text" id="m-enms-profesor" placeholder="Nombre del docente" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
                 </div>
                 <div style="margin-bottom: 10px;">
                     <label style="font-size:0.75em; color:#888;">Práctica</label>
