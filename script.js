@@ -1676,71 +1676,6 @@ function renderModalSubtasks() {
     });
 }
 
-      function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
-		    editingTaskId = taskId; 
-		    openModal('taskModal'); 
-		    
-		    // 1. Cargar datos si estamos editando
-		    if (taskId) { 
-		        let task = appState.tasks.find(t => t.id === taskId); 
-		        
-                selectedModalType = task.type || 'task'; // ✨ NUEVO: Cargar el tipo de registro
-                selectedModalCat = task.category || '';
-		        selectedModalSubcat = task.subcategory || '';
-		        
-                document.getElementById('m-title').value = task.title; 
-		        document.getElementById('m-date').value = task.date || ''; 
-		        document.getElementById('m-time').value = task.time || ''; 
-		        document.getElementById('m-notes').value = task.notes || ''; 
-		        document.getElementById('m-my-day').checked = !!task.myDay;
-
-                // ✨ NUEVO: Cargar datos específicos si es una Clase
-                if (task.type === 'clase') {
-                    let materiaInput = document.getElementById('m-clase-materia');
-                    if(materiaInput) materiaInput.value = task.claseMateria || '';
-                    
-                    if(task.claseColor) {
-                        let dotToSelect = document.querySelector(`#clase-color-picker .color-dot[style*="${task.claseColor}"]`) || document.querySelector('#clase-color-picker .color-dot');
-                        if (dotToSelect) setClaseColor(task.claseColor, dotToSelect);
-                    }
-                }
-		    } else { 
-		        // Reset para nuevo registro
-		        selectedModalType = forceType || 'task'; // ✨ NUEVO: Asignar tipo por defecto
-                selectedModalCat = forceCat || ''; 
-		        selectedModalSubcat = forceSubCat || '';
-		        
-                document.getElementById('m-title').value = ''; 
-		        document.getElementById('m-date').value = ''; 
-		        document.getElementById('m-time').value = ''; 
-		        document.getElementById('m-notes').value = ''; 
-		        
-                let materiaInput = document.getElementById('m-clase-materia');
-                if (materiaInput) materiaInput.value = ''; // ✨ NUEVO: Limpiar la materia
-                
-                currentSubtasks = [];
-		    } 
-		
-		    // 2. Sincronizar UI (Pills)
-		    renderModalSubtasks();
-		    
-            renderTypePills();     // ✨ NUEVO: Dibuja los botones de Tipo (Tarea, Evento, Clase...)
-            renderCategoryPills(); // Dibuja los botones de Ámbito
-		    onTypeChange();        // ✨ NUEVO: Muestra/Oculta el cuadro de colores de la clase
-            
-		    if (selectedModalCat) {
-		        renderSubcategoryPills(); // Dibuja los botones de Módulo
-		        document.getElementById('subcategory-section').style.display = 'block';
-		    } else {
-		        document.getElementById('subcategory-section').style.display = 'none';
-		    }
-		
-		    // 3. Cargar campos específicos y evitar el crash
-		    renderSubcategoryCustomFields(); 
-		    showSocialTip(); 
-		    
-		    window.currentEditId = taskId;
-		}
         
         function closeTaskModal() { closeModal('taskModal'); }
 
@@ -1811,44 +1746,190 @@ function renderModalSubtasks() {
             } 
         }
         
+        // --- CEREBRO DEL MODAL EN CASCADA ---
+
+        function setClaseColor(color, element) {
+            document.getElementById('m-clase-color').value = color;
+            document.querySelectorAll('#clase-color-picker .color-dot').forEach(d => d.style.border = '2px solid transparent');
+            element.style.border = '2px solid var(--text-dark)';
+        }
+
+        function selectAmbit(ambit) {
+            document.querySelectorAll('#ambit-buttons .pill-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-amb-' + ambit).classList.add('active');
+            
+            selectedModalCat = ambit;
+            
+            if (ambit === 'birthday') {
+                selectedModalType = 'birthday';
+                selectedModalSubcat = '';
+                document.getElementById('step-module').style.display = 'none';
+                document.getElementById('step-type').style.display = 'none';
+                document.getElementById('m-title').placeholder = '¿De quién es el cumpleaños?';
+            } else {
+                document.getElementById('m-title').placeholder = 'Título del registro...';
+                document.getElementById('step-module').style.display = 'block';
+                document.getElementById('step-type').style.display = 'none';
+                
+                // Pintar los módulos del ámbito seleccionado
+                let subcats = appState.categories[ambit].subcats;
+                let modHtml = subcats.map(s => {
+                    let icon = appState.pageData[s]?.icon || '📂';
+                    return `<button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" onclick="selectModule('${s}')"><span>${icon}</span> ${s}</button>`;
+                }).join('');
+                document.getElementById('modal-module-pills').innerHTML = modHtml;
+            }
+            updateFormVisibility();
+        }
+
+        function selectModule(mod) {
+            selectedModalSubcat = mod;
+            document.querySelectorAll('#modal-module-pills .pill-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            document.getElementById('step-type').style.display = 'block';
+            
+            // Lógica inteligente de tipos permitidos
+            let types = [
+                { id: 'task', label: 'Tarea', icon: '✅' },
+                { id: 'event', label: 'Evento', icon: '◈' }
+            ];
+            if (mod === 'Selfcare') types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
+            if (mod === 'Curso Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
+            
+            let typeHtml = types.map(t => `<button type="button" class="pill-btn ${selectedModalType === t.id ? 'active' : ''}" onclick="selectType('${t.id}', this)"><span>${t.icon}</span> ${t.label}</button>`).join('');
+            document.getElementById('modal-type-pills').innerHTML = typeHtml;
+            
+            // Auto-seleccionar el primero si el actual no es válido
+            if(!types.find(t => t.id === selectedModalType)) selectedModalType = 'task';
+            selectType(selectedModalType, document.querySelector('#modal-type-pills .pill-btn'));
+        }
+
+        function selectType(type, btnElement) {
+            selectedModalType = type;
+            if(btnElement) {
+                document.querySelectorAll('#modal-type-pills .pill-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            updateFormVisibility();
+        }
+
+        function updateFormVisibility() {
+            let isBday = selectedModalCat === 'birthday';
+            let isENMS = selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química';
+            let isClass = selectedModalType === 'clase';
+            
+            document.getElementById('birthday-fields').style.display = isBday ? 'block' : 'none';
+            document.getElementById('other-task-fields').style.display = isBday ? 'none' : 'block';
+            
+            document.getElementById('clase-enms-fields').style.display = (isClass && isENMS) ? 'block' : 'none';
+            document.getElementById('clase-generic-fields').style.display = (isClass && !isENMS) ? 'block' : 'none';
+        }
+
+        function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
+		    editingTaskId = taskId; 
+		    openModal('taskModal'); 
+		    
+		    if (taskId) { 
+		        let task = appState.tasks.find(t => t.id === taskId); 
+                selectedModalType = task.type || 'task'; 
+                selectedModalCat = task.category || (task.type === 'birthday' ? 'birthday' : 'personal');
+		        selectedModalSubcat = task.subcategory || '';
+		        
+                document.getElementById('m-title').value = task.title; 
+		        document.getElementById('m-date').value = task.date || ''; 
+		        document.getElementById('m-time').value = task.time || ''; 
+		        document.getElementById('m-notes').value = task.notes || ''; 
+		        document.getElementById('m-my-day').checked = !!task.myDay;
+
+                if (task.type === 'birthday' && task.birthDate) {
+                    document.getElementById('m-birth-date').value = task.birthDate;
+                }
+                if (task.type === 'clase') {
+                    if(document.getElementById('m-clase-materia-gen')) document.getElementById('m-clase-materia-gen').value = task.claseMateria || '';
+                    if(task.claseColor) {
+                        let dot = document.querySelector(`#clase-color-picker .color-dot[style*="${task.claseColor}"]`) || document.querySelector('#clase-color-picker .color-dot');
+                        if (dot) setClaseColor(task.claseColor, dot);
+                    }
+                }
+		    } else { 
+		        selectedModalType = forceType || 'task'; 
+                selectedModalCat = forceCat || ''; 
+		        selectedModalSubcat = forceSubCat || '';
+		        
+                document.getElementById('m-title').value = ''; 
+		        document.getElementById('m-date').value = ''; 
+		        document.getElementById('m-time').value = ''; 
+		        document.getElementById('m-notes').value = ''; 
+                if(document.getElementById('m-clase-materia-gen')) document.getElementById('m-clase-materia-gen').value = ''; 
+                if(document.getElementById('m-birth-date')) document.getElementById('m-birth-date').value = ''; 
+                currentSubtasks = [];
+		    } 
+		
+		    renderModalSubtasks();
+            
+            // Inicializar el flujo en cascada
+            if(selectedModalCat) {
+                selectAmbit(selectedModalCat);
+                if(selectedModalSubcat) selectModule(selectedModalSubcat);
+            } else {
+                // Estado por defecto vacío
+                document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('step-module').style.display = 'none';
+                document.getElementById('step-type').style.display = 'none';
+                updateFormVisibility();
+            }
+		    
+		    window.currentEditId = taskId;
+		}
+
         function saveTask() { 
             let title = document.getElementById('m-title').value; 
             if(!title) return; 
 
-            let cat = selectedModalCat;
-            let subcat = selectedModalSubcat;
-            let isRec = document.getElementById('m-recurring').checked;
+            let isBday = selectedModalCat === 'birthday';
+            let isRec = isBday ? true : document.getElementById('m-recurring').checked;
             
             let taskData = { 
-                type: selectedModalType, // ✨ ACTUALIZADO: Usa la variable de los botones en vez del menú desplegable
+                type: isBday ? 'birthday' : selectedModalType, 
                 title: title, 
-                category: cat, 
-                subcategory: subcat, 
-                date: document.getElementById('m-date').value, 
-                time: document.getElementById('m-time').value, 
+                category: isBday ? 'personal' : selectedModalCat, // Cumpleaños va internamente a personal
+                subcategory: isBday ? 'Asuntos Sociales' : selectedModalSubcat, 
+                date: isBday ? '' : document.getElementById('m-date').value, 
+                time: isBday ? '' : document.getElementById('m-time').value, 
                 notes: document.getElementById('m-notes').value, 
-                priority: currentModalPriority, 
-                myDay: document.getElementById('m-my-day').checked,
-                subtasks: [...currentSubtasks],
+                priority: isBday ? 'none' : currentModalPriority, 
+                myDay: isBday ? false : document.getElementById('m-my-day').checked,
+                subtasks: isBday ? [] : [...currentSubtasks],
                 recurring: isRec,
-                recurrenceType: isRec ? document.getElementById('m-recurrence-type').value : null,
-                recurrenceStart: isRec ? document.getElementById('m-recurrence-start').value : null,
-                recurrenceEnd: isRec ? document.getElementById('m-recurrence-end').value : null
+                recurrenceType: isBday ? 'yearly' : (isRec ? document.getElementById('m-recurrence-type').value : null)
             }; 
 
-            // ✨ NUEVO: Guardar datos específicos si se seleccionó "Clase"
-            if (selectedModalType === 'clase') {
-                taskData.claseMateria = document.getElementById('m-clase-materia').value;
-                taskData.claseColor = document.getElementById('m-clase-color').value;
+            // CUMPLEAÑOS: Guardar nacimiento y calcular recurrencia
+            if (isBday) {
+                let bDateVal = document.getElementById('m-birth-date').value;
+                taskData.birthDate = bDateVal;
+                if(bDateVal) {
+                    let d = new Date(bDateVal);
+                    // Días en JS van 1-31, meses 0-11. Necesitamos el mes para el yearly recurrence.
+                    taskData.yearlyMonth = d.getMonth() + 1; 
+                    // Ajuste zona horaria para cumpleaños
+                    d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+                    taskData.yearlyDay = d.getDate();
+                }
             }
 
-            // Datos específicos si es Laboratorio de Química
-            if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
-                taskData.type = 'event';
-                taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
-                taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
-                taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
-                taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
+            // CLASE: Guardar materia y color
+            if (selectedModalType === 'clase') {
+                if(selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química') {
+                    taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
+                    taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
+                    taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
+                    taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
+                } else {
+                    taskData.claseMateria = document.getElementById('m-clase-materia-gen').value;
+                    taskData.claseColor = document.getElementById('m-clase-color').value;
+                }
             }
 
             if (window.currentEditId) { 
@@ -1865,11 +1946,10 @@ function renderModalSubtasks() {
             renderAll(); 
 
             let subpageModal = document.getElementById('subpage-modal');
-            if(subpageModal && subpageModal.style.display === 'flex') {
-                renderSubpageTasks(cat, subcat);
+            if(subpageModal && subpageModal.style.display === 'flex' && !isBday) {
+                renderSubpageTasks(selectedModalCat, selectedModalSubcat);
             }
         }
-
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
         function getNextBirthdayDate(task) {
