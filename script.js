@@ -1982,74 +1982,61 @@ function renderModalSubtasks() {
 
 
 function renderDashboardModules() {
-            const container = document.getElementById('dashboard-modules-scroll');
-            if(!container) return;
-            
-            // Definición de ámbitos con las NUEVAS paletas solicitadas
-            // Inspirado en la estética de image_021a32.png
-            const catInfo = [
-                { 
-                    id: 'personal', title: 'Personal', icon: '💕', 
-                    // Tonos morados, rosas y azules pastel (Vibra Aura)
-                    gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
-                    textColor: '#3b1723', // Texto oscuro para contraste en pastel
-                    accentColor: '#D4AF37' // Dorado para acento
-                },
-                { 
-                    id: 'escolar', title: 'Académico', icon: '🎓', 
-                    // Azul y verde oscuro
-                    gradient: 'linear-gradient(135deg, #1a3c5e 0%, #1d4d3f 100%)',
-                    textColor: '#ffffff', // Texto claro en fondo oscuro
-                    accentColor: '#D4AF37' // Dorado para acento
-                },
-                { 
-                    id: 'profesional', title: 'Profesional', icon: '💼', 
-                    // Tonos cafés y rojos oscuros
-                    gradient: 'linear-gradient(135deg, #5d4037 0%, #8e2424 100%)',
-                    textColor: '#ffffff', // Texto claro en fondo oscuro
-                    accentColor: '#C5A059' // Dorado para acento
-                }
-            ];
+    const container = document.getElementById('dashboard-modules-scroll');
+    if(!container) return;
+    
+    const catInfo = [
+        { 
+            id: 'personal', title: 'Personal', icon: '💕', 
+            gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
+            textColor: '#3b1723'
+        },
+        { 
+            id: 'escolar', title: 'Académico', icon: '🎓', 
+            gradient: 'linear-gradient(135deg, #1a3c5e 0%, #1d4d3f 100%)',
+            textColor: '#ffffff'
+        },
+        { 
+            id: 'profesional', title: 'Profesional', icon: '💼', 
+            gradient: 'linear-gradient(135deg, #5d4037 0%, #8e2424 100%)',
+            textColor: '#ffffff'
+        }
+    ];
 
-            let html = '';
-            catInfo.forEach(cat => {
-                let subcatsCount = 0;
-                if(appState.categories[cat.id] && appState.categories[cat.id].subcats) {
-                    subcatsCount = appState.categories[cat.id].subcats.filter(s => !(appState.pageData[s] && appState.pageData[s].archived)).length;
-                }
+    let html = '';
+    catInfo.forEach(cat => {
+        let subcatsCount = 0;
+        if(appState.categories[cat.id] && appState.categories[cat.id].subcats) {
+            subcatsCount = appState.categories[cat.id].subcats.filter(s => !(appState.pageData[s] && appState.pageData[s].archived)).length;
+        }
+        
+        // Versión compacta: Altura de 62px y fuentes más pequeñas
+        html += `
+        <div style="background: ${cat.gradient}; border-radius: 16px; margin-bottom: 8px; height: 62px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden;" 
+             onclick="openCategoryGalleryModal('${cat.id}')"
+             onmouseover="this.style.transform='scale(1.02)';" 
+             onmouseout="this.style.transform='scale(1)';"
+        >
+            <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 60%); pointer-events: none;"></div>
+
+            <div style="position: relative; z-index: 2; padding: 0 18px; display: flex; align-items: center; gap: 14px; width: 100%;">
                 
-                // Borde de acento dorado opcional
-                let borderStyle = cat.accentColor !== 'transparent' ? `border-left: 5px solid ${cat.accentColor};` : 'border: none;';
-
-                // Rediseño: Fondo degradado sólido, iconos centrados, sin cajas fijas
-                html += `
-                <div style="background: ${cat.gradient}; border-radius: 20px; margin-bottom: 12px; height: 90px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 25px rgba(0,0,0,0.07); position: relative; overflow: hidden; ${borderStyle}" 
-                     onclick="openCategoryGalleryModal('${cat.id}')"
-                     onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 30px rgba(0,0,0,0.1)';" 
-                     onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.07)';"
-                >
-                    
-                    <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 20%, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 60%); pointer-events: none;"></div>
-
-                    <div style="position: relative; z-index: 2; padding: 0 20px; display: flex; align-items: center; gap: 18px; width: 100%;">
-                        
-                        <div style="font-size: 2.3em; display: flex; align-items: center; justify-content: center; min-width: 50px; color: ${cat.textColor};">
-                            ${cat.icon}
-                        </div>
-                        
-                        <div style="flex: 1;">
-                            <h4 style="margin: 0; font-size: 1.25em; color: ${cat.textColor}; font-family: 'Playfair Display', serif; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.05);">${cat.title}</h4>
-                            <span style="font-size: 0.85em; color: ${cat.textColor}; opacity: 0.8; font-weight: 600;">${subcatsCount} módulos activos</span>
-                        </div>
-                        
-                        <span style="color: ${cat.textColor}; font-weight: bold; font-size: 1.4em; opacity: 0.5;">❯</span>
-                    </div>
-                </div>`;
-            });
-            
-            container.innerHTML = html;
- }
-
+                <div style="font-size: 1.8em; display: flex; align-items: center; justify-content: center; min-width: 40px; color: ${cat.textColor};">
+                    ${cat.icon}
+                </div>
+                
+                <div style="flex: 1;">
+                    <h4 style="margin: 0; font-size: 1.05em; color: ${cat.textColor}; font-family: 'Playfair Display', serif; font-weight: 700;">${cat.title}</h4>
+                    <span style="font-size: 0.72em; color: ${cat.textColor}; opacity: 0.7; font-weight: 600;">${subcatsCount} módulos</span>
+                </div>
+                
+                <span style="color: ${cat.textColor}; font-weight: bold; font-size: 1.1em; opacity: 0.4;">❯</span>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
  function renderMealCalendar() {
             const container = document.getElementById('meal-calendar');
             if(!container) return;
