@@ -227,22 +227,49 @@
         }
 
 		function renderCategoryPills() {
-			    const container = document.getElementById('category-pill-container');
-			    if (!container) return;
-			
-			    const cats = [
-			        { id: 'personal', label: 'Personal', icon: '💕' },
-			        { id: 'escolar', label: 'Académico', icon: '🎓' },
-			        { id: 'profesional', label: 'Profesional', icon: '💼' }
-			    ];
-			
-			    container.innerHTML = cats.map(c => `
-			        <button type="button" class="pill-btn ${selectedModalCat === c.id ? 'active' : ''}" 
-			                onclick="setModalCategory('${c.id}')">
-			            <span>${c.icon}</span> ${c.label}
-			        </button>
-			    `).join('');
-			}
+    const container = document.getElementById('category-pill-container');
+    if (!container) return;
+    const cats = [
+        { id: 'personal', label: 'Personal', icon: '💕' },
+        { id: 'escolar', label: 'Académico', icon: '🎓' },
+        { id: 'profesional', label: 'Profesional', icon: '💼' }
+    ];
+    container.innerHTML = cats.map(c => `
+        <button type="button" class="pill-btn ${selectedModalCat === c.id ? 'active' : ''}" onclick="setModalCategory('${c.id}')">
+            <span>${c.icon}</span> ${c.label}
+        </button>`).join('');
+}
+
+function setModalCategory(catId) {
+    selectedModalCat = catId;
+    selectedModalSubcat = ''; 
+    const catSelect = document.getElementById('m-category');
+    if(catSelect) catSelect.value = catId; 
+    renderCategoryPills();
+    renderSubcategoryPills();
+    document.getElementById('subcategory-section').style.display = 'block';
+    document.getElementById('subcategory-custom-fields').innerHTML = '';
+}
+
+function renderSubcategoryPills() {
+    const container = document.getElementById('subcategory-pill-container');
+    if (!container || !selectedModalCat) return;
+    const subcats = appState.categories[selectedModalCat].subcats;
+    container.innerHTML = subcats.map(s => {
+        let icon = appState.pageData[s]?.icon || '📂';
+        return `<button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" onclick="setModalSubcategory('${s}')">
+            <span>${icon}</span> ${s}
+        </button>`;
+    }).join('');
+}
+
+function setModalSubcategory(subName) {
+    selectedModalSubcat = subName;
+    const subSelect = document.getElementById('m-subcategory');
+    if(subSelect) subSelect.value = subName;
+    renderSubcategoryPills();
+    renderSubcategoryCustomFields(); 
+}
 			
 			function setModalCategory(catId) {
 			    selectedModalCat = catId;
