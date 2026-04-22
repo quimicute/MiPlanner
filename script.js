@@ -227,94 +227,58 @@
         }
 
 		function renderCategoryPills() {
-    const container = document.getElementById('category-pill-container');
-    if (!container) return;
-    const cats = [
-        { id: 'personal', label: 'Personal', icon: '💕' },
-        { id: 'escolar', label: 'Académico', icon: '🎓' },
-        { id: 'profesional', label: 'Profesional', icon: '💼' }
-    ];
-    container.innerHTML = cats.map(c => `
-        <button type="button" class="pill-btn ${selectedModalCat === c.id ? 'active' : ''}" onclick="setModalCategory('${c.id}')">
-            <span>${c.icon}</span> ${c.label}
-        </button>`).join('');
-}
-
-function setModalCategory(catId) {
-    selectedModalCat = catId;
-    selectedModalSubcat = ''; 
-    const catSelect = document.getElementById('m-category');
-    if(catSelect) catSelect.value = catId; 
-    renderCategoryPills();
-    renderSubcategoryPills();
-    document.getElementById('subcategory-section').style.display = 'block';
-    document.getElementById('subcategory-custom-fields').innerHTML = '';
-}
-
-function renderSubcategoryPills() {
-    const container = document.getElementById('subcategory-pill-container');
-    if (!container || !selectedModalCat) return;
-    const subcats = appState.categories[selectedModalCat].subcats;
-    container.innerHTML = subcats.map(s => {
-        let icon = appState.pageData[s]?.icon || '📂';
-        return `<button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" onclick="setModalSubcategory('${s}')">
-            <span>${icon}</span> ${s}
-        </button>`;
-    }).join('');
-}
+		    const container = document.getElementById('category-pill-container');
+		    if (!container) return;
+		    const cats = [
+		        { id: 'personal', label: 'Personal', icon: '💕' },
+		        { id: 'escolar', label: 'Académico', icon: '🎓' },
+		        { id: 'profesional', label: 'Profesional', icon: '💼' }
+		    ];
+		    container.innerHTML = cats.map(c => `
+		        <button type="button" class="pill-btn ${selectedModalCat === c.id ? 'active' : ''}" onclick="setModalCategory('${c.id}')">
+		            <span>${c.icon}</span> ${c.label}
+		        </button>`).join('');
+		}
+		
+		function setModalCategory(catId) {
+		    selectedModalCat = catId;
+		    selectedModalSubcat = ''; 
+		    
+		    // Actualizamos el select oculto por compatibilidad
+		    const catSelect = document.getElementById('m-category');
+		    if(catSelect) catSelect.value = catId; 
+		
+		    renderCategoryPills();
+		    renderSubcategoryPills();
+		    
+		    document.getElementById('subcategory-section').style.display = 'block';
+		    document.getElementById('subcategory-custom-fields').innerHTML = ''; // Limpiamos campos anteriores
+		}
+		
+		function renderSubcategoryPills() {
+		    const container = document.getElementById('subcategory-pill-container');
+		    if (!container || !selectedModalCat) return;
+		    
+		    const subcats = appState.categories[selectedModalCat].subcats;
+		    container.innerHTML = subcats.map(s => {
+		        let icon = appState.pageData[s]?.icon || '📂';
+		        return `<button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" onclick="setModalSubcategory('${s}')">
+		            <span>${icon}</span> ${s}
+		        </button>`;
+		    }).join('');
+		}
 
 function setModalSubcategory(subName) {
     selectedModalSubcat = subName;
+    
+    // Actualizamos el select oculto por compatibilidad
     const subSelect = document.getElementById('m-subcategory');
     if(subSelect) subSelect.value = subName;
+    
     renderSubcategoryPills();
-    renderSubcategoryCustomFields(); 
+    renderSubcategoryCustomFields(); // ← Aquí ocurre la magia del laboratorio
+    showSocialTip();
 }
-			
-			function setModalCategory(catId) {
-			    selectedModalCat = catId;
-			    selectedModalSubcat = ''; // Resetear módulo al cambiar de ámbito
-			    
-			    // Sincronizar el select oculto para no romper funciones viejas
-			    const catSelect = document.getElementById('m-category');
-			    if(catSelect) catSelect.value = catId; 
-			
-			    renderCategoryPills();
-			    renderSubcategoryPills();
-			    
-			    // Mostrar la sección de módulos y limpiar campos anteriores
-			    document.getElementById('subcategory-section').style.display = 'block';
-			    document.getElementById('subcategory-custom-fields').innerHTML = '';
-			}
-			
-			function renderSubcategoryPills() {
-			    const container = document.getElementById('subcategory-pill-container');
-			    if (!container || !selectedModalCat) return;
-			
-			    const subcats = appState.categories[selectedModalCat].subcats;
-			    container.innerHTML = subcats.map(s => {
-			        let icon = appState.pageData[s]?.icon || '📂';
-			        return `
-			        <button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" 
-			                onclick="setModalSubcategory('${s}')">
-			            <span>${icon}</span> ${s}
-			        </button>`;
-			    }).join('');
-			}
-			
-			function setModalSubcategory(subName) {
-			    selectedModalSubcat = subName;
-			    
-			    // Sincronizar el select oculto
-			    const subSelect = document.getElementById('m-subcategory');
-			    if(subSelect) subSelect.value = subName;
-			
-			    renderSubcategoryPills();
-			    
-			    // ¡MAGIA! Esto despliega automáticamente los campos de Laboratorio si eliges ENMS
-			    renderSubcategoryCustomFields(); 
-			    showSocialTip();
-			}
 
         function renderDashboardLinks() { const list = document.getElementById('dash-links-list'); if(!list) return; list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
         function addBibliotecaLink(subcatName) {
