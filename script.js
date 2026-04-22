@@ -1203,7 +1203,37 @@ function setModalSubcategory(subName) {
             
             if(subTasks.length === 0) { html += '<p style="color: #888; font-size: 0.9em;">No hay registros. Crea uno nuevo para empezar.</p></div>'; dynamicArea.innerHTML = html; return; } 
             
-            if (subcatName === 'ENMS Labs' && subpageViewMode === 'table') {
+            if (subcatName.includes('ENMS') && subpageViewMode === 'table') {
+                
+                // 1. DIBUJAR CATÁLOGO DE PROFESORES
+                if(!appState.enmsCatalog) appState.enmsCatalog = [];
+                let catalogRows = appState.enmsCatalog.map(c => `
+                    <tr>
+                        <td><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${c.materia==='Experimentación'?'#4CA780':(c.materia==='Química Orgánica'?'#1a3c5e':'#FFB745')}; margin-right:8px;"></span>${c.materia}</td>
+                        <td><b>${c.grupo}</b></td><td>${c.profesor}</td>
+                        <td><button class="edit-btn" onclick="deleteEnmsCatalogItem(${c.id})" style="color:#ef4444; font-size:1.2em;">×</button></td>
+                    </tr>
+                `).join('');
+
+                let catalogHTML = `
+                    <div class="panel" style="padding:20px; margin-bottom:20px; background: rgba(255,255,255,0.85);">
+                        <h3 style="margin:0 0 15px 0; font-size: 1.2em; color: var(--text-dark);">📚 Catálogo de Grupos y Profesores</h3>
+                        <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                            <select id="new-cat-materia" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                                <option value="Química Orgánica">Química Orgánica</option>
+                                <option value="Experimentación">Experimentación</option>
+                                <option value="Química 2">Química 2</option>
+                            </select>
+                            <input type="text" id="new-cat-grupo" placeholder="Grupo (Ej. 501-A)" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                            <input type="text" id="new-cat-profesor" placeholder="Mtra. Nancy" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                            <button class="add-small-btn" style="background:var(--accent); color:white;" onclick="addEnmsCatalogItem()">+ Añadir</button>
+                        </div>
+                        <table class="notion-table" style="width:100%;">
+                            <thead><tr><th>Materia</th><th>Grupo</th><th>Profesor</th><th></th></tr></thead>
+                            <tbody>${catalogRows || '<tr><td colspan="4" style="text-align:center; color:#888;">Agrega tus grupos arriba.</td></tr>'}</tbody>
+                        </table>
+                    </div>`;
+
                 let weekPlan = appState.enmsWeekPlan || ['', '', '', '', '', ''];
                 let weekRows = weekPlan.map((text, idx) => `
                     <tr>
@@ -1212,23 +1242,17 @@ function setModalSubcategory(subName) {
                     </tr>
                 `).join('');
 
-                let timelineTasks = subTasks.slice().sort((a,b) => {
-                    let aDate = a.date ? new Date(`${a.date}T${a.time || '00:00'}`) : new Date(8640000000000000);
-                    let bDate = b.date ? new Date(`${b.date}T${b.time || '00:00'}`) : new Date(8640000000000000);
-                    return aDate - bDate;
-                });
+                // Mismo timeline de siempre
+                let timelineTasks = subTasks.slice().sort((a,b) => new Date(a.date || '9999') - new Date(b.date || '9999'));
                 let timelineItems = timelineTasks.map(t => {
-                    let dateLabel = t.date ? new Date(t.date).toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit' }) : 'Sin fecha';
-                    let timeLabel = t.time ? `${t.time}` : 'Hora pendiente';
-                    let materia = t.enmsMateria || 'Materia sin definir';
-                    let grupo = t.enmsGrupo || '-';
-                    let profe = t.enmsProfesor || 'Profe sin definir';
-                    return `<div class="timeline-item" onclick="openTaskDetails(${t.id})"><div style="display:flex; flex-direction:column; gap:4px;"><strong style="font-size:0.95em; color:var(--text-dark);">${dateLabel} - ${timeLabel}</strong><span class="timeline-meta">${materia} - Grupo ${grupo} | Profe: ${profe}</span></div><label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;"><input class="timeline-checkbox" type="checkbox" onclick="event.stopPropagation()" onchange="toggleTaskCompletion(${t.id}, this.checked)" ${t.status === 'done' ? 'checked' : ''}><span style="font-size:0.9em; color:#555;">Completado</span></label></div>`;
+                    let dateLabel = t.date ? new Date(t.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' }) : 'Sin fecha';
+                    let col = t.enmsMateria==='Experimentación'?'#4CA780':(t.enmsMateria==='Química Orgánica'?'#1a3c5e':'#FFB745');
+                    return `<div class="timeline-item" onclick="openTaskDetails(${t.id})" style="border-left: 4px solid ${col}"><div style="display:flex; flex-direction:column; gap:4px;"><strong style="font-size:0.95em;">${dateLabel} - ${t.time||'Hora pend.'}</strong><span class="timeline-meta"><b>${t.enmsMateria||'-'}</b> | Gpo ${t.enmsGrupo||'-'} | ${t.enmsProfesor||'-'}</span></div><label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input class="timeline-checkbox" type="checkbox" onclick="event.stopPropagation()" onchange="toggleTaskCompletion(${t.id}, this.checked)" ${t.status === 'done' ? 'checked' : ''}></label></div>`;
                 }).join('');
 
                 html += `<div style="display:grid; grid-template-columns: 70% 30%; gap:20px; align-items:start;">
                     <div>
-                        <div class="panel" style="padding:20px; margin-bottom:20px;">
+                        ${catalogHTML} <div class="panel" style="padding:20px; margin-bottom:20px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h3 style="margin:0;">Planificación de Semanas</h3></div>
                             <table class="notion-table" style="width:100%;">
                                 <thead><tr><th style="width:120px;">Semana</th><th>Actividades Principales/Prácticas</th></tr></thead>
@@ -1236,23 +1260,13 @@ function setModalSubcategory(subName) {
                             </table>
                         </div>
                         <div class="panel" style="padding:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h3 style="margin:0;">Base de Datos Maestra</h3><button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nuevo Registro</button></div>
-                            <table class="notion-table"><thead><tr><th>Materia</th><th>Grupo</th><th>Práctica</th><th>Profesor</th><th>Fecha / Hora</th><th>Materiales & Preparación</th><th>Estado</th></tr></thead><tbody>`;
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h3 style="margin:0;">Sesiones Registradas</h3><button class="add-small-btn" style="background: var(--accent); color: white;" onclick="openTaskModal('task', null, '${catKey}', '${subcatName}')">+ Nueva Sesión</button></div>
+                            <table class="notion-table"><thead><tr><th>Materia</th><th>Grupo</th><th>Práctica</th><th>Profesor</th><th>Fecha/Hora</th><th>Estado</th></tr></thead><tbody>`;
                 subTasks.forEach(t => {
-                    let preparedClass = t.status === 'prepared' ? 'status-prepared' : '';
-                    let statusValue = ['todo','prepared','done'].includes(t.status) ? t.status : 'todo';
-                    html += `<tr class="event-item ${preparedClass}" onclick="openTaskDetails(${t.id})"><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Práctica">${t.enmsPractica || t.title}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Fecha / Hora" style="color:var(--text-dark); font-size:0.9em;">${t.date || '-'} ${t.time ? '| '+t.time : ''}</td><td data-label="Materiales & Preparación" style="max-width:220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${(t.enmsMateriales || '-').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${statusValue==='todo'?'selected':''}>Pendiente</option><option value="prepared" ${statusValue==='prepared'?'selected':''}>Preparado 🧪</option><option value="done" ${statusValue==='done'?'selected':''}>Completado ✅</option></select></td></tr>`;
+                    html += `<tr class="event-item" onclick="openTaskDetails(${t.id})"><td data-label="Materia"><b>${t.enmsMateria || '-'}</b></td><td data-label="Grupo">${t.enmsGrupo || '-'}</td><td data-label="Práctica">${t.enmsPractica || t.title}</td><td data-label="Profesor">${t.enmsProfesor || '-'}</td><td data-label="Fecha" style="font-size:0.9em;">${t.date || '-'}</td><td data-label="Estado" onclick="event.stopPropagation();"><select class="status-select" onchange="updateTaskStatus(${t.id}, this.value)"><option value="todo" ${t.status==='todo'?'selected':''}>Pendiente</option><option value="done" ${t.status==='done'?'selected':''}>Completado</option></select></td></tr>`;
                 });
-                html += `</tbody></table>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="panel" style="padding:20px;">
-                            <h3 style="margin-top:0; margin-bottom:15px;">Timeline de Laboratorio</h3>
-                            ${timelineItems || '<div class="no-data" style="font-size:0.95em; color:#888;">No hay prácticas programadas.</div>'}
-                        </div>
-                    </div>
-                </div>`;
+                html += `</tbody></table></div></div>
+                    <div><div class="panel" style="padding:20px;"><h3 style="margin-top:0; margin-bottom:15px;">Timeline de Prácticas</h3>${timelineItems || '<div class="no-data" style="font-size:0.95em; color:#888;">No hay prácticas programadas.</div>'}</div></div></div>`;
             } else if (subpageViewMode === 'table') {
                 let customization = appState.categories[catKey];
                 let customHeaders = '';
@@ -1835,27 +1849,29 @@ function renderModalSubtasks() {
             window.updateFormVisibility();
         };
 
-        window.selectModule = function(mod) {
+window.selectModule = function(mod) {
             selectedModalSubcat = mod;
             document.querySelectorAll('#modal-module-pills .pill-btn').forEach(b => b.classList.remove('active'));
             event.currentTarget.classList.add('active');
             
             document.getElementById('step-type').style.display = 'block';
             
-            // Tipos base para todos
             let types = [
                 { id: 'task', label: 'Tarea', icon: '✅' },
                 { id: 'event', label: 'Evento', icon: '◈' }
             ];
             
-            // Rutinas solo en Personal y Selfcare
-            if (mod === 'Selfcare' || selectedModalCat === 'personal') {
-                types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
+            if (mod === 'Selfcare' || selectedModalCat === 'personal') types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
+            
+            // Clase azul fija para Análisis de Datos
+            if (mod === 'Curso Análisis de Datos' || mod === 'Curso de Análisis de Datos') {
+                types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
             }
             
-            // Clase SOLO en estos módulos específicos
-            if (mod === 'Curso Análisis de Datos' || mod === 'Curso de Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') {
-                types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
+            // ✨ NUEVO: "Sesión" para el laboratorio ENMS
+            let isENMS = mod.includes('ENMS');
+            if (isENMS) {
+                types.push({ id: 'sesion', label: 'Sesión', icon: '🧪' });
             }
             
             let typeHtml = types.map(t => `<button type="button" class="pill-btn ${selectedModalType === t.id ? 'active' : ''}" onclick="selectType('${t.id}', this)"><span>${t.icon}</span> ${t.label}</button>`).join('');
@@ -1867,80 +1883,64 @@ function renderModalSubtasks() {
 
         window.updateFormVisibility = function() {
             let isBday = selectedModalCat === 'birthday';
-            let isENMS = selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química';
+            let isENMS = selectedModalSubcat.includes('ENMS');
             let isClass = selectedModalType === 'clase';
+            let isSesion = selectedModalType === 'sesion'; // ✨ Detecta si tocaste "Sesión"
             
             document.getElementById('birthday-fields').style.display = isBday ? 'block' : 'none';
             document.getElementById('other-task-fields').style.display = isBday ? 'none' : 'block';
             
-            document.getElementById('clase-enms-fields').style.display = (isClass && isENMS) ? 'block' : 'none';
-        };
-
-        window.selectType = function(type, btnElement) {
-            selectedModalType = type;
-            if(btnElement) {
-                document.querySelectorAll('#modal-type-pills .pill-btn').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-            window.updateFormVisibility();
-        };
-
-    
-        // ==========================================
-        // APERTURA Y GUARDADO
-        // ==========================================
-
-        function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
-		    editingTaskId = taskId; 
-		    openModal('taskModal'); 
-		    
-		    if (taskId) { 
-		        let task = appState.tasks.find(t => t.id === taskId); 
-                selectedModalType = task.type || 'task'; 
-                selectedModalCat = task.category || (task.type === 'birthday' ? 'birthday' : 'personal');
-		        selectedModalSubcat = task.subcategory || '';
-		        
-                document.getElementById('m-title').value = task.title; 
-		        document.getElementById('m-date').value = task.date || ''; 
-		        document.getElementById('m-time').value = task.time || ''; 
-		        document.getElementById('m-notes').value = task.notes || ''; 
-		        document.getElementById('m-my-day').checked = !!task.myDay;
-
-                if (task.type === 'birthday' && task.birthDate) {
-                    document.getElementById('m-birth-date').value = task.birthDate;
-                }
-                if (task.type === 'clase') {
-                    if(document.getElementById('m-clase-materia-gen')) document.getElementById('m-clase-materia-gen').value = task.claseMateria || '';
-                    if(task.claseColor) {
-                        let dot = document.querySelector(`#clase-color-picker .color-dot[style*="${task.claseColor}"]`) || document.querySelector('#clase-color-picker .color-dot');
-                        if (dot) window.setClaseColor(task.claseColor, dot);
-                    }
-                }
-		    } else { 
-		        selectedModalType = forceType || 'task'; 
-                // ✨ SELECCIÓN POR DEFECTO CORREGIDA A 'PERSONAL'
-                selectedModalCat = forceCat || 'personal'; 
-		        selectedModalSubcat = forceSubCat || '';
-		        
-                document.getElementById('m-title').value = ''; 
-		        document.getElementById('m-date').value = ''; 
-		        document.getElementById('m-time').value = ''; 
-		        document.getElementById('m-notes').value = ''; 
-                if(document.getElementById('m-clase-materia-gen')) document.getElementById('m-clase-materia-gen').value = ''; 
-                if(document.getElementById('m-birth-date')) document.getElementById('m-birth-date').value = ''; 
-                currentSubtasks = [];
-		    } 
-		
-		    renderModalSubtasks();
+            // Muestra los campos correctos
+            document.getElementById('clase-enms-fields').style.display = (isSesion && isENMS) ? 'block' : 'none';
+            document.getElementById('clase-generic-fields').style.display = (isClass && !isENMS) ? 'block' : 'none';
             
-            // Inicializar el flujo en cascada
-            if(selectedModalCat) {
-                window.selectAmbit(selectedModalCat);
-                if(selectedModalSubcat) window.selectModule(selectedModalSubcat);
+            if (isSesion && isENMS) window.renderEnmsMateriaPills(); // Dibuja los colores
+            
+            let recEl = document.getElementById('m-recurring');
+            if (recEl && (isClass || isSesion)) {
+               recEl.checked = false; toggleRecurrence();
             }
-		    
-		    window.currentEditId = taskId;
-		}
+        };
+
+        // ✨ NUEVAS FUNCIONES PARA EL LABORATORIO
+        window.renderEnmsMateriaPills = function() {
+            const container = document.getElementById('enms-materia-pills');
+            const materias = [
+                { id: 'Experimentación', color: '#4CA780' }, // Verde
+                { id: 'Química Orgánica', color: '#1a3c5e' }, // Azul Marino
+                { id: 'Química 2', color: '#FFB745' } // Amarillo
+            ];
+            let currentVal = document.getElementById('m-enms-materia-val').value;
+            container.innerHTML = materias.map(m => {
+                let isActive = currentVal === m.id;
+                let bg = isActive ? m.color : 'transparent';
+                let textCol = isActive ? 'white' : m.color;
+                return `<button type="button" onclick="selectEnmsMateria('${m.id}')" style="padding: 6px 12px; border-radius: 20px; border: 1.5px solid ${m.color}; background: ${bg}; color: ${textCol}; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85em;">${m.id}</button>`;
+            }).join('');
+        };
+
+        window.selectEnmsMateria = function(mat) {
+            document.getElementById('m-enms-materia-val').value = mat;
+            window.renderEnmsMateriaPills();
+            if(!appState.enmsCatalog) appState.enmsCatalog = [];
+            
+            // Llenar grupos inteligentemente
+            let grupos = appState.enmsCatalog.filter(c => c.materia === mat);
+            let selectGrp = document.getElementById('m-enms-grupo');
+            if(grupos.length > 0) {
+                selectGrp.innerHTML = '<option value="">Selecciona un grupo...</option>' + grupos.map(g => `<option value="${g.grupo}">${g.grupo}</option>`).join('');
+            } else {
+                selectGrp.innerHTML = '<option value="">No hay grupos en catálogo</option>';
+            }
+            document.getElementById('m-enms-profesor').value = '';
+        };
+
+        window.onEnmsGrupoChange = function() {
+            let mat = document.getElementById('m-enms-materia-val').value;
+            let grp = document.getElementById('m-enms-grupo').value;
+            let item = appState.enmsCatalog.find(c => c.materia === mat && c.grupo === grp);
+            document.getElementById('m-enms-profesor').value = item ? item.profesor : '';
+        };
 
         function saveTask() { 
             let title = document.getElementById('m-title').value; 
@@ -1976,16 +1976,16 @@ function renderModalSubtasks() {
             }
 
             // CLASE: Guardar materia y color automáticamente
-            if (selectedModalType === 'clase') {
-                if(selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química') {
-                    taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
-                    taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
-                    taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
-                    taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
-                } else if (selectedModalSubcat === 'Curso Análisis de Datos' || selectedModalSubcat === 'Curso de Análisis de Datos') {
-                    taskData.claseMateria = 'Análisis de Datos';
-                    taskData.claseColor = '#3b82f6'; // Azul fijo
-                }
+           // CLASE / SESIÓN: Guardar datos
+            if (selectedModalType === 'sesion' && selectedModalSubcat.includes('ENMS')) {
+                taskData.type = 'sesion';
+                taskData.enmsMateria = document.getElementById('m-enms-materia-val').value; 
+                taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
+                taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
+                taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
+            } else if (selectedModalType === 'clase') {
+                taskData.claseMateria = 'Análisis de Datos'; // Fijo
+                taskData.claseColor = '#3b82f6'; // Azul Fijo
             }
 
             if (window.currentEditId) { 
@@ -2007,6 +2007,22 @@ function renderModalSubtasks() {
             }
         }
 
+		// ✨ DB DE LABORATORIO: Agregar y Borrar
+        window.addEnmsCatalogItem = function() {
+            if(!appState.enmsCatalog) appState.enmsCatalog = [];
+            let mat = document.getElementById('new-cat-materia').value;
+            let grp = document.getElementById('new-cat-grupo').value.trim();
+            let prof = document.getElementById('new-cat-profesor').value.trim();
+            
+            if(grp && prof) {
+                appState.enmsCatalog.push({ id: Date.now(), materia: mat, grupo: grp, profesor: prof });
+                saveToMemory(); renderSubpageTasks('profesional', currentSubcatOpened);
+            }
+        };
+        window.deleteEnmsCatalogItem = function(id) {
+            appState.enmsCatalog = appState.enmsCatalog.filter(c => c.id !== id);
+            saveToMemory(); renderSubpageTasks('profesional', currentSubcatOpened);
+        };
 
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
