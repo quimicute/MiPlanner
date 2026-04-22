@@ -182,21 +182,6 @@
             <div id="gallery-modal-content" class="category-menu-list"></div>
         </div>
     </div>
-
-    function applyGlobalBackground() {
-            let bgDiv = document.getElementById('app-global-bg');
-            if(!bgDiv) return;
-            
-            // Usar la imagen guardada en tu base de datos si existe
-            if (appState.dashboard && appState.dashboard.bgImage && appState.dashboard.bgImage.trim() !== '') {
-                bgDiv.style.backgroundImage = 'url(' + appState.dashboard.bgImage + ')';
-            } else {
-                // Imagen por defecto segura (por si la borras)
-                bgDiv.style.backgroundImage = 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80)';
-            }
-            bgDiv.style.opacity = '0.7';
-        }
-    
     
     <div id="dashboard-container">
         <div class="dashboard-grid">
@@ -264,6 +249,27 @@
                     </div>
                     <div id="sp-dynamic-content-area"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal" onclick="if(event.target===this) closeHistoryModal()">
+        <div class="modal" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; padding: 30px;">
+            <span class="close-modal" onclick="closeHistoryModal()">×</span>
+            <h2 style="margin-top: 0; color: var(--text-dark); font-size: 1.6em; font-family: 'Playfair Display', serif;">Historial</h2>
+            <p style="color: #888; font-size: 0.9em; margin-top: -10px;">Tareas y eventos completados.</p>
+            <div id="history-tasks-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="focus-kanban-modal" onclick="if(event.target===this) closeFocusKanbanModal()">
+        <div class="modal" style="width: 95%; max-width: 1000px; height: 85vh; padding: 30px; display: flex; flex-direction: column;">
+            <span class="close-modal" onclick="closeFocusKanbanModal()">×</span>
+            <h2 style="margin-top: 0; font-size: 1.6em; font-family: 'Playfair Display', serif; color: var(--text-dark);">Tablero de Enfoque</h2>
+            <div class="kanban" id="kanban-focus" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div class="kanban-col" id="focus-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div>
+                <div class="kanban-col" id="focus-in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div>
+                <div class="kanban-col" id="focus-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div>
             </div>
         </div>
     </div>
