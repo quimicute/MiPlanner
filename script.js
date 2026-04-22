@@ -1001,8 +1001,7 @@ function setModalSubcategory(subName) {
 		    const totalDays = new Date(year, month + 1, 0).getDate();
 		    const startWeekday = new Date(year, month, 1).getDay();
 		    
-		    // Iconos actualizados para tus ámbitos
-		    const iconMap = { 'personal': '💕', 'escolar': '🎓', 'profesional': '💼', 'default': '•' }; // ✨ ACTUALIZADO: Escolar ahora es un birrete
+		    const iconMap = { 'personal': '💕', 'escolar': '🎓', 'profesional': '💼', 'default': '•' };
 		    
 		    calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
 		    
@@ -1017,70 +1016,95 @@ function setModalSubcategory(subName) {
 		        let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6) ? 'weekend' : '';
 		        
 		        if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
-		            let taskBars = dayTasks.map(t => { 
-		                if (containerId === 'cal-dashboard') {
-		                    
-                            // ✨ NUEVO: LÓGICA DE PUNTOS PARA CUALQUIER CLASE Y LABORATORIO
-		                    if (t.type === 'clase' || t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
-		                        let dotColor = t.claseColor || '#ccc'; // Color elegido o Gris por defecto
-		                        
-                                // Colores forzados fijos si es Laboratorio de la UG
-		                        if (t.enmsMateria === 'Experimentación') dotColor = '#4CA780';      // Verde
-		                        else if (t.enmsMateria === 'Química Orgánica') dotColor = '#2A90A9'; // Azul
-		                        else if (t.enmsMateria === 'Química II') dotColor = '#FFB745';      // Amarillo/Naranja
-		                        
-                                let matTitle = t.claseMateria || t.enmsMateria || 'Clase';
+                    
+                    // 🌟 MAGIA DE AGRUPACIÓN (Notion Style)
+                    let groups = {};
+                    dayTasks.forEach(t => {
+                        let key = t.category;
+                        let sym = '';
+                        let color = getCatColor(t.category);
+                        let titleStr = t.title;
+                        let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
 
-		                        return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;" 
-		                                     title="${matTitle}: ${t.title}" 
-		                                     onclick="openTaskDetails(${t.id}); event.stopPropagation();">
-		                                </div>`;
-		                    }
-		                    
-		                    // 🌸 LÓGICA NORMAL PARA OTROS EVENTOS (CUMPLES, ETC)
-		                    let sym = '';
-		                    if (t.type === 'birthday') sym = '🎂';
-		                    else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
-		                    else if (t.category === 'personal') sym = '💕';
-		                    else if (t.category === 'escolar') sym = '🎓';
-		                    else sym = '💼'; 
-		                    
-		                    let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
-		                    return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
-		                                <span style="color: ${getCatColor(t.category)}; font-size: 1.2em; font-weight: bold;">${sym}</span>
-		                                <div class="aesthetic-tooltip">
-		                                    <b style="color: ${getCatColor(t.category)};">${t.title}</b>
-		                                    <span style="color: #888;">${tHora}</span>
-		                                </div>
-		                            </div>`;
-		                }
-                
-                // VISTA DE CALENDARIO MAESTRO (Barras completas)
-                let icon = t.type === 'birthday' ? '🎂' : (t.type === 'clase' ? '🎓' : (iconMap[t.category] || iconMap['default'])); 
-                return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
-            }).join(''); 
+                        if (t.type === 'birthday' || (t.tags && t.tags.includes('cumpleaños'))) {
+                            key = 'birthday'; sym = '🎂'; color = '#ef4444';
+                        } else if (t.type === 'clase' || t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
+                            key = 'enms-' + (t.enmsMateria || t.claseMateria);
+                            if (t.enmsMateria === 'Experimentación') color = '#4CA780';
+                            else if (t.enmsMateria === 'Química Orgánica') color = '#2A90A9';
+                            else if (t.enmsMateria === 'Química II') color = '#FFB745';
+                            else color = t.claseColor || '#3b82f6'; // Azul por defecto para Análisis de Datos
+                            
+                            sym = '●'; // Es un punto
+                            titleStr = (t.enmsMateria || t.claseMateria || 'Clase') + ': ' + t.title;
+                        } else {
+                            if (t.category === 'personal') sym = '💕';
+                            else if (t.category === 'escolar') sym = '🎓';
+                            else sym = '💼';
+                        }
+
+                        if (!groups[key]) groups[key] = { sym, color, items: [] };
+                        groups[key].items.push({ title: titleStr, time: tHora, id: t.id });
+                    });
+
+                    let taskBars = Object.values(groups).map(g => {
+                        if (g.items.length === 1) {
+                            // Solo 1 evento: Mostrar normal
+                            let item = g.items[0];
+                            if (g.sym === '●') {
+                                return `<div style="width: 10px; height: 10px; background: ${g.color}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;" title="${item.title}" onclick="openTaskDetails(${item.id}); event.stopPropagation();"></div>`;
+                            } else {
+                                return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${item.id}); event.stopPropagation();">
+                                            <span style="color: ${g.color}; font-size: 1.2em; font-weight: bold;">${g.sym}</span>
+                                            <div class="aesthetic-tooltip">
+                                                <b style="color: ${g.color}; display:block;">${item.title}</b>
+                                                <span style="color: #888;">${item.time}</span>
+                                            </div>
+                                        </div>`;
+                            }
+                        } else {
+                            // Más de 1 evento: Agrupar y mostrar número (Ej: 💕 2)
+                            let tooltipItems = g.items.map(item => `<div style="margin-bottom:6px; cursor:pointer;" onclick="openTaskDetails(${item.id}); event.stopPropagation();"><b style="color: ${g.color}; display:block;">${item.title}</b><span style="color: #888; font-size:0.9em;">${item.time}</span></div>`).join('');
+                            
+                            if (g.sym === '●') {
+                                // Puntos agrupados (Ej: 🟢 2)
+                                return `<div class="cal-symbol-wrapper" style="width:auto; padding:0 4px; background: ${g.color}20; border: 1px solid ${g.color}; border-radius: 8px;" onclick="event.stopPropagation();">
+                                            <span style="color: ${g.color}; font-size: 0.85em; font-weight: bold; margin-right:2px;">●</span>
+                                            <span style="color: ${g.color}; font-size: 0.85em; font-weight: bold;">${g.items.length}</span>
+                                            <div class="aesthetic-tooltip" style="text-align:left; min-width: 120px;">${tooltipItems}</div>
+                                        </div>`;
+                            } else {
+                                // Emojis agrupados (Ej: 💕 3)
+                                return `<div class="cal-symbol-wrapper" style="width:auto; padding:0 4px;" onclick="event.stopPropagation();">
+                                            <span style="color: ${g.color}; font-size: 1.2em; font-weight: bold;">${g.sym} <span style="font-size:0.7em; vertical-align:middle; margin-left: -2px;">${g.items.length}</span></span>
+                                            <div class="aesthetic-tooltip" style="text-align:left; min-width: 120px;">${tooltipItems}</div>
+                                        </div>`;
+                            }
+                        }
+                    }).join('');
             
-            calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}" style="${containerId==='cal-dashboard'?'min-height:45px; padding:4px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
-        } else { 
-            // VISTAS FILTRADAS (PERSONAL, ETC)
-            let indicators = dayTasks.map(t => {
-                let icon = '•', color = getCatColor(t.category);
-                if (t.category === 'personal') icon = '💕';
-                if (t.type === 'birthday') icon = '🎂';
-                if (t.type === 'clase') icon = '🎓';
-                
-                return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
-                            <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
-                            <div class="aesthetic-tooltip">
-                                <b style="color: ${color};">${t.title}</b>
-                            </div>
-                        </div>`;
-            }).join('');
-            
-            calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
-        } 
-    } 
-}
+                    calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}" style="${containerId==='cal-dashboard'?'min-height:45px; padding:4px;':''}"><span class="day-num">${day}</span><div class="indicator-container">${taskBars}</div></div>`; 
+                } else { 
+                    // VISTAS FILTRADAS
+                    let indicators = dayTasks.map(t => {
+                        let icon = '•', color = getCatColor(t.category);
+                        if (t.category === 'personal') icon = '💕';
+                        if (t.type === 'birthday') icon = '🎂';
+                        if (t.type === 'clase') icon = '🎓';
+                        
+                        return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
+                                    <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
+                                    <div class="aesthetic-tooltip">
+                                        <b style="color: ${color};">${t.title}</b>
+                                    </div>
+                                </div>`;
+                    }).join('');
+                    calGrid.innerHTML += `<div class="cal-day ${isToday} ${isWeekend}"><span class="day-num">${day}</span><div class="indicator-container" style="justify-content:flex-end; gap:2px;">${indicators}</div></div>`; 
+                } 
+            } 
+        }
+
+
 		function filterByTag(tag) { switchView('master-view'); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
@@ -1818,29 +1842,27 @@ function renderModalSubtasks() {
             
             document.getElementById('step-type').style.display = 'block';
             
-            // Lógica inteligente de tipos permitidos
+            // Tipos base para todos
             let types = [
                 { id: 'task', label: 'Tarea', icon: '✅' },
                 { id: 'event', label: 'Evento', icon: '◈' }
             ];
-            if (mod === 'Selfcare') types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
-            if (mod === 'Curso de Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
+            
+            // Rutinas solo en Personal y Selfcare
+            if (mod === 'Selfcare' || selectedModalCat === 'personal') {
+                types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
+            }
+            
+            // Clase SOLO en estos módulos específicos
+            if (mod === 'Curso Análisis de Datos' || mod === 'Curso de Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') {
+                types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
+            }
             
             let typeHtml = types.map(t => `<button type="button" class="pill-btn ${selectedModalType === t.id ? 'active' : ''}" onclick="selectType('${t.id}', this)"><span>${t.icon}</span> ${t.label}</button>`).join('');
             document.getElementById('modal-type-pills').innerHTML = typeHtml;
             
-            // Auto-seleccionar el primero si el actual no es válido
             if(!types.find(t => t.id === selectedModalType)) selectedModalType = 'task';
             window.selectType(selectedModalType, document.querySelector('#modal-type-pills .pill-btn'));
-        };
-
-        window.selectType = function(type, btnElement) {
-            selectedModalType = type;
-            if(btnElement) {
-                document.querySelectorAll('#modal-type-pills .pill-btn').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-            window.updateFormVisibility();
         };
 
         window.updateFormVisibility = function() {
@@ -1852,15 +1874,18 @@ function renderModalSubtasks() {
             document.getElementById('other-task-fields').style.display = isBday ? 'none' : 'block';
             
             document.getElementById('clase-enms-fields').style.display = (isClass && isENMS) ? 'block' : 'none';
-            document.getElementById('clase-generic-fields').style.display = (isClass && !isENMS) ? 'block' : 'none';
-            
-            let recEl = document.getElementById('m-recurring');
-            if (recEl && isClass) {
-               recEl.checked = false;
-               toggleRecurrence();
-            }
         };
 
+        window.selectType = function(type, btnElement) {
+            selectedModalType = type;
+            if(btnElement) {
+                document.querySelectorAll('#modal-type-pills .pill-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            window.updateFormVisibility();
+        };
+
+    
         // ==========================================
         // APERTURA Y GUARDADO
         // ==========================================
@@ -1950,15 +1975,16 @@ function renderModalSubtasks() {
                 }
             }
 
+            // CLASE: Guardar materia y color automáticamente
             if (selectedModalType === 'clase') {
                 if(selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química') {
                     taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
                     taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
                     taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
                     taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
-                } else {
-                    taskData.claseMateria = document.getElementById('m-clase-materia-gen').value;
-                    taskData.claseColor = document.getElementById('m-clase-color').value;
+                } else if (selectedModalSubcat === 'Curso Análisis de Datos' || selectedModalSubcat === 'Curso de Análisis de Datos') {
+                    taskData.claseMateria = 'Análisis de Datos';
+                    taskData.claseColor = '#3b82f6'; // Azul fijo
                 }
             }
 
