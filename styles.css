@@ -1168,3 +1168,35 @@
     transform: translateY(-5px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
+/* Estilos para los botones del modal */
+.pill-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--text-dark);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: 0.2s all ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pill-btn:hover {
+    background: white;
+    border-color: var(--accent);
+}
+
+.pill-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    box-shadow: 0 4px 10px rgba(200, 162, 161, 0.3);
+}
+
+/* Reducir tamaño del H2 en el modal */
+.modal h2#modal-title {
+    font-size: 1.3em !important;
+    margin-bottom: 0 !important;
+}
