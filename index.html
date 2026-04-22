@@ -183,6 +183,21 @@
         </div>
     </div>
 
+    function applyGlobalBackground() {
+            let bgDiv = document.getElementById('app-global-bg');
+            if(!bgDiv) return;
+            
+            // Usar la imagen guardada en tu base de datos si existe
+            if (appState.dashboard && appState.dashboard.bgImage && appState.dashboard.bgImage.trim() !== '') {
+                bgDiv.style.backgroundImage = 'url(' + appState.dashboard.bgImage + ')';
+            } else {
+                // Imagen por defecto segura (por si la borras)
+                bgDiv.style.backgroundImage = 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80)';
+            }
+            bgDiv.style.opacity = '0.7';
+        }
+    
+    
     <div id="dashboard-container">
         <div class="dashboard-grid">
            <section class="widget-card">
