@@ -1754,7 +1754,6 @@ function renderModalSubtasks() {
             let title = document.getElementById('m-title').value; 
             if(!title) return; 
 
-            // Usamos las variables de los botones (Pills)
             let cat = selectedModalCat;
             let subcat = selectedModalSubcat;
             let isRec = document.getElementById('m-recurring').checked;
@@ -1776,49 +1775,14 @@ function renderModalSubtasks() {
                 recurrenceEnd: isRec ? document.getElementById('m-recurrence-end').value : null
             }; 
 
-            // 1. LÓGICA DE RECURRENCIA (Días específicos)
-            if(isRec) {
-                if(taskData.recurrenceType === 'weekly') {
-                    let selectedDay = document.querySelector('input[name="weekly-day"]:checked');
-                    if(selectedDay) taskData.weeklyDay = parseInt(selectedDay.value);
-                }
-                if(taskData.recurrenceType === 'monthly') {
-                    taskData.monthlyDay = parseInt(document.getElementById('m-monthly-day').value || 0);
-                }
-                if(taskData.recurrenceType === 'yearly') {
-                    taskData.yearlyMonth = parseInt(document.getElementById('m-yearly-month').value || 0);
-                    taskData.yearlyDay = parseInt(document.getElementById('m-yearly-day').value || 0);
-                }
-                if(taskData.recurrenceType === 'personalizado') {
-                    let customDays = [];
-                    for(let i=0; i<7; i++) {
-                        let cb = document.getElementById('m-day-' + i);
-                        if(cb && cb.checked) customDays.push(parseInt(cb.value));
-                    }
-                    taskData.customDays = customDays;
-                }
-            }
-
-            // 2. LÓGICA DE LABORATORIO (ENMS)
             if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
-                taskData.type = 'event'; // Forzamos que sea evento para el calendario
+                taskData.type = 'event';
                 taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
                 taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
                 taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
                 taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
             }
 
-            // 3. CAMPOS PERSONALIZADOS GENÉRICOS
-            let customization = appState.categories[cat];
-            if(customization && customization.customFields) {
-                taskData.customFields = {};
-                customization.customFields.forEach(field => {
-                    let el = document.getElementById('m-custom-' + field);
-                    if(el) taskData.customFields[field] = el.value;
-                });
-            }
-
-            // 4. GUARDADO (EDITAR O CREAR NUEVO)
             if (window.currentEditId) { 
                 let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
                 appState.tasks[index] = { ...appState.tasks[index], ...taskData }; 
@@ -1828,12 +1792,10 @@ function renderModalSubtasks() {
                 appState.tasks.push(taskData); 
             } 
 
-            // 5. MEMORIA Y CIERRE
             saveToMemory(); 
             closeTaskModal(); 
             renderAll(); 
 
-            // Si estamos dentro de una subpágina (ventana flotante), refrescar su contenido
             let subpageModal = document.getElementById('subpage-modal');
             if(subpageModal && subpageModal.style.display === 'flex') {
                 renderSubpageTasks(cat, subcat);
