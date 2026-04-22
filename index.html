@@ -8,18 +8,15 @@
     <meta name="theme-color" content="#fdfafc">
     <link rel="manifest" href="manifest.json">
     <title>Life Planner</title>
- <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💕</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-
 
     <div id="app-global-bg" style="position: fixed; top: -5%; left: -5%; width: 110%; height: 110%; z-index: -10; background-size: cover; background-position: center; opacity: 0.8; transition: background-image 0.5s ease;"></div>
 
@@ -39,108 +36,80 @@
         <button onclick="ctxDelete()" style="color:#ef4444; font-weight:600;">🗑️ Eliminar Módulo</button>
     </div>
 
-
     <button class="fab" onclick="openTaskModal()">+</button>
 
     <div class="modal-overlay" id="taskModal">
-        <div class="modal">
+        <div class="modal" style="padding: 25px; max-width: 500px;">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
-            <h2 id="modal-title">Nuevo Registro</h2>
-            <select id="m-type" onchange="onTypeChange()" style="margin-bottom: 15px;"><option value="task">Tarea</option><option value="event">Evento</option><option value="birthday">Cumpleaños</option><option value="routine">Rutina</option><option value="product">Producto (Wishlist)</option></select>
-            <input type="text" id="m-title" placeholder="Título..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
-            <div style="display:flex; gap:10px;">
-                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
-                    <label style="font-size:0.8em; color:#888;">Ámbito</label>
-                    <select id="m-category" onchange="updateSubcatDropdown()"><option value="">Sin asignar</option><option value="personal">Personal</option><option value="escolar">Académico</option><option value="profesional">Profesional</option></select>
-                </div>
-                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
-                    <label style="font-size:0.8em; color:#888;">Módulo</label>
-                    <select id="m-subcategory" onchange="toggleCustomFields(); showSocialTip(); renderSubcategoryCustomFields();"></select>
-                </div>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <span style="font-size: 1.4em;">✨</span>
+                <h2 id="modal-title" style="font-size: 1.3em; margin: 0; border: none; padding: 0;">Nuevo Registro</h2>
             </div>
-            <div id="social-tip" style="display:none; margin-top:10px; font-size:0.8em; color:#888;">Tip: Escribe 'Cumple' o 'Salida' para ver el icono especial.</div>
-            <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:8px; overflow-x:auto;">
+
+            <select id="m-type" onchange="onTypeChange()" style="margin-bottom: 15px; height: 38px;">
+                <option value="task">Tarea</option>
+                <option value="event">Evento / Clase</option>
+                <option value="birthday">Cumpleaños</option>
+                <option value="routine">Rutina</option>
+                <option value="product">Wishlist</option>
+            </select>
+
+            <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
+
+            <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; letter-spacing: 0.5px;">1. Ámbito</label>
+            <div id="category-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                </div>
+
+            <div id="subcategory-section" style="display: none; margin-bottom: 20px;">
+                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; letter-spacing: 0.5px;">2. Módulo</label>
+                <div id="subcategory-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    </div>
+            </div>
+
+            <select id="m-category" style="display:none;"></select>
+            <select id="m-subcategory" style="display:none;"></select>
+
+            <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto; padding-bottom: 5px;">
                 <button type="button" class="tag-toggle" onclick="setQuickDate('today')">Hoy</button>
                 <button type="button" class="tag-toggle" onclick="setQuickDate('tomorrow')">Mañana</button>
                 <button type="button" class="tag-toggle" onclick="setQuickDate('next-week')">Próx. Semana</button>
             </div>
-            <div style="display:flex; gap:10px; margin-top: 10px;">
-                <div style="flex:1;"><input type="date" id="m-date"></div><div style="flex:1;"><input type="time" id="m-time"></div>
+            
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                <div style="flex:1;"><input type="date" id="m-date" style="height: 40px;"></div>
+                <div style="flex:1;"><input type="time" id="m-time" style="height: 40px;"></div>
             </div>
-            <div class="checkbox-container" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
-                <label style="display:flex; align-items:center; gap:8px; font-size:0.95em; color:#555;">
+
+            <div class="checkbox-container" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom: 10px;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:0.9em; color:#555;">
                     <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <span>Se repite</span>
                 </label>
-                <label style="display:flex; align-items:center; gap:8px; font-size:0.95em; color:#555;">
-                    <input type="checkbox" id="m-my-day"> <span>☀️ Agregar a Mi Día</span>
+                <label style="display:flex; align-items:center; gap:8px; font-size:0.9em; color:#555;">
+                    <input type="checkbox" id="m-my-day"> <span>☀️ Mi Día</span>
                 </label>
             </div>
-            <select id="m-recurrence-type" style="display:none; margin-top:5px;" onchange="toggleTaskCustomFields()"><option value="daily">Diariamente</option><option value="weekly">Semanalmente</option><option value="monthly">Mensualmente</option><option value="yearly">Anualmente</option><option value="personalizado">Personalizado</option></select>
-            <div id="task-custom-fields" style="display:none; margin-top:15px; padding:10px; background: rgba(147,112,219,0.05); border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
-                <div style="margin-bottom:15px;">
-                    <label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">📅 Día de Inicio</label>
-                    <input type="date" id="m-recurrence-start" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                </div>
-                <div style="margin-bottom:15px;">
-                    <label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">📅 Finaliza el:</label>
-                    <input type="date" id="m-recurrence-end" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                </div>
-                <div id="frequency-options" style="display:none;">
-                    <div id="weekly-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:10px;">Selecciona el día de la semana</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                            <label><input type="radio" name="weekly-day" value="1" id="m-weekly-1"> Lunes</label>
-                            <label><input type="radio" name="weekly-day" value="2" id="m-weekly-2"> Martes</label>
-                            <label><input type="radio" name="weekly-day" value="3" id="m-weekly-3"> Miércoles</label>
-                            <label><input type="radio" name="weekly-day" value="4" id="m-weekly-4"> Jueves</label>
-                            <label><input type="radio" name="weekly-day" value="5" id="m-weekly-5"> Viernes</label>
-                            <label><input type="radio" name="weekly-day" value="6" id="m-weekly-6"> Sábado</label>
-                            <label><input type="radio" name="weekly-day" value="0" id="m-weekly-0"> Domingo</label>
-                        </div>
-                    </div>
-                    <div id="monthly-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:5px;">Día del Mes</label>
-                        <input type="number" id="m-monthly-day" min="1" max="31" placeholder="Ej: 15" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                    </div>
-                    <div id="yearly-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:5px;">Mes y Día</label>
-                        <div style="display:flex; gap:10px;">
-                            <input type="number" id="m-yearly-month" min="1" max="12" placeholder="Mes (1-12)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                            <input type="number" id="m-yearly-day" min="1" max="31" placeholder="Día (1-31)" style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                        </div>
-                    </div>
-                    <div id="personalizado-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:10px;">Selecciona los días</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                            <label><input type="checkbox" value="1" id="m-day-1"> Lunes</label>
-                            <label><input type="checkbox" value="2" id="m-day-2"> Martes</label>
-                            <label><input type="checkbox" value="3" id="m-day-3"> Miércoles</label>
-                            <label><input type="checkbox" value="4" id="m-day-4"> Jueves</label>
-                            <label><input type="checkbox" value="5" id="m-day-5"> Viernes</label>
-                            <label><input type="checkbox" value="6" id="m-day-6"> Sábado</label>
-                            <label><input type="checkbox" value="0" id="m-day-0"> Domingo</label>
-                        </div>
-                    </div>
-                </div>
+
+            <select id="m-recurrence-type" style="display:none; margin-bottom:15px;" onchange="toggleTaskCustomFields()">
+                <option value="daily">Diariamente</option>
+                <option value="weekly">Semanalmente</option>
+                <option value="monthly">Mensualmente</option>
+                <option value="yearly">Anualmente</option>
+            </select>
+
+            <div id="subcategory-custom-fields" style="margin-top: 10px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; border: 1px dashed var(--border-color);"></div>
+
+            <div style="font-size: 0.75em; color: #999; margin-top: 15px; font-weight: 700; text-transform: uppercase;">Prioridad</div>
+            <div class="priority-group" style="margin-top: 10px;">
+                <button class="prio-btn none" onclick="setModalPriority('none')" id="btn-prio-none"><span class="prio-indicator none"></span>-</button>
+                <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span>Baja</button>
+                <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span>Media</button>
+                <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span>Alta</button>
             </div>
-            <div style="font-size: 0.85em; color: #888; margin-top: 15px; font-weight: 500;">Prioridad</div>
-            <div class="priority-group" id="m-priority-group">
-                <button class="prio-btn none" onclick="setModalPriority('none')" id="btn-prio-none"><span class="prio-indicator none"></span> Sin Prioridad</button>
-                <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span> Baja</button>
-                <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span> Media</button>
-                <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span> Alta</button>
-            </div>
-            <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
-                <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase;">Subtareas / Pasos</label>
-                <div id="m-subtasks-list" style="display:flex; flex-direction:column; gap:5px; margin: 10px 0;"></div>
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="m-new-subtask" placeholder="+ Agregar paso..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:6px;" onkeydown="if(event.key==='Enter'){ event.preventDefault(); addSubtaskFromModal(); }">
-                    <button type="button" class="add-small-btn" onclick="addSubtaskFromModal()" style="background:var(--hover-bg);">+</button>
-                </div>
-            </div>
-            <div id="subcategory-custom-fields" style="margin-top: 15px;"></div>
-            <textarea id="m-notes" placeholder="Notas o enlaces..." rows="3" style="margin-top: 15px;"></textarea>
-            <button class="modal-btn" onclick="saveTask()">Guardar Registro</button>
+
+            <textarea id="m-notes" placeholder="Notas, enlaces o materiales..." rows="3" style="margin-top: 15px; border-radius: 12px;"></textarea>
+            
+            <button class="modal-btn" onclick="saveTask()" style="margin-top: 20px; height: 50px; font-size: 1.1em;">Guardar Registro</button>
         </div>
     </div>
 
@@ -162,22 +131,16 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="mealSelectorModal" onclick="if(event.target===this) closeMealSelectorModal()" style="display:none;">
+    <div class="modal-overlay" id="mealSelectorModal" style="display:none;">
         <div class="modal" style="max-width: 420px;">
             <span class="close-modal" onclick="closeMealSelectorModal()">×</span>
             <h2 id="meal-selector-title">Seleccionar receta</h2>
-            <div style="margin-top: 15px;">
-                <label style="font-size:0.9em; color:#666; display:block; margin-bottom:8px;">Receta</label>
-                <select id="meal-selector-select"></select>
-            </div>
-            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:20px;">
-                <button class="modal-btn" type="button" onclick="closeMealSelectorModal()" style="flex:1; background: rgba(100,100,100,0.2); color: var(--text-dark); border: 1px solid var(--border-color); font-weight: 500;">Cancelar</button>
-                <button class="modal-btn" type="button" onclick="saveMealSelection()" style="flex:1;">Guardar</button>
-            </div>
+            <select id="meal-selector-select" style="margin-top: 15px;"></select>
+            <button class="modal-btn" onclick="saveMealSelection()" style="margin-top:20px;">Guardar</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="confirmModalOverlay" onclick="if(event.target===this) closeConfirmModal()">
+    <div class="modal-overlay" id="confirmModalOverlay">
         <div class="modal">
             <h2>Confirmar acción</h2>
             <p class="confirm-message">¿Estás segura de que quieres continuar?</p>
@@ -191,265 +154,105 @@
     <div class="modal-overlay" id="habitModal">
         <div class="modal">
             <span class="close-modal" onclick="closeHabitModal()">×</span>
-            <h2 id="habit-modal-title">Añadir Hábito</h2>
-            <input type="text" id="h-title" placeholder="Nombre del hábito (ej. Tomar agua)..." required style="font-size: 1.1em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0;">
-            <div style="display:flex; gap:10px;">
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#888;">Ámbito</label>
-                    <select id="h-category">
-                        <option value="Bodycare">🌸 Bodycare</option>
-                        <option value="Fitness">💪 Fitness</option>
-                        <option value="Mind">🧠 Mind & Espiritualidad</option>
-                    </select>
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#888;">Sub-grupo (Ej. Skincare)</label>
-                    <input type="text" id="h-group" placeholder="Ej. Skincare, Pilates...">
-                </div>
+            <h2>Añadir Hábito</h2>
+            <input type="text" id="h-title" placeholder="Nombre del hábito..." required>
+            <div style="display:flex; gap:10px; margin-top: 15px;">
+                <select id="h-category">
+                    <option value="Bodycare">🌸 Bodycare</option>
+                    <option value="Fitness">💪 Fitness</option>
+                    <option value="Mind">🧠 Mind & Espiritualidad</option>
+                </select>
+                <input type="text" id="h-group" placeholder="Sub-grupo">
             </div>
-            <div style="display:flex; gap:10px; margin-top:15px;">
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#888;">Frecuencia</label>
-                    <select id="h-freq" onchange="toggleHabitCustomFields()">
-                        <option value="daily">Diario</option>
-                        <option value="weekly">Semanal</option>
-                        <option value="monthly">Mensual</option>
-                        <option value="personalizado">Personalizado</option>
-                    </select>
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size:0.8em; color:#888;">Link / Guía</label>
-                    <input type="text" id="h-link" placeholder="Link (Opcional)">
-                </div>
-            </div>
-            <div id="habit-custom-fields" style="display:none; margin-top:15px; padding:10px; background: rgba(147,112,219,0.05); border-radius:6px; border:1px solid rgba(147,112,219,0.2);">
-                <div style="margin-bottom:15px;">
-                    <label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">📅 Día de Inicio</label>
-                    <input type="date" id="h-recurrence-start" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                </div>
-                <div id="h-frequency-options" style="display:none;">
-                    <div id="h-weekly-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:10px;">Selecciona el día de la semana</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                            <label><input type="radio" name="h-weekly-day" value="1" id="h-weekly-1"> Lunes</label>
-                            <label><input type="radio" name="h-weekly-day" value="2" id="h-weekly-2"> Martes</label>
-                            <label><input type="radio" name="h-weekly-day" value="3" id="h-weekly-3"> Miércoles</label>
-                            <label><input type="radio" name="h-weekly-day" value="4" id="h-weekly-4"> Jueves</label>
-                            <label><input type="radio" name="h-weekly-day" value="5" id="h-weekly-5"> Viernes</label>
-                            <label><input type="radio" name="h-weekly-day" value="6" id="h-weekly-6"> Sábado</label>
-                            <label><input type="radio" name="h-weekly-day" value="0" id="h-weekly-0"> Domingo</label>
-                        </div>
-                    </div>
-                    <div id="h-monthly-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:5px;">Día del Mes</label>
-                        <input type="number" id="h-monthly-day" min="1" max="31" placeholder="Ej: 15" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">
-                    </div>
-                    <div id="h-personalizado-fields" style="display:none;">
-                        <label style="font-size:0.85em; color:var(--accent); font-weight:600; text-transform:uppercase; display:block; margin-bottom:10px;">Selecciona los días</label>
-                        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                            <label><input type="checkbox" value="1" id="h-day-1"> Lunes</label>
-                            <label><input type="checkbox" value="2" id="h-day-2"> Martes</label>
-                            <label><input type="checkbox" value="3" id="h-day-3"> Miércoles</label>
-                            <label><input type="checkbox" value="4" id="h-day-4"> Jueves</label>
-                            <label><input type="checkbox" value="5" id="h-day-5"> Viernes</label>
-                            <label><input type="checkbox" value="6" id="h-day-6"> Sábado</label>
-                            <label><input type="checkbox" value="0" id="h-day-0"> Domingo</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button class="modal-btn" onclick="saveHabit()">Guardar Hábito</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="subcatConfigModal">
-        <div class="modal" style="max-width: 450px;">
-            <span class="close-modal" onclick="closeSubcatConfigModal()">×</span>
-            <h2 id="subcat-config-modal-title">Configurar Campos Personalizados</h2>
-            <div style="margin-bottom: 20px;">
-                <input type="text" id="new-field-input" placeholder="Nuevo campo (ej. Proyecto)" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-color); color: var(--text-dark);">
-                <button class="add-small-btn" onclick="addNewField()" style="margin-top: 10px; background: var(--accent); color: white; border: none;">+ Agregar</button>
-            </div>
-            <div id="fields-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-color);">
-                <!-- Fields will be rendered here -->
-            </div>
-            <button class="modal-btn" onclick="saveSubcatConfig()">Guardar Cambios</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="moduleModal" onclick="if(event.target===this) closeModuleModal()">
-        <div class="modal">
-            <span class="close-modal" onclick="closeModuleModal()">×</span>
-            <h2 id="module-modal-title">Módulo</h2>
-            <div id="module-modal-content"></div>
+            <select id="h-freq" onchange="toggleHabitCustomFields()" style="margin-top: 15px;">
+                <option value="daily">Diario</option>
+                <option value="weekly">Semanal</option>
+                <option value="monthly">Mensual</option>
+                <option value="personalizado">Personalizado</option>
+            </select>
+            <button class="modal-btn" onclick="saveHabit()" style="margin-top: 25px;">Guardar Hábito</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="categoryGalleryModal">
         <div class="modal" style="max-width: 700px; padding: 30px;">
             <span class="close-modal" onclick="closeCategoryGalleryModal()">×</span>
-            <h2 id="gallery-modal-title" style="margin-bottom: 20px; font-size: 1.8em; color: var(--accent); font-family: 'Playfair Display', serif;">Módulos</h2>
+            <h2 id="gallery-modal-title" style="margin-bottom: 20px; font-size: 1.8em;">Módulos</h2>
             <div id="gallery-modal-content" class="category-menu-list"></div>
         </div>
     </div>
 
     <div id="dashboard-container">
-    <div class="dashboard-grid">
-
-       <section class="widget-card">
-            <div style="display: flex; flex-direction: column; justify-content: space-between; flex: 1; height: 100%;">
-                
-                <iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" style="width: 100%; height: 130px; border: none; overflow: hidden; border-radius: 8px;"></iframe>
-                
-                <div id="lyric-quote" style="padding: 0 10px; margin-bottom: 10px;"></div>
-                
-            </div>
-        </section>
-        
-        <section class="widget-card span-5">
-            <div class="widget-header">
-                <h3 class="widget-title">Mis ámbitos</h3>
-            </div>
-            <div id="dashboard-modules-scroll" style="flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; padding-right: 5px;">
+        <div class="dashboard-grid">
+           <section class="widget-card">
+                <div style="display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
+                    <iframe src="https://indify.co/widgets/live/clock/CMvVQk93BJ649rAaGbP8" style="width: 100%; height: 130px; border: none; overflow: hidden; border-radius: 8px;"></iframe>
+                    <div id="lyric-quote" style="padding: 0 10px; margin-bottom: 10px;"></div>
                 </div>
-        </section>
-
-        <section class="widget-card span-6">
-            <div class="calendar-controls" style="justify-content: center; margin-bottom: 8px !important;">
-                <div class="widget-row" style="gap: 15px;">
-                    <button class="widget-action-btn" onclick="prevMonth()" style="background: transparent; border: none; box-shadow: none; font-size: 1.2em; padding: 0 !important; color: var(--color-p6);">❮</button>
-                    <span class="month-label month-display" style="font-family: 'Playfair Display', serif; font-size: 1.2em; font-weight: 600; color: var(--color-p6); text-transform: capitalize;"></span>
-                    <button class="widget-action-btn" onclick="nextMonth()" style="background: transparent; border: none; box-shadow: none; font-size: 1.2em; padding: 0 !important; color: var(--color-p6);">❯</button>
-                </div>
-            </div>
-            <div id="cal-dashboard" class="calendar-grid"></div>
-        </section>
-
-        <section class="widget-card span-3">
-            <div class="widget-header">
-                <h3 class="widget-title">Mis Tareas</h3>
-                <div style="display: flex; flex-direction: row; gap: 5px;">
-                    <button class="widget-action-btn" onclick="openHistoryModal()" title="Historial de Completadas">🕒</button>
-                    <button class="widget-action-btn" onclick="openFocusKanbanModal()" title="Abrir Kanban">📋</button>
-                    <button class="widget-action-btn" onclick="openTaskModal('task')" title="Nueva Tarea">+</button>
-                </div>
-            </div>
-            <div id="dashboard-tasks-list" class="task-list-scroll"></div>
-        </section>
-
-        <section class="widget-card span-3">
-            <div class="widget-header">
-                <h3 class="widget-title">Próximos Eventos</h3>
-                <button class="widget-action-btn" onclick="openTaskModal('event')">+</button>
-            </div>
-            <div id="dashboard-events-list" style="display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0;"></div>
-        </section>
-
-        <section class="widget-card span-6">
-            <div class="widget-header">
-                <h3 class="widget-title">Hábitos Diarios</h3>
-                <button class="widget-action-btn" onclick="openHabitModal()">+</button>
-            </div>
-            <div id="dashboard-habits-list" class="habit-list"></div>
-        </section>
-
-        <section class="widget-card span-6">
-            <div class="widget-header">
-                <h3 class="widget-title">Menú Semanal</h3>
-            </div>
-            <div id="meal-calendar" class="meal-grid" style="flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0;"></div>
-        </section>
-
-    </div>
-</div>
-
-    <div id="full-calendar-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><div style="display:flex; align-items:center; gap:15px; margin-bottom: 10px;"><h2 style="margin:0; background:transparent; padding:0; border:none;">Calendario Maestro</h2><div style="display:flex; align-items:center; gap:5px; background:var(--panel-bg); border:1px solid var(--border-color); border-radius:20px; padding:2px 5px;"><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="prevMonth()">❮</button><span class="month-display" style="font-size:0.9em; font-weight:600; color:var(--accent); min-width:100px; text-align:center; text-transform:capitalize;"></span><button class="edit-btn" style="padding:4px 8px; font-size:1.2em;" onclick="nextMonth()">❯</button></div></div><button class="add-small-btn" onclick="openTaskModal()">+ Nuevo</button></div><div class="calendar-grid" id="cal-full"></div></div></div></div>
-    <div id="kanban-general" class="view-section"><div class="standard-grid"><div class="grid-col-1" style="display: flex; flex-direction: column; gap: 25px;"><div class="panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;"><h2 style="margin:0;">Eventos Agendados</h2><button class="add-small-btn" onclick="openTaskModal('event')">+ Nuevo</button></div><div id="master-events-list"></div></div></div><div class="panel grid-col-2"><h2>Task Board Global</h2><div class="kanban"><div class="kanban-col" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div><div class="kanban-col" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div><div class="kanban-col" id="done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div></div></div></div></div>
-    
-    <div class="modal-overlay" id="focus-kanban-modal" onclick="if(event.target===this) closeFocusKanbanModal()">
-        <div class="modal-content-wrapper" style="width: 95%; max-width: 1200px; height: 85vh; padding: 30px; background: var(--bg-color); border-radius: 30px; overflow-y: auto; position: relative;">
-            <span class="close-modal" onclick="closeFocusKanbanModal()" style="position: absolute; top: 20px; right: 25px; z-index: 100; background: rgba(255,255,255,0.7); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">×</span>
+            </section>
             
-            <div style="display: flex; flex-direction: column; width: 100%; height: 100%;">
-                <div class="panel" style="flex: 1; display: flex; flex-direction: column; margin: 0;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                        <h2 style="margin:0; font-size: 1.6em;">Tablero de Enfoque</h2>
-                        <button class="add-small-btn" onclick="openTaskModal('task')" style="background: var(--accent); color: white; border: none;">+ Nueva Tarea</button>
-                    </div>
-                    <div class="kanban" id="kanban-focus" style="flex: 1; overflow-y: auto; min-height: 0;">
-                        <div class="kanban-col" id="focus-todo" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>To-Do</h3></div>
-                        <div class="kanban-col" id="focus-in-progress" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>In Progress</h3></div>
-                        <div class="kanban-col" id="focus-done" ondrop="drop(event)" ondragover="allowDrop(event)"><h3>Completed</h3></div>
+            <section class="widget-card span-5">
+                <div class="widget-header"><h3 class="widget-title">Mis ámbitos</h3></div>
+                <div id="dashboard-modules-scroll"></div>
+            </section>
+
+            <section class="widget-card span-6">
+                <div class="calendar-controls" style="justify-content: center;">
+                    <div class="widget-row" style="gap: 15px;">
+                        <button class="widget-action-btn" onclick="prevMonth()" style="background:none; border:none; font-size:1.2em;">❮</button>
+                        <span class="month-label month-display"></span>
+                        <button class="widget-action-btn" onclick="nextMonth()" style="background:none; border:none; font-size:1.2em;">❯</button>
                     </div>
                 </div>
-            </div>
-            
-        </div>
-    </div>
+                <div id="cal-dashboard" class="calendar-grid"></div>
+            </section>
 
-    <div class="modal-overlay" id="historyModal" onclick="if(event.target===this) closeHistoryModal()">
-        <div class="modal" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; padding: 30px;">
-            <span class="close-modal" onclick="closeHistoryModal()">×</span>
-            <h2 style="margin-top: 0; color: var(--text-dark); font-size: 1.6em;">Historial</h2>
-            <p style="color: #888; font-size: 0.9em; margin-top: -10px;">Tareas y eventos completados.</p>
-            <div id="history-tasks-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;"></div>
-        </div>
-    </div>
-    
-    <div id="mod-personal" class="view-section">
-        <div class="standard-grid" style="grid-template-columns: 1fr; max-width: 900px; margin: 0 auto;">
-            <div class="panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="margin:0;">Módulos Personales</h2>
+            <section class="widget-card span-3">
+                <div class="widget-header">
+                    <h3 class="widget-title">Mis Tareas</h3>
+                    <div style="display:flex; gap:5px;">
+                        <button class="widget-action-btn" onclick="openHistoryModal()">🕒</button>
+                        <button class="widget-action-btn" onclick="openFocusKanbanModal()">📋</button>
+                        <button class="widget-action-btn" onclick="openTaskModal('task')">+</button>
+                    </div>
                 </div>
-                <div id="category-list-personal" class="category-menu-list"></div>
-            </div>
+                <div id="dashboard-tasks-list" class="task-list-scroll"></div>
+            </section>
+
+            <section class="widget-card span-3">
+                <div class="widget-header"><h3 class="widget-title">Próximos Eventos</h3><button class="widget-action-btn" onclick="openTaskModal('event')">+</button></div>
+                <div id="dashboard-events-list"></div>
+            </section>
+
+            <section class="widget-card span-6">
+                <div class="widget-header"><h3 class="widget-title">Hábitos Diarios</h3><button class="widget-action-btn" onclick="openHabitModal()">+</button></div>
+                <div id="dashboard-habits-list" class="habit-list"></div>
+            </section>
+
+            <section class="widget-card span-6">
+                <div class="widget-header"><h3 class="widget-title">Menú Semanal</h3></div>
+                <div id="meal-calendar" class="meal-grid"></div>
+            </section>
         </div>
     </div>
 
-    <div id="mod-escolar" class="view-section">
-        <div class="standard-grid" style="grid-template-columns: 1fr; max-width: 900px; margin: 0 auto;">
-            <div class="panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="margin:0;">Módulos Académicos</h2>
-                </div>
-                <div id="category-list-escolar" class="category-menu-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="mod-profesional" class="view-section">
-        <div class="standard-grid" style="grid-template-columns: 1fr; max-width: 900px; margin: 0 auto;">
-            <div class="panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="margin:0;">Módulos Profesionales</h2>
-                </div>
-                <div id="category-list-profesional" class="category-menu-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="master-view" class="view-section"><div class="standard-grid"><div class="panel grid-col-3" style="max-width: 800px; margin: 0 auto; width: 100%;"><h2>Buscador Global</h2><input type="text" id="master-filter" placeholder="Buscar por nombre o #etiqueta..." oninput="renderMasterView()" style="width:100%; padding:14px; border-radius:6px; border: 1px solid var(--border-color); margin-bottom:20px; outline:none; font-family:inherit; background:var(--bg-color); color:var(--text-dark); font-size:1em;"><div id="master-list"></div></div></div></div>
-
-   <div id="subpage-modal" class="modal-overlay" onclick="if(event.target===this) closeSubpageModal()">
+    <div id="subpage-modal" class="modal-overlay">
         <div class="modal-content-wrapper">
-            <span class="close-modal" onclick="closeSubpageModal()" style="position: absolute; top: 20px; right: 25px; z-index: 100; background: rgba(255,255,255,0.7); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">×</span>
-            
+            <span class="close-modal" onclick="closeSubpageModal()">×</span>
             <div id="subpage-modal-body">
-                <img src="" class="page-cover" id="sp-cover" style="width: 100%; height: 220px; object-fit: cover;">
-                <div class="page-icon-wrapper" style="margin-top: -40px; margin-left: 40px; position: relative; z-index: 2;">
-                    <div class="page-icon" id="sp-icon" style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3.5em; border: 1px solid var(--border-color); cursor: pointer;" onclick="changeCover()">✧</div>
-                </div>
+                <img src="" class="page-cover" id="sp-cover">
+                <div class="page-icon-wrapper"><div class="page-icon" id="sp-icon" onclick="changeCover()">✧</div></div>
                 <div style="padding: 20px 50px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
-                        <h2 id="sp-subcat-title" style="margin:0; font-family: 'Playfair Display', serif; font-size: 2.2em; color: var(--text-dark);"></h2>
-                        <button class="add-small-btn" style="background: var(--accent); color: white; border: none;" onclick="openTaskModal('task', null, currentParentView.replace('mod-', ''), currentSubcatOpened)">+ Nueva Tarea / Evento</button>
+                        <h2 id="sp-subcat-title" style="margin:0; font-family: 'Playfair Display', serif; font-size: 2.2em;"></h2>
+                        <button class="add-small-btn" onclick="openTaskModal('task', null, currentParentView.replace('mod-', ''), currentSubcatOpened)">+ Nueva Tarea / Evento</button>
                     </div>
                     <div id="sp-dynamic-content-area"></div>
                 </div>
             </div>
         </div>
     </div>
-</div> <script src="script.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
