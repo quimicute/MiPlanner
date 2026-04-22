@@ -1746,17 +1746,38 @@ function renderModalSubtasks() {
             } 
         }
         
-        // --- CEREBRO DEL MODAL EN CASCADA ---
+// ==========================================
+        // 🧠 CEREBRO DEL MODAL EN CASCADA
+        // ==========================================
 
-        function setClaseColor(color, element) {
+        window.setClaseColor = function(color, element) {
             document.getElementById('m-clase-color').value = color;
             document.querySelectorAll('#clase-color-picker .color-dot').forEach(d => d.style.border = '2px solid transparent');
             element.style.border = '2px solid var(--text-dark)';
-        }
+        };
 
-        function selectAmbit(ambit) {
-            document.querySelectorAll('#ambit-buttons .pill-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-amb-' + ambit).classList.add('active');
+        // Función global para que el HTML la encuentre sin problema
+        window.selectAmbit = function(ambit) {
+            // Quitar clase "active" a todos los botones normales
+            document.querySelectorAll('#ambit-buttons .pill-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            // Lógica visual del botón de cumpleaños (para que no parezca presionado todo el tiempo)
+            let bdayBtn = document.getElementById('btn-amb-birthday');
+            if(bdayBtn) {
+                bdayBtn.style.background = 'transparent';
+                bdayBtn.style.boxShadow = 'none';
+            }
+            
+            let btn = document.getElementById('btn-amb-' + ambit);
+            if(ambit === 'birthday') {
+                btn.style.background = 'rgba(252, 165, 165, 0.2)';
+                btn.style.borderRadius = '50%';
+                btn.style.boxShadow = '0 0 0 4px rgba(252, 165, 165, 0.1)';
+            } else if (btn) {
+                btn.classList.add('active');
+            }
             
             selectedModalCat = ambit;
             
@@ -1779,10 +1800,10 @@ function renderModalSubtasks() {
                 }).join('');
                 document.getElementById('modal-module-pills').innerHTML = modHtml;
             }
-            updateFormVisibility();
-        }
+            window.updateFormVisibility();
+        };
 
-        function selectModule(mod) {
+        window.selectModule = function(mod) {
             selectedModalSubcat = mod;
             document.querySelectorAll('#modal-module-pills .pill-btn').forEach(b => b.classList.remove('active'));
             event.currentTarget.classList.add('active');
@@ -1795,26 +1816,26 @@ function renderModalSubtasks() {
                 { id: 'event', label: 'Evento', icon: '◈' }
             ];
             if (mod === 'Selfcare') types.push({ id: 'routine', label: 'Rutina', icon: '🔄' });
-            if (mod === 'Curso Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
+            if (mod === 'Curso de Análisis de Datos' || mod === 'ENMS Labs' || mod === 'ENMS | Laboratorio de Química') types.push({ id: 'clase', label: 'Clase', icon: '🎓' });
             
             let typeHtml = types.map(t => `<button type="button" class="pill-btn ${selectedModalType === t.id ? 'active' : ''}" onclick="selectType('${t.id}', this)"><span>${t.icon}</span> ${t.label}</button>`).join('');
             document.getElementById('modal-type-pills').innerHTML = typeHtml;
             
             // Auto-seleccionar el primero si el actual no es válido
             if(!types.find(t => t.id === selectedModalType)) selectedModalType = 'task';
-            selectType(selectedModalType, document.querySelector('#modal-type-pills .pill-btn'));
-        }
+            window.selectType(selectedModalType, document.querySelector('#modal-type-pills .pill-btn'));
+        };
 
-        function selectType(type, btnElement) {
+        window.selectType = function(type, btnElement) {
             selectedModalType = type;
             if(btnElement) {
                 document.querySelectorAll('#modal-type-pills .pill-btn').forEach(b => b.classList.remove('active'));
                 btnElement.classList.add('active');
             }
-            updateFormVisibility();
-        }
+            window.updateFormVisibility();
+        };
 
-        function updateFormVisibility() {
+        window.updateFormVisibility = function() {
             let isBday = selectedModalCat === 'birthday';
             let isENMS = selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química';
             let isClass = selectedModalType === 'clase';
@@ -1824,7 +1845,17 @@ function renderModalSubtasks() {
             
             document.getElementById('clase-enms-fields').style.display = (isClass && isENMS) ? 'block' : 'none';
             document.getElementById('clase-generic-fields').style.display = (isClass && !isENMS) ? 'block' : 'none';
-        }
+            
+            let recEl = document.getElementById('m-recurring');
+            if (recEl && isClass) {
+               recEl.checked = false;
+               toggleRecurrence();
+            }
+        };
+
+        // ==========================================
+        // APERTURA Y GUARDADO
+        // ==========================================
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
 		    editingTaskId = taskId; 
@@ -1849,12 +1880,13 @@ function renderModalSubtasks() {
                     if(document.getElementById('m-clase-materia-gen')) document.getElementById('m-clase-materia-gen').value = task.claseMateria || '';
                     if(task.claseColor) {
                         let dot = document.querySelector(`#clase-color-picker .color-dot[style*="${task.claseColor}"]`) || document.querySelector('#clase-color-picker .color-dot');
-                        if (dot) setClaseColor(task.claseColor, dot);
+                        if (dot) window.setClaseColor(task.claseColor, dot);
                     }
                 }
 		    } else { 
 		        selectedModalType = forceType || 'task'; 
-                selectedModalCat = forceCat || ''; 
+                // ✨ SELECCIÓN POR DEFECTO CORREGIDA A 'PERSONAL'
+                selectedModalCat = forceCat || 'personal'; 
 		        selectedModalSubcat = forceSubCat || '';
 		        
                 document.getElementById('m-title').value = ''; 
@@ -1870,14 +1902,8 @@ function renderModalSubtasks() {
             
             // Inicializar el flujo en cascada
             if(selectedModalCat) {
-                selectAmbit(selectedModalCat);
-                if(selectedModalSubcat) selectModule(selectedModalSubcat);
-            } else {
-                // Estado por defecto vacío
-                document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById('step-module').style.display = 'none';
-                document.getElementById('step-type').style.display = 'none';
-                updateFormVisibility();
+                window.selectAmbit(selectedModalCat);
+                if(selectedModalSubcat) window.selectModule(selectedModalSubcat);
             }
 		    
 		    window.currentEditId = taskId;
@@ -1893,7 +1919,7 @@ function renderModalSubtasks() {
             let taskData = { 
                 type: isBday ? 'birthday' : selectedModalType, 
                 title: title, 
-                category: isBday ? 'personal' : selectedModalCat, // Cumpleaños va internamente a personal
+                category: isBday ? 'personal' : selectedModalCat, 
                 subcategory: isBday ? 'Asuntos Sociales' : selectedModalSubcat, 
                 date: isBday ? '' : document.getElementById('m-date').value, 
                 time: isBday ? '' : document.getElementById('m-time').value, 
@@ -1905,21 +1931,17 @@ function renderModalSubtasks() {
                 recurrenceType: isBday ? 'yearly' : (isRec ? document.getElementById('m-recurrence-type').value : null)
             }; 
 
-            // CUMPLEAÑOS: Guardar nacimiento y calcular recurrencia
             if (isBday) {
                 let bDateVal = document.getElementById('m-birth-date').value;
                 taskData.birthDate = bDateVal;
                 if(bDateVal) {
                     let d = new Date(bDateVal);
-                    // Días en JS van 1-31, meses 0-11. Necesitamos el mes para el yearly recurrence.
                     taskData.yearlyMonth = d.getMonth() + 1; 
-                    // Ajuste zona horaria para cumpleaños
                     d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
                     taskData.yearlyDay = d.getDate();
                 }
             }
 
-            // CLASE: Guardar materia y color
             if (selectedModalType === 'clase') {
                 if(selectedModalSubcat === 'ENMS Labs' || selectedModalSubcat === 'ENMS | Laboratorio de Química') {
                     taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
@@ -1950,6 +1972,8 @@ function renderModalSubtasks() {
                 renderSubpageTasks(selectedModalCat, selectedModalSubcat);
             }
         }
+
+
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
         function getNextBirthdayDate(task) {
