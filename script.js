@@ -1501,59 +1501,60 @@ function setModalSubcategory(subName) {
             ]
         };
 
-        function renderSubcategoryCustomFields() {
-    let subcat = document.getElementById('m-subcategory').value;
-    let container = document.getElementById('subcategory-custom-fields');
-    if (!container) return;
-
-    // LÓGICA ESPECIAL PARA LABORATORIO
-    if (subcat === 'ENMS | Laboratorio de Química' || subcat === 'ENMS Labs') {
-        container.innerHTML = `
-            <div style="font-size: 0.85em; color: var(--accent); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px;">🔬 Sesión de Laboratorio</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                <div>
-                    <label style="font-size:0.75em; color:#888;">Materia</label>
-                    <select id="m-enms-materia" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
-                        <option value="Química Orgánica">Química Orgánica 🧪</option>
-                        <option value="Experimentación">Experimentación 🔬</option>
-                        <option value="Química II">Química II ⚗️</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="font-size:0.75em; color:#888;">Grupo</label>
-                    <input type="text" id="m-enms-grupo" placeholder="Ej: 602-A" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
-                </div>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size:0.75em; color:#888;">Profesor</label>
-                <input type="text" id="m-enms-profesor" placeholder="Nombre del docente" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size:0.75em; color:#888;">Práctica / Título</label>
-                <input type="text" id="m-enms-practica" placeholder="Nombre de la práctica" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
-            </div>
-        `;
-        return;
-    }
-
-    // Lógica para otros módulos (Recetas, etc.)
-    let fields = subcategoryCustomFields[subcat] || [];
-    if (fields.length === 0) { container.innerHTML = ''; return; }
-    
-    let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
-    fields.forEach(field => {
-        html += `<div style="margin-bottom: 10px;"><label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
-        if (field.type === 'select') {
-            html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"><option value="">Seleccionar...</option>`;
-            if(field.options) field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
-            html += '</select>';
-        } else {
-            html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
-        }
-        html += '</div>';
-    });
-    container.innerHTML = html;
-}
+		     function renderSubcategoryCustomFields() {
+			    // Usamos la variable global de la Pill seleccionada como fuente de verdad
+			    let subcat = selectedModalSubcat; 
+			    let container = document.getElementById('subcategory-custom-fields');
+			    if (!container) return;
+			
+			    // LÓGICA ESPECIAL PARA LABORATORIO
+			    if (subcat === 'ENMS | Laboratorio de Química' || subcat === 'ENMS Labs') {
+			        container.innerHTML = `
+			            <div style="font-size: 0.85em; color: var(--accent); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px;">🔬 Sesión de Laboratorio</div>
+			            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+			                <div>
+			                    <label style="font-size:0.75em; color:#888;">Materia</label>
+			                    <select id="m-enms-materia" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+			                        <option value="Química Orgánica">Química Orgánica 🧪</option>
+			                        <option value="Experimentación">Experimentación 🔬</option>
+			                        <option value="Química II">Química II ⚗️</option>
+			                    </select>
+			                </div>
+			                <div>
+			                    <label style="font-size:0.75em; color:#888;">Grupo</label>
+			                    <input type="text" id="m-enms-grupo" placeholder="Ej: 602-A" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+			                </div>
+			            </div>
+			            <div style="margin-bottom: 10px;">
+			                <label style="font-size:0.75em; color:#888;">Profesor</label>
+			                <input type="text" id="m-enms-profesor" placeholder="Nombre del docente" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+			            </div>
+			            <div style="margin-bottom: 10px;">
+			                <label style="font-size:0.75em; color:#888;">Práctica / Título</label>
+			                <input type="text" id="m-enms-practica" placeholder="Nombre de la práctica" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+			            </div>
+			        `;
+			        return;
+			    }
+			
+			    // Lógica para otros módulos (Recetas, etc.)
+			    let fields = subcategoryCustomFields[subcat] || [];
+			    if (fields.length === 0) { container.innerHTML = ''; return; }
+			    
+			    let html = '<div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 500;">Campos Específicos</div>';
+			    fields.forEach(field => {
+			        html += `<div style="margin-bottom: 10px;"><label style="font-size:0.8em; color:#888; display:block; margin-bottom:5px;">${field.label}</label>`;
+			        if (field.type === 'select') {
+			            html += `<select id="m-custom-${field.name}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;"><option value="">Seleccionar...</option>`;
+			            if(field.options) field.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+			            html += '</select>';
+			        } else {
+			            html += `<input type="${field.type}" id="m-custom-${field.name}" placeholder="${field.placeholder}" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px;">`;
+			        }
+			        html += '</div>';
+			    });
+			    container.innerHTML = html;
+			}
 
         function onTypeChange() {
             let type = document.getElementById('m-type').value;
