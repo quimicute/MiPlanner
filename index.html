@@ -57,20 +57,18 @@
 
             <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
 
-            <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; letter-spacing: 0.5px;">1. Ámbito</label>
-            <div id="category-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
-                </div>
+            <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">1. Ámbito</label>
+            <div id="category-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;"></div>
 
             <div id="subcategory-section" style="display: none; margin-bottom: 20px;">
-                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px; letter-spacing: 0.5px;">2. Módulo</label>
-                <div id="subcategory-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    </div>
+                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">2. Módulo</label>
+                <div id="subcategory-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
             </div>
 
             <select id="m-category" style="display:none;"></select>
             <select id="m-subcategory" style="display:none;"></select>
 
-            <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto; padding-bottom: 5px;">
+            <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
                 <button type="button" class="tag-toggle" onclick="setQuickDate('today')">Hoy</button>
                 <button type="button" class="tag-toggle" onclick="setQuickDate('tomorrow')">Mañana</button>
                 <button type="button" class="tag-toggle" onclick="setQuickDate('next-week')">Próx. Semana</button>
@@ -82,22 +80,22 @@
             </div>
 
             <div class="checkbox-container" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom: 10px;">
-                <label style="display:flex; align-items:center; gap:8px; font-size:0.9em; color:#555;">
-                    <input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <span>Se repite</span>
-                </label>
-                <label style="display:flex; align-items:center; gap:8px; font-size:0.9em; color:#555;">
-                    <input type="checkbox" id="m-my-day"> <span>☀️ Mi Día</span>
-                </label>
+                <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <span>Se repite</span></label>
+                <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-my-day"> <span>☀️ Mi Día</span></label>
             </div>
 
-            <select id="m-recurrence-type" style="display:none; margin-bottom:15px;" onchange="toggleTaskCustomFields()">
-                <option value="daily">Diariamente</option>
-                <option value="weekly">Semanalmente</option>
-                <option value="monthly">Mensualmente</option>
-                <option value="yearly">Anualmente</option>
-            </select>
+            <select id="m-recurrence-type" style="display:none; margin-bottom:15px;" onchange="toggleTaskCustomFields()"><option value="daily">Diario</option><option value="weekly">Semanal</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select>
 
-            <div id="subcategory-custom-fields" style="margin-top: 10px; background: rgba(0,0,0,0.02); padding: 15px; border-radius: 12px; border: 1px dashed var(--border-color);"></div>
+            <div id="subcategory-custom-fields" style="margin-top: 10px;"></div>
+
+            <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
+                <label style="font-size:0.75em; color:var(--accent); font-weight:700; text-transform:uppercase;">Subtareas / Pasos</label>
+                <div id="m-subtasks-list" style="display:flex; flex-direction:column; gap:5px; margin: 10px 0;"></div>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="m-new-subtask" placeholder="+ Agregar paso..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
+                    <button type="button" class="add-small-btn" onclick="addSubtaskFromModal()">+</button>
+                </div>
+            </div>
 
             <div style="font-size: 0.75em; color: #999; margin-top: 15px; font-weight: 700; text-transform: uppercase;">Prioridad</div>
             <div class="priority-group" style="margin-top: 10px;">
@@ -107,9 +105,8 @@
                 <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span>Alta</button>
             </div>
 
-            <textarea id="m-notes" placeholder="Notas, enlaces o materiales..." rows="3" style="margin-top: 15px; border-radius: 12px;"></textarea>
-            
-            <button class="modal-btn" onclick="saveTask()" style="margin-top: 20px; height: 50px; font-size: 1.1em;">Guardar Registro</button>
+            <textarea id="m-notes" placeholder="Notas, enlaces..." rows="2" style="margin-top: 15px;"></textarea>
+            <button class="modal-btn" onclick="saveTask()" style="margin-top: 20px;">Guardar Registro</button>
         </div>
     </div>
 
