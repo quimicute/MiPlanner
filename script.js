@@ -411,22 +411,17 @@ function setModalSubcategory(subName) {
         }
 
         function applyGlobalBackground() {
-            const BEACH_BGS = [
-                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80', // Playa blanca
-                'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1920&q=80', // Palmeras al atardecer
-                'https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1920&q=80', // Olas turquesas
-                'https://images.unsplash.com/photo-1505118380757-91f5f45d8de2?auto=format&fit=crop&w=1920&q=80', // Vista aérea de arrecife
-                'https://images.unsplash.com/photo-1520113526710-44484606775d?auto=format&fit=crop&w=1920&q=80'  // Mar picado relajante
-            ];
-            
-            // Elegir una imagen al azar de la lista
-            let bgUrl = BEACH_BGS[Math.floor(Math.random() * BEACH_BGS.length)];
-            
             let bgDiv = document.getElementById('app-global-bg');
-            if(bgDiv) {
-                bgDiv.style.backgroundImage = 'url(' + bgUrl + ')';
-                bgDiv.style.opacity = '0.7'; // Ajuste sutil de brillo
+            if(!bgDiv) return;
+            
+            // Usar la imagen guardada en tu base de datos si existe
+            if (appState.dashboard && appState.dashboard.bgImage && appState.dashboard.bgImage.trim() !== '') {
+                bgDiv.style.backgroundImage = 'url(' + appState.dashboard.bgImage + ')';
+            } else {
+                // Imagen por defecto segura (por si la borras)
+                bgDiv.style.backgroundImage = 'url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80)';
             }
+            bgDiv.style.opacity = '0.7';
         }
 
         function changeGlobalBackground() {
