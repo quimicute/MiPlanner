@@ -1637,14 +1637,22 @@ function setModalSubcategory(subName) {
         let currentSubtasks = [];
         function setQuickDate(type) {
             const dateInput = document.getElementById('m-date');
-            const today = new Date();
-            let target = new Date(today);
+            // Crear una fecha limpia basada en tu hora local actual
+            let target = new Date();
+            target.setHours(12, 0, 0, 0); // Fijar al mediodía evita saltos de día por zona horaria
+            
             if (type === 'tomorrow') {
-                target.setDate(today.getDate() + 1);
+                target.setDate(target.getDate() + 1);
             } else if (type === 'next-week') {
-                target.setDate(today.getDate() + 7);
+                target.setDate(target.getDate() + 7);
             }
-            dateInput.value = target.toISOString().slice(0, 10);
+            
+            // Formatear correctamente a YYYY-MM-DD
+            let yy = target.getFullYear();
+            let mm = String(target.getMonth() + 1).padStart(2, '0');
+            let dd = String(target.getDate()).padStart(2, '0');
+            
+            dateInput.value = `${yy}-${mm}-${dd}`;
         }
 
         function addSubtaskFromModal() {
@@ -2284,44 +2292,54 @@ function renderDashboardModules() {
             }
         }
 
-        function renderDashboardEvents() {
+       function renderDashboardEvents() {
             const container = document.getElementById('dashboard-events-list');
             if(!container) return;
             container.innerHTML = '';
             const today = new Date();
             today.setHours(0,0,0,0);
             const groups = { HOY: [], MAÑANA: [], '1 SEMANA': [] };
-            const events = appState.tasks.filter(t => (t.type === 'event' || t.type === 'birthday') && t.status !== 'done' && t.date);
+            const events = appState.tasks.filter(t => (t.type === 'event' || t.type === 'clase' || t.type === 'birthday') && t.status !== 'done' && t.date);
             events.forEach(t => {
-                const date = new Date(t.date);
+                const date = new Date(t.date + 'T12:00:00'); // Evita errores de zona horaria al leer la fecha
                 date.setHours(0,0,0,0);
                 const diff = Math.round((date - today) / 86400000);
                 if (diff === 0) groups.HOY.push(t);
                 else if (diff === 1) groups.MAÑANA.push(t);
-                else if (diff >= 2) groups['1 SEMANA'].push(t);
+                else if (diff >= 2 && diff <= 7) groups['1 SEMANA'].push(t); // Solo eventos de la próxima semana
             });
 
             const formatDate = d => d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
             Object.entries(groups).forEach(([label, items]) => {
                 if (!items.length) return;
-                container.innerHTML += `<div class="event-group"><div class="event-group-header">${label}</div>`;
+                
+                // Encabezado de grupo (HOY, MAÑANA, etc)
+                container.innerHTML += `<div class="event-group" style="margin-top: 5px;"><div class="event-group-header" style="font-size: 0.75em; margin-bottom: 6px;">${label}</div>`;
+                
                 items.forEach(t => {
-                    const date = new Date(t.date);
+                    const date = new Date(t.date + 'T12:00:00');
                     const dateLabel = !isNaN(date) ? formatDate(date) : 'Sin fecha';
+                    let catLabel = t.category ? `#${t.category}` : '';
+                    if (t.type === 'clase') catLabel = `🎓 ${t.claseMateria || t.enmsMateria || 'Clase'}`;
+                    
+                    // Diseño IDÉNTICO al de "Mis Tareas"
                     container.innerHTML += `
-                        <div class="event-item" onclick="openTaskModal(null, ${t.id})">
-                            <div>
-                                <div style="font-weight:700; color: var(--color-p4);">${getPriorityEmoji(t)} ${t.title}</div>
-                                <div class="event-meta">${t.category ? `#${t.category}` : 'Evento'}</div>
+                        <div class="task-item" onclick="openTaskModal(null, ${t.id})" style="cursor: pointer; margin-bottom: 6px; padding: 10px 14px;">
+                            <div style="display:flex; align-items:center; gap:12px; flex:1;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: ${t.claseColor || getCatColor(t.category)}; opacity: 0.8;"></div>
+                                <div class="task-label" style="font-size: 0.9em; font-weight: 500;">${getPriorityEmoji(t)} ${t.title}</div>
                             </div>
-                            <div class="event-meta">${dateLabel} · ${t.time || 'Todo el día'}</div>
+                            <div class="task-meta" style="font-size: 0.75em; color: #888; display:flex; flex-direction:column; align-items:flex-end;">
+                                <span>${t.time || 'Todo el día'}</span>
+                                <span style="opacity: 0.7; font-size: 0.9em;">${catLabel}</span>
+                            </div>
                         </div>
                     `;
                 });
                 container.innerHTML += `</div>`;
             });
             if (!Object.values(groups).flat().length) {
-                container.innerHTML = `<div style="color:#777; font-size:0.95em;">No hay eventos próximos.</div>`;
+                container.innerHTML = `<div style="color:#777; font-size:0.95em; padding: 10px;">No hay eventos próximos. ✨</div>`;
             }
         }
 
