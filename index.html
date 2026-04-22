@@ -42,19 +42,62 @@
         <div class="modal" style="padding: 25px; max-width: 500px;">
             <span class="close-modal" onclick="closeTaskModal()">×</span>
             
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                 <span style="font-size: 1.4em;">✨</span>
                 <h2 id="modal-title" style="font-size: 1.3em; margin: 0; border: none; padding: 0;">Nuevo Registro</h2>
             </div>
 
-            <div id="type-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 15px;">
-                </div>
-            <input type="hidden" id="m-type" value="task">
+            <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">1. ¿Dónde lo guardamos?</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;" id="ambit-buttons">
+                <button type="button" class="pill-btn" onclick="selectAmbit('personal')" id="btn-amb-personal"><span>💕</span> Personal</button>
+                <button type="button" class="pill-btn" onclick="selectAmbit('escolar')" id="btn-amb-escolar"><span>🎓</span> Académico</button>
+                <button type="button" class="pill-btn" onclick="selectAmbit('profesional')" id="btn-amb-profesional"><span>💼</span> Profesional</button>
+                <span style="border-left: 1px solid var(--border-color); margin: 0 5px;"></span>
+                <button type="button" class="pill-btn" onclick="selectAmbit('birthday')" id="btn-amb-birthday" style="border-color: #fca5a5; color: #ef4444; background: rgba(252, 165, 165, 0.1);"><span>🎂</span> Cumpleaños</button>
+            </div>
 
-            <div id="clase-fields" style="display: none; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px;">
-                <label style="font-size:0.75em; color:var(--accent); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 8px;">🎓 Detalles de la Clase</label>
-                <input type="text" id="m-clase-materia" placeholder="Materia (Ej. Ciencia de Datos)..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border: 1px solid var(--border-color);">
-                <label style="font-size:0.75em; color:#888; display: block; margin-bottom: 5px;">Color del punto en el calendario</label>
+            <div id="step-module" style="display:none; margin-bottom: 20px;">
+                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">2. Módulo</label>
+                <div id="modal-module-pills" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+            </div>
+
+            <div id="step-type" style="display:none; margin-bottom: 20px;">
+                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">3. Tipo de Registro</label>
+                <div id="modal-type-pills" style="display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1);"></div>
+            </div>
+
+            <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
+
+            <div id="clase-enms-fields" style="display: none; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px;">
+                <label style="font-size:0.75em; color:var(--accent); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">🧪 Laboratorio ENMS</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <div>
+                        <label style="font-size:0.75em; color:#888;">Materia</label>
+                        <select id="m-enms-materia" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                            <option value="Química Orgánica">Química Orgánica</option>
+                            <option value="Experimentación">Experimentación</option>
+                            <option value="Química 2">Química 2</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:0.75em; color:#888;">Grupo</label>
+                        <input type="text" id="m-enms-grupo" placeholder="Ej: 602-A" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size:0.75em; color:#888;">Profesor</label>
+                    <input type="text" id="m-enms-profesor" placeholder="Nombre del docente" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size:0.75em; color:#888;">Práctica</label>
+                    <input type="text" id="m-enms-practica" placeholder="Nombre o número de la práctica" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                </div>
+            </div>
+
+            <div id="clase-generic-fields" style="display: none; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px dashed var(--accent); margin-bottom: 15px;">
+                <label style="font-size:0.75em; color:var(--accent); text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 8px;">🎨 Detalles de la Clase</label>
+                <input type="text" id="m-clase-materia-gen" placeholder="Materia (Ej. Análisis de Datos)..." style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border: 1px solid var(--border-color);">
+                <label style="font-size:0.75em; color:#888; display: block; margin-bottom: 5px;">Color en el calendario</label>
                 <div id="clase-color-picker" style="display: flex; gap: 10px;">
                     <div class="color-dot active" style="background:#4CA780; border: 2px solid var(--text-dark);" onclick="setClaseColor('#4CA780', this)"></div>
                     <div class="color-dot" style="background:#2A90A9;" onclick="setClaseColor('#2A90A9', this)"></div>
@@ -65,63 +108,51 @@
                 <input type="hidden" id="m-clase-color" value="#4CA780">
             </div>
 
-            <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
-
-            <input type="text" id="m-title" placeholder="Título del registro..." required style="font-size: 1.15em; border:none; border-bottom: 2px solid var(--border-color); background: transparent; padding: 10px 0; margin-bottom: 20px; border-radius: 0; width: 100%;">
-
-            <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">1. Ámbito</label>
-            <div id="category-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;"></div>
-
-            <div id="subcategory-section" style="display: none; margin-bottom: 20px;">
-                <label style="font-size:0.7em; color:#999; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">2. Módulo</label>
-                <div id="subcategory-pill-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+            <div id="birthday-fields" style="display: none; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 12px; border: 1px dashed #fca5a5; margin-bottom: 15px;">
+                <label style="font-size:0.75em; color:#ef4444; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 10px;">🎂 Fecha de Nacimiento</label>
+                <p style="font-size: 0.85em; color: #888; margin-top:-5px; margin-bottom:10px;">Para calcular la edad automáticamente cada año.</p>
+                <input type="date" id="m-birth-date" style="width:100%; padding:10px; border-radius:8px; border: 1px solid var(--border-color);">
             </div>
 
-            <div id="social-tip" style="display:none; margin-top:10px; font-size:0.8em; color:#888; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 8px;">
-                Tip: Escribe 'Cumple' o 'Salida' para ver el icono especial.
-            </div>
+            <div id="other-task-fields">
+                <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
+                    <button type="button" class="tag-toggle" onclick="setQuickDate('today')">Hoy</button>
+                    <button type="button" class="tag-toggle" onclick="setQuickDate('tomorrow')">Mañana</button>
+                    <button type="button" class="tag-toggle" onclick="setQuickDate('next-week')">Próx. Semana</button>
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                    <div style="flex:1;"><input type="date" id="m-date" style="height: 40px;"></div>
+                    <div style="flex:1;"><input type="time" id="m-time" style="height: 40px;"></div>
+                </div>
 
-            <select id="m-category" style="display:none;"></select>
-            <select id="m-subcategory" style="display:none;"></select>
+                <div class="checkbox-container" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom: 10px;">
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <span>Se repite</span></label>
+                    <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-my-day"> <span>☀️ Mi Día</span></label>
+                </div>
 
-            <div class="quick-date-pills" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;">
-                <button type="button" class="tag-toggle" onclick="setQuickDate('today')">Hoy</button>
-                <button type="button" class="tag-toggle" onclick="setQuickDate('tomorrow')">Mañana</button>
-                <button type="button" class="tag-toggle" onclick="setQuickDate('next-week')">Próx. Semana</button>
-            </div>
-            
-            <div style="display:flex; gap:10px; margin-bottom: 15px;">
-                <div style="flex:1;"><input type="date" id="m-date" style="height: 40px;"></div>
-                <div style="flex:1;"><input type="time" id="m-time" style="height: 40px;"></div>
-            </div>
+                <select id="m-recurrence-type" style="display:none; margin-bottom:15px;" onchange="toggleTaskCustomFields()"><option value="daily">Diario</option><option value="weekly">Semanal</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select>
+                <div id="task-custom-fields" style="margin-top: 10px;"></div>
 
-            <div class="checkbox-container" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom: 10px;">
-                <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-recurring" onchange="toggleRecurrence()"> <span>Se repite</span></label>
-                <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="m-my-day"> <span>☀️ Mi Día</span></label>
-            </div>
+                <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
+                    <label style="font-size:0.75em; color:var(--accent); font-weight:700; text-transform:uppercase;">Subtareas / Pasos</label>
+                    <div id="m-subtasks-list" style="display:flex; flex-direction:column; gap:5px; margin: 10px 0;"></div>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="m-new-subtask" placeholder="+ Agregar paso..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
+                        <button type="button" class="add-small-btn" onclick="addSubtaskFromModal()">+</button>
+                    </div>
+                </div>
 
-            <select id="m-recurrence-type" style="display:none; margin-bottom:15px;" onchange="toggleTaskCustomFields()"><option value="daily">Diario</option><option value="weekly">Semanal</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select>
-
-            <div id="subcategory-custom-fields" style="margin-top: 10px;"></div>
-
-            <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
-                <label style="font-size:0.75em; color:var(--accent); font-weight:700; text-transform:uppercase;">Subtareas / Pasos</label>
-                <div id="m-subtasks-list" style="display:flex; flex-direction:column; gap:5px; margin: 10px 0;"></div>
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="m-new-subtask" placeholder="+ Agregar paso..." style="flex:1; padding:8px; border:1px solid var(--border-color); border-radius:6px;">
-                    <button type="button" class="add-small-btn" onclick="addSubtaskFromModal()">+</button>
+                <div style="font-size: 0.75em; color: #999; margin-top: 15px; font-weight: 700; text-transform: uppercase;">Prioridad</div>
+                <div class="priority-group" style="margin-top: 10px;">
+                    <button class="prio-btn none" onclick="setModalPriority('none')" id="btn-prio-none"><span class="prio-indicator none"></span>-</button>
+                    <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span>Baja</button>
+                    <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span>Media</button>
+                    <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span>Alta</button>
                 </div>
             </div>
 
-            <div style="font-size: 0.75em; color: #999; margin-top: 15px; font-weight: 700; text-transform: uppercase;">Prioridad</div>
-            <div class="priority-group" style="margin-top: 10px;">
-                <button class="prio-btn none" onclick="setModalPriority('none')" id="btn-prio-none"><span class="prio-indicator none"></span>-</button>
-                <button class="prio-btn low" onclick="setModalPriority('low')" id="btn-prio-low"><span class="prio-indicator low"></span>Baja</button>
-                <button class="prio-btn med" onclick="setModalPriority('medium')" id="btn-prio-medium"><span class="prio-indicator med"></span>Media</button>
-                <button class="prio-btn high" onclick="setModalPriority('high')" id="btn-prio-high"><span class="prio-indicator high"></span>Alta</button>
-            </div>
-
-            <textarea id="m-notes" placeholder="Notas, enlaces..." rows="2" style="margin-top: 15px;"></textarea>
+            <textarea id="m-notes" placeholder="Notas adicionales..." rows="2" style="margin-top: 15px;"></textarea>
             <button class="modal-btn" onclick="saveTask()" style="margin-top: 20px;">Guardar Registro</button>
         </div>
     </div>
