@@ -84,6 +84,7 @@
         let monthOffset = 0;
         function prevMonth() { monthOffset--; renderAll(); }
         function nextMonth() { monthOffset++; renderAll(); }
+		let selectedModalType = 'task'; // <--- Añade esto
 		let selectedModalCat = '';
 		let selectedModalSubcat = '';
         let defaultCategories = { 
@@ -267,6 +268,40 @@
 		        </button>`;
 		    }).join('');
 		}
+
+function renderTypePills() {
+    const container = document.getElementById('type-pill-container');
+    if (!container) return;
+    
+    // Aquí definimos los tipos separados (sin Wishlist)
+    const types = [
+        { id: 'task', label: 'Tarea', icon: '✅' },
+        { id: 'event', label: 'Evento', icon: '◈' },
+        { id: 'clase', label: 'Clase', icon: '🎓' },
+        { id: 'birthday', label: 'Cumple', icon: '🎂' },
+        { id: 'routine', label: 'Rutina', icon: '🔄' }
+    ];
+    
+    container.innerHTML = types.map(t => `
+        <button type="button" class="pill-btn ${selectedModalType === t.id ? 'active' : ''}" 
+                style="padding: 6px 12px; font-size: 0.85em;"
+                onclick="setModalType('${t.id}')">
+            <span>${t.icon}</span> ${t.label}
+        </button>`).join('');
+}
+
+function setModalType(typeId) {
+    selectedModalType = typeId;
+    document.getElementById('m-type').value = typeId;
+    renderTypePills();
+    onTypeChange(); // Dispara la lógica de ocultar/mostrar cosas
+}
+
+function setClaseColor(color, element) {
+    document.getElementById('m-clase-color').value = color;
+    document.querySelectorAll('#clase-color-picker .color-dot').forEach(d => d.style.border = '2px solid transparent');
+    element.style.border = '2px solid var(--text-dark)';
+}
 
 function setModalSubcategory(subName) {
     selectedModalSubcat = subName;
@@ -967,7 +1002,7 @@ function setModalSubcategory(subName) {
 		    const startWeekday = new Date(year, month, 1).getDay();
 		    
 		    // Iconos actualizados para tus ámbitos
-		    const iconMap = { 'personal': '💕', 'escolar': '🧪', 'profesional': '💼', 'default': '•' };
+		    const iconMap = { 'personal': '💕', 'escolar': '🎓', 'profesional': '💼', 'default': '•' }; // ✨ ACTUALIZADO: Escolar ahora es un birrete
 		    
 		    calGrid.innerHTML = '<div class="day-name">D</div><div class="day-name">L</div><div class="day-name">M</div><div class="day-name">M</div><div class="day-name">J</div><div class="day-name">V</div><div class="day-name">S</div>'; 
 		    
@@ -984,16 +1019,20 @@ function setModalSubcategory(subName) {
 		        if (containerId === 'cal-full' || containerId === 'cal-dashboard') { 
 		            let taskBars = dayTasks.map(t => { 
 		                if (containerId === 'cal-dashboard') {
-		                    // 🔬 LÓGICA DE PUNTOS PARA LABORATORIO
-		                    if (t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
-		                        let dotColor = '#ccc'; // Gris si no hay materia
+		                    
+                            // ✨ NUEVO: LÓGICA DE PUNTOS PARA CUALQUIER CLASE Y LABORATORIO
+		                    if (t.type === 'clase' || t.subcategory === 'ENMS Labs' || t.subcategory === 'ENMS | Laboratorio de Química') {
+		                        let dotColor = t.claseColor || '#ccc'; // Color elegido o Gris por defecto
 		                        
+                                // Colores forzados fijos si es Laboratorio de la UG
 		                        if (t.enmsMateria === 'Experimentación') dotColor = '#4CA780';      // Verde
 		                        else if (t.enmsMateria === 'Química Orgánica') dotColor = '#2A90A9'; // Azul
 		                        else if (t.enmsMateria === 'Química II') dotColor = '#FFB745';      // Amarillo/Naranja
 		                        
+                                let matTitle = t.claseMateria || t.enmsMateria || 'Clase';
+
 		                        return `<div style="width: 10px; height: 10px; background: ${dotColor}; border-radius: 50%; display: inline-block; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;" 
-		                                     title="${t.enmsMateria}: ${t.title}" 
+		                                     title="${matTitle}: ${t.title}" 
 		                                     onclick="openTaskDetails(${t.id}); event.stopPropagation();">
 		                                </div>`;
 		                    }
@@ -1003,7 +1042,7 @@ function setModalSubcategory(subName) {
 		                    if (t.type === 'birthday') sym = '🎂';
 		                    else if (t.tags && t.tags.includes('cumpleaños')) sym = '🎂';
 		                    else if (t.category === 'personal') sym = '💕';
-		                    else if (t.category === 'escolar') sym = '🧪';
+		                    else if (t.category === 'escolar') sym = '🎓';
 		                    else sym = '💼'; 
 		                    
 		                    let tHora = t.timeStart ? (t.timeStart + (t.timeEnd ? ' - ' + t.timeEnd : '')) : (t.time ? t.time : 'Todo el día');
@@ -1017,7 +1056,7 @@ function setModalSubcategory(subName) {
 		                }
                 
                 // VISTA DE CALENDARIO MAESTRO (Barras completas)
-                let icon = t.type === 'birthday' ? '🎂' : (iconMap[t.category] || iconMap['default']); 
+                let icon = t.type === 'birthday' ? '🎂' : (t.type === 'clase' ? '🎓' : (iconMap[t.category] || iconMap['default'])); 
                 return `<div class="full-cal-task" style="background:${getCatColor(t.category)};" onclick="openTaskDetails(${t.id}); event.stopPropagation();">${icon} ${t.title}</div>`; 
             }).join(''); 
             
@@ -1028,6 +1067,7 @@ function setModalSubcategory(subName) {
                 let icon = '•', color = getCatColor(t.category);
                 if (t.category === 'personal') icon = '💕';
                 if (t.type === 'birthday') icon = '🎂';
+                if (t.type === 'clase') icon = '🎓';
                 
                 return `<div class="cal-symbol-wrapper" onclick="openTaskDetails(${t.id}); event.stopPropagation();">
                             <span style="color: ${color}; font-size: 1.4em; font-weight: bold;">${icon}</span>
@@ -1041,7 +1081,6 @@ function setModalSubcategory(subName) {
         } 
     } 
 }
-
 		function filterByTag(tag) { switchView('master-view'); document.getElementById('master-filter').value = '#' + tag; renderMasterView(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
         // --- SUBPAGINAS Y VISTAS ---
@@ -1552,18 +1591,24 @@ function setModalSubcategory(subName) {
 			}
 
         function onTypeChange() {
-            let type = document.getElementById('m-type').value;
+            let type = selectedModalType; 
+            
+            // Mostrar/Ocultar campos de Clase
+            const claseFields = document.getElementById('clase-fields');
+            if (claseFields) {
+                claseFields.style.display = (type === 'clase') ? 'block' : 'none';
+            }
+
             if (type === 'birthday') {
                 document.getElementById('m-recurring').checked = true;
                 document.getElementById('m-recurrence-type').value = 'yearly';
                 toggleRecurrence();
                 toggleTaskCustomFields();
-            } else if (type === 'task') {
+            } else {
                 document.getElementById('m-recurring').checked = false;
                 toggleRecurrence();
             }
         }
-
         function toggleRecurrence() { 
             let isRec = document.getElementById('m-recurring').checked; 
             let typeEl = document.getElementById('m-recurrence-type'); 
@@ -1631,37 +1676,58 @@ function renderModalSubtasks() {
     });
 }
 
-       function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
+      function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
 		    editingTaskId = taskId; 
 		    openModal('taskModal'); 
 		    
 		    // 1. Cargar datos si estamos editando
 		    if (taskId) { 
 		        let task = appState.tasks.find(t => t.id === taskId); 
-		        selectedModalCat = task.category || '';
+		        
+                selectedModalType = task.type || 'task'; // ✨ NUEVO: Cargar el tipo de registro
+                selectedModalCat = task.category || '';
 		        selectedModalSubcat = task.subcategory || '';
-		        document.getElementById('m-title').value = task.title; 
-		        document.getElementById('m-type').value = task.type || 'task'; 
+		        
+                document.getElementById('m-title').value = task.title; 
 		        document.getElementById('m-date').value = task.date || ''; 
 		        document.getElementById('m-time').value = task.time || ''; 
 		        document.getElementById('m-notes').value = task.notes || ''; 
 		        document.getElementById('m-my-day').checked = !!task.myDay;
+
+                // ✨ NUEVO: Cargar datos específicos si es una Clase
+                if (task.type === 'clase') {
+                    let materiaInput = document.getElementById('m-clase-materia');
+                    if(materiaInput) materiaInput.value = task.claseMateria || '';
+                    
+                    if(task.claseColor) {
+                        let dotToSelect = document.querySelector(`#clase-color-picker .color-dot[style*="${task.claseColor}"]`) || document.querySelector('#clase-color-picker .color-dot');
+                        if (dotToSelect) setClaseColor(task.claseColor, dotToSelect);
+                    }
+                }
 		    } else { 
 		        // Reset para nuevo registro
-		        selectedModalCat = forceCat || ''; 
+		        selectedModalType = forceType || 'task'; // ✨ NUEVO: Asignar tipo por defecto
+                selectedModalCat = forceCat || ''; 
 		        selectedModalSubcat = forceSubCat || '';
-		        document.getElementById('m-title').value = ''; 
+		        
+                document.getElementById('m-title').value = ''; 
 		        document.getElementById('m-date').value = ''; 
 		        document.getElementById('m-time').value = ''; 
 		        document.getElementById('m-notes').value = ''; 
-		        document.getElementById('m-type').value = forceType || 'task';
-		        currentSubtasks = [];
+		        
+                let materiaInput = document.getElementById('m-clase-materia');
+                if (materiaInput) materiaInput.value = ''; // ✨ NUEVO: Limpiar la materia
+                
+                currentSubtasks = [];
 		    } 
 		
 		    // 2. Sincronizar UI (Pills)
 		    renderModalSubtasks();
-		    renderCategoryPills(); // Dibuja los botones de Ámbito
 		    
+            renderTypePills();     // ✨ NUEVO: Dibuja los botones de Tipo (Tarea, Evento, Clase...)
+            renderCategoryPills(); // Dibuja los botones de Ámbito
+		    onTypeChange();        // ✨ NUEVO: Muestra/Oculta el cuadro de colores de la clase
+            
 		    if (selectedModalCat) {
 		        renderSubcategoryPills(); // Dibuja los botones de Módulo
 		        document.getElementById('subcategory-section').style.display = 'block';
@@ -1671,7 +1737,7 @@ function renderModalSubtasks() {
 		
 		    // 3. Cargar campos específicos y evitar el crash
 		    renderSubcategoryCustomFields(); 
-		    showSocialTip(); // Ahora es segura y no dará error de "null"
+		    showSocialTip(); 
 		    
 		    window.currentEditId = taskId;
 		}
@@ -1754,7 +1820,7 @@ function renderModalSubtasks() {
             let isRec = document.getElementById('m-recurring').checked;
             
             let taskData = { 
-                type: document.getElementById('m-type').value, 
+                type: selectedModalType, // ✨ ACTUALIZADO: Usa la variable de los botones en vez del menú desplegable
                 title: title, 
                 category: cat, 
                 subcategory: subcat, 
@@ -1770,6 +1836,13 @@ function renderModalSubtasks() {
                 recurrenceEnd: isRec ? document.getElementById('m-recurrence-end').value : null
             }; 
 
+            // ✨ NUEVO: Guardar datos específicos si se seleccionó "Clase"
+            if (selectedModalType === 'clase') {
+                taskData.claseMateria = document.getElementById('m-clase-materia').value;
+                taskData.claseColor = document.getElementById('m-clase-color').value;
+            }
+
+            // Datos específicos si es Laboratorio de Química
             if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
                 taskData.type = 'event';
                 taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
