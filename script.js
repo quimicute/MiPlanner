@@ -1672,106 +1672,49 @@ function renderModalSubtasks() {
 }
 
        function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
-    editingTaskId = taskId; 
-    openModal('taskModal'); 
-    
-    // 1. Identificar si estamos EDITANDO o CREANDO
-    if (taskId) { 
-        let task = appState.tasks.find(t => t.id === taskId); 
-        selectedModalCat = task.category || '';
-        selectedModalSubcat = task.subcategory || '';
-
-        // Poblar datos básicos
-        const titleEl = document.getElementById('m-title');
-        if(titleEl) titleEl.value = task.title; 
-        
-        const typeEl = document.getElementById('m-type');
-        if(typeEl) {
-            typeEl.value = task.type || 'task';
-            typeEl.disabled = false;
-        }
-
-        document.getElementById('m-date').value = task.date || ''; 
-        document.getElementById('m-time').value = task.time || ''; 
-        document.getElementById('m-notes').value = task.notes || ''; 
-        document.getElementById('m-my-day').checked = !!task.myDay;
-        
-        currentSubtasks = Array.isArray(task.subtasks) ? task.subtasks.map(s => ({ text: s.text || '', done: !!s.done })) : [];
-
-        // Lógica de Recurrencia
-        const recCheck = document.getElementById('m-recurring');
-        if(recCheck) {
-            recCheck.checked = !!task.recurring; 
-            toggleRecurrence();
-            if(task.recurring) {
-                document.getElementById('m-recurrence-type').value = task.recurrenceType;
-                document.getElementById('m-recurrence-start').value = task.recurrenceStart || '';
-                document.getElementById('m-recurrence-end').value = task.recurrenceEnd || '';
-                if(task.recurrenceType === 'weekly' && task.weeklyDay !== undefined) {
-                    let rb = document.getElementById('m-weekly-' + task.weeklyDay);
-                    if(rb) rb.checked = true;
-                }
-                toggleTaskCustomFields();
-            }
-        }
-
-        // Delay para cargar datos de ENMS/Laboratorio (esperamos a que se rendericen los campos)
-        setTimeout(() => {
-            if(document.getElementById('m-enms-materia')) document.getElementById('m-enms-materia').value = task.enmsMateria || 'Química Orgánica';
-            if(document.getElementById('m-enms-profesor')) document.getElementById('m-enms-profesor').value = task.enmsProfesor || '';
-            if(document.getElementById('m-enms-grupo')) document.getElementById('m-enms-grupo').value = task.enmsGrupo || '';
-            if(document.getElementById('m-enms-practica')) document.getElementById('m-enms-practica').value = task.enmsPractica || '';
-        }, 100);
-
-    } else { 
-        // RESET para nuevo registro
-        selectedModalCat = forceCat || '';
-        selectedModalSubcat = forceSubCat || '';
-        
-        document.getElementById('m-title').value = ''; 
-        document.getElementById('m-date').value = ''; 
-        document.getElementById('m-time').value = ''; 
-        document.getElementById('m-notes').value = ''; 
-        document.getElementById('m-my-day').checked = false;
-        currentSubtasks = [];
-        
-        const typeEl = document.getElementById('m-type');
-        if(typeEl) {
-            typeEl.value = forceType || 'task';
-            typeEl.disabled = !!forceType;
-        }
-
-        setModalPriority('none');
-        const recCheck = document.getElementById('m-recurring');
-        if(recCheck) {
-            recCheck.checked = false; 
-            toggleRecurrence();
-        }
-    } 
-
-    // 2. Sincronizar UI (Botones y Listas)
-    renderModalSubtasks();
-    renderCategoryPills();
-    
-    // Sincronizar los selects invisibles por si acaso
-    if(document.getElementById('m-category')) document.getElementById('m-category').value = selectedModalCat;
-    if(document.getElementById('m-subcategory')) document.getElementById('m-subcategory').value = selectedModalSubcat;
-
-    if (selectedModalCat) {
-        renderSubcategoryPills();
-        const subSection = document.getElementById('subcategory-section');
-        if(subSection) subSection.style.display = 'block';
-    } else {
-        const subSection = document.getElementById('subcategory-section');
-        if(subSection) subSection.style.display = 'none';
-    }
-
-    // 3. Renderizar campos dinámicos finales
-    renderSubcategoryCustomFields(); 
-    showSocialTip();
-    
-    window.currentEditId = taskId;
-}
+		    editingTaskId = taskId; 
+		    openModal('taskModal'); 
+		    
+		    // 1. Cargar datos si estamos editando
+		    if (taskId) { 
+		        let task = appState.tasks.find(t => t.id === taskId); 
+		        selectedModalCat = task.category || '';
+		        selectedModalSubcat = task.subcategory || '';
+		        document.getElementById('m-title').value = task.title; 
+		        document.getElementById('m-type').value = task.type || 'task'; 
+		        document.getElementById('m-date').value = task.date || ''; 
+		        document.getElementById('m-time').value = task.time || ''; 
+		        document.getElementById('m-notes').value = task.notes || ''; 
+		        document.getElementById('m-my-day').checked = !!task.myDay;
+		    } else { 
+		        // Reset para nuevo registro
+		        selectedModalCat = forceCat || ''; 
+		        selectedModalSubcat = forceSubCat || '';
+		        document.getElementById('m-title').value = ''; 
+		        document.getElementById('m-date').value = ''; 
+		        document.getElementById('m-time').value = ''; 
+		        document.getElementById('m-notes').value = ''; 
+		        document.getElementById('m-type').value = forceType || 'task';
+		        currentSubtasks = [];
+		    } 
+		
+		    // 2. Sincronizar UI (Pills)
+		    renderModalSubtasks();
+		    renderCategoryPills(); // Dibuja los botones de Ámbito
+		    
+		    if (selectedModalCat) {
+		        renderSubcategoryPills(); // Dibuja los botones de Módulo
+		        document.getElementById('subcategory-section').style.display = 'block';
+		    } else {
+		        document.getElementById('subcategory-section').style.display = 'none';
+		    }
+		
+		    // 3. Cargar campos específicos y evitar el crash
+		    renderSubcategoryCustomFields(); 
+		    showSocialTip(); // Ahora es segura y no dará error de "null"
+		    
+		    window.currentEditId = taskId;
+		}
         
         function closeTaskModal() { closeModal('taskModal'); }
 
@@ -2593,12 +2536,18 @@ function renderDashboardModules() {
         // Duplicate addBibliotecaLink removed (consolidated earlier)
 
         function showSocialTip() {
-            let tip = document.getElementById('social-tip');
-            if (document.getElementById('m-subcategory').value === 'Asuntos Sociales') {
-                tip.style.display = 'block';
-            } else {
-                tip.style.display = 'none';
-            }
+		    const tip = document.getElementById('social-tip');
+		    const subcatSelect = document.getElementById('m-subcategory');
+		    
+		    // Si no existen los elementos, salimos de la función sin romper nada
+		    if (!tip || !subcatSelect) return; 
+		
+		    if (subcatSelect.value === 'Asuntos Sociales') {
+		        tip.style.display = 'block';
+		    } else {
+		        tip.style.display = 'none';
+		    }
+		}
         };
 
         if ('serviceWorker' in navigator) {
