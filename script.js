@@ -84,7 +84,8 @@
         let monthOffset = 0;
         function prevMonth() { monthOffset--; renderAll(); }
         function nextMonth() { monthOffset++; renderAll(); }
-
+		let selectedModalCat = '';
+		let selectedModalSubcat = '';
         let defaultCategories = { 
             personal: { icon: "💕",label: 'Personal', color: '#ffb3c6', cover: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=600&q=80', subcats: ['Selfcare', 'Mindfulness', 'Vida Social', 'Recetas'], customFields: [] }, 
             escolar: { icon: "🎓",label: 'Académico', color: '#c8a2c8', cover: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&w=600&q=80', subcats: ['Curso Análisis de Datos', 'Química', 'Maestría'], customFields: ['materia', 'profesor', 'grupo'] }, 
@@ -224,6 +225,69 @@
                 btnHome.style.display = 'flex'; btnBack.style.display = 'none'; subtitle.style.display = 'none';
             }
         }
+
+		function renderCategoryPills() {
+			    const container = document.getElementById('category-pill-container');
+			    if (!container) return;
+			
+			    const cats = [
+			        { id: 'personal', label: 'Personal', icon: '💕' },
+			        { id: 'escolar', label: 'Académico', icon: '🎓' },
+			        { id: 'profesional', label: 'Profesional', icon: '💼' }
+			    ];
+			
+			    container.innerHTML = cats.map(c => `
+			        <button type="button" class="pill-btn ${selectedModalCat === c.id ? 'active' : ''}" 
+			                onclick="setModalCategory('${c.id}')">
+			            <span>${c.icon}</span> ${c.label}
+			        </button>
+			    `).join('');
+			}
+			
+			function setModalCategory(catId) {
+			    selectedModalCat = catId;
+			    selectedModalSubcat = ''; // Resetear módulo al cambiar de ámbito
+			    
+			    // Sincronizar el select oculto para no romper funciones viejas
+			    const catSelect = document.getElementById('m-category');
+			    if(catSelect) catSelect.value = catId; 
+			
+			    renderCategoryPills();
+			    renderSubcategoryPills();
+			    
+			    // Mostrar la sección de módulos y limpiar campos anteriores
+			    document.getElementById('subcategory-section').style.display = 'block';
+			    document.getElementById('subcategory-custom-fields').innerHTML = '';
+			}
+			
+			function renderSubcategoryPills() {
+			    const container = document.getElementById('subcategory-pill-container');
+			    if (!container || !selectedModalCat) return;
+			
+			    const subcats = appState.categories[selectedModalCat].subcats;
+			    container.innerHTML = subcats.map(s => {
+			        let icon = appState.pageData[s]?.icon || '📂';
+			        return `
+			        <button type="button" class="pill-btn ${selectedModalSubcat === s ? 'active' : ''}" 
+			                onclick="setModalSubcategory('${s}')">
+			            <span>${icon}</span> ${s}
+			        </button>`;
+			    }).join('');
+			}
+			
+			function setModalSubcategory(subName) {
+			    selectedModalSubcat = subName;
+			    
+			    // Sincronizar el select oculto
+			    const subSelect = document.getElementById('m-subcategory');
+			    if(subSelect) subSelect.value = subName;
+			
+			    renderSubcategoryPills();
+			    
+			    // ¡MAGIA! Esto despliega automáticamente los campos de Laboratorio si eliges ENMS
+			    renderSubcategoryCustomFields(); 
+			    showSocialTip();
+			}
 
         function renderDashboardLinks() { const list = document.getElementById('dash-links-list'); if(!list) return; list.innerHTML = (appState.dashboard.links || []).map((lnk, idx) => `<div class="link-item"><a href="${lnk.url}" target="_blank">📄 ${lnk.title}</a><button class="edit-btn" onclick="deleteDashLink(${idx})" style="color:#ef4444;">✖</button></div>`).join(''); }
         function addBibliotecaLink(subcatName) {
@@ -1581,71 +1645,88 @@ function renderModalSubtasks() {
 }
 
         function openTaskModal(forceType = null, taskId = null, forceCat = null, forceSubCat = null) { 
-            editingTaskId = taskId; openModal('taskModal'); 
-            if (taskId) { 
-                let task = appState.tasks.find(t => t.id === taskId); 
-                document.getElementById('m-title').value = task.title; 
-                document.getElementById('m-type').value = task.type || 'task'; 
-                document.getElementById('m-category').value = task.category || ''; 
-                updateSubcatDropdown(); 
-                document.getElementById('m-subcategory').value = task.subcategory || ''; 
-                showSocialTip(); 
-                renderSubcategoryCustomFields(); 
-                document.getElementById('m-date').value = task.date || ''; 
-                document.getElementById('m-time').value = task.time || ''; 
-                document.getElementById('m-notes').value = task.notes || ''; 
-                currentSubtasks = Array.isArray(task.subtasks) ? task.subtasks.map(s => ({ text: s.text || '', done: !!s.done })) : [];
-                renderModalSubtasks();
-                document.getElementById('m-recurring').checked = !!task.recurring; 
-                toggleRecurrence();
-                document.getElementById('m-my-day').checked = !!task.myDay;
-                
-                if(task.recurring) {
-                    document.getElementById('m-recurrence-type').value = task.recurrenceType;
-                    document.getElementById('m-recurrence-start').value = task.recurrenceStart || '';
-                    document.getElementById('m-recurrence-end').value = task.recurrenceEnd || '';
-                    if(task.recurrenceType === 'weekly' && task.weeklyDay !== undefined) document.getElementById('h-weekly-' + task.weeklyDay).checked = true;
-                    toggleTaskCustomFields();
-                }
+    editingTaskId = taskId; 
+    openModal('taskModal'); 
+    
+    // 1. Definimos el estado inicial de Ámbito y Módulo
+    if (taskId) { 
+        let task = appState.tasks.find(t => t.id === taskId); 
+        selectedModalCat = task.category || '';
+        selectedModalSubcat = task.subcategory || '';
 
-                // Cargar datos de laboratorio si existen
-                setTimeout(() => {
-                    if(document.getElementById('m-enms-materia')) document.getElementById('m-enms-materia').value = task.enmsMateria || '';
-                    if(document.getElementById('m-enms-profesor')) document.getElementById('m-enms-profesor').value = task.enmsProfesor || '';
-                    if(document.getElementById('m-enms-grupo')) document.getElementById('m-enms-grupo').value = task.enmsGrupo || '';
-                    if(document.getElementById('m-enms-practica')) document.getElementById('m-enms-practica').value = task.enmsPractica || '';
-                }, 10);
+        // Carga de datos básicos
+        document.getElementById('m-title').value = task.title; 
+        document.getElementById('m-type').value = task.type || 'task'; 
+        document.getElementById('m-date').value = task.date || ''; 
+        document.getElementById('m-time').value = task.time || ''; 
+        document.getElementById('m-notes').value = task.notes || ''; 
+        document.getElementById('m-my-day').checked = !!task.myDay;
+        
+        currentSubtasks = Array.isArray(task.subtasks) ? task.subtasks.map(s => ({ text: s.text || '', done: !!s.done })) : [];
+        renderModalSubtasks();
 
-            } else { 
-                // Reset campos nuevo registro
-                document.getElementById('m-title').value = ''; 
-                document.getElementById('m-date').value = ''; 
-                document.getElementById('m-time').value = ''; 
-                document.getElementById('m-notes').value = ''; 
-                currentSubtasks = [];
-                renderModalSubtasks();
-                document.getElementById('m-my-day').checked = false;
-                
-                if(forceType) { document.getElementById('m-type').value = forceType; document.getElementById('m-type').disabled = true; } 
-                else { document.getElementById('m-type').disabled = false; }
-
-                if(forceCat) { 
-                    document.getElementById('m-category').value = forceCat; 
-                    document.getElementById('m-category').disabled = true;
-                    updateSubcatDropdown(); 
-                    if(forceSubCat) { document.getElementById('m-subcategory').value = forceSubCat; document.getElementById('m-subcategory').disabled = true; }
-                } else { 
-                    document.getElementById('m-category').disabled = false;
-                    document.getElementById('m-subcategory').disabled = false;
-                    updateSubcatDropdown(); 
-                }
-                setModalPriority('none');
-                document.getElementById('m-recurring').checked = false; 
-                toggleRecurrence();
-            } 
-            renderSubcategoryCustomFields(); 
-            window.currentEditId = taskId;
+        // Recurrencia
+        document.getElementById('m-recurring').checked = !!task.recurring; 
+        toggleRecurrence();
+        if(task.recurring) {
+            document.getElementById('m-recurrence-type').value = task.recurrenceType;
+            document.getElementById('m-recurrence-start').value = task.recurrenceStart || '';
+            document.getElementById('m-recurrence-end').value = task.recurrenceEnd || '';
+            if(task.recurrenceType === 'weekly' && task.weeklyDay !== undefined) {
+                let rb = document.getElementById('m-weekly-' + task.weeklyDay);
+                if(rb) rb.checked = true;
+            }
+            toggleTaskCustomFields();
         }
+
+        // Cargar datos de laboratorio con un pequeño delay para que los campos existan en el DOM
+        setTimeout(() => {
+            if(document.getElementById('m-enms-materia')) document.getElementById('m-enms-materia').value = task.enmsMateria || '';
+            if(document.getElementById('m-enms-profesor')) document.getElementById('m-enms-profesor').value = task.enmsProfesor || '';
+            if(document.getElementById('m-enms-grupo')) document.getElementById('m-enms-grupo').value = task.enmsGrupo || '';
+            if(document.getElementById('m-enms-practica')) document.getElementById('m-enms-practica').value = task.enmsPractica || '';
+        }, 50);
+
+    } else { 
+        // Reset para nuevo registro
+        selectedModalCat = forceCat || '';
+        selectedModalSubcat = forceSubCat || '';
+        
+        document.getElementById('m-title').value = ''; 
+        document.getElementById('m-date').value = ''; 
+        document.getElementById('m-time').value = ''; 
+        document.getElementById('m-notes').value = ''; 
+        document.getElementById('m-my-day').checked = false;
+        currentSubtasks = [];
+        renderModalSubtasks();
+        
+        document.getElementById('m-type').value = forceType || 'task';
+        document.getElementById('m-type').disabled = !!forceType;
+
+        setModalPriority('none');
+        document.getElementById('m-recurring').checked = false; 
+        toggleRecurrence();
+    } 
+
+    // 2. Sincronizar los Selects ocultos (para compatibilidad con saveTask)
+    if(document.getElementById('m-category')) document.getElementById('m-category').value = selectedModalCat;
+    if(document.getElementById('m-subcategory')) document.getElementById('m-subcategory').value = selectedModalSubcat;
+
+    // 3. Renderizar la Interfaz de Botones (Pills)
+    renderCategoryPills();
+    if (selectedModalCat) {
+        renderSubcategoryPills();
+        document.getElementById('subcategory-section').style.display = 'block';
+    } else {
+        document.getElementById('subcategory-section').style.display = 'none';
+    }
+
+    // 4. Mostrar campos especiales (como los de Laboratorio) y Tooltips
+    renderSubcategoryCustomFields(); 
+    showSocialTip();
+    
+    window.currentEditId = taskId;
+}
         
         function closeTaskModal() { closeModal('taskModal'); }
 
@@ -1717,10 +1798,13 @@ function renderModalSubtasks() {
         }
         
         function saveTask() { 
-            let title = document.getElementById('m-title').value; if(!title) return; 
-            let cat = document.getElementById('m-category').value;
-            let subcat = document.getElementById('m-subcategory').value;
-            let isRecurring = document.getElementById('m-recurring').checked; // Corregimos esta línea
+            let title = document.getElementById('m-title').value; 
+            if(!title) return; 
+
+            // Usamos las variables de los botones (Pills)
+            let cat = selectedModalCat;
+            let subcat = selectedModalSubcat;
+            let isRec = document.getElementById('m-recurring').checked;
             
             let taskData = { 
                 type: document.getElementById('m-type').value, 
@@ -1733,13 +1817,14 @@ function renderModalSubtasks() {
                 priority: currentModalPriority, 
                 myDay: document.getElementById('m-my-day').checked,
                 subtasks: [...currentSubtasks],
-                recurring: isRecurring, 
-                recurrenceType: isRecurring ? document.getElementById('m-recurrence-type').value : null,
-                recurrenceStart: isRecurring ? document.getElementById('m-recurrence-start').value : null,
-                recurrenceEnd: isRecurring ? document.getElementById('m-recurrence-end').value : null
+                recurring: isRec,
+                recurrenceType: isRec ? document.getElementById('m-recurrence-type').value : null,
+                recurrenceStart: isRec ? document.getElementById('m-recurrence-start').value : null,
+                recurrenceEnd: isRec ? document.getElementById('m-recurrence-end').value : null
             }; 
 
-            if(isRecurring) {
+            // 1. LÓGICA DE RECURRENCIA (Días específicos)
+            if(isRec) {
                 if(taskData.recurrenceType === 'weekly') {
                     let selectedDay = document.querySelector('input[name="weekly-day"]:checked');
                     if(selectedDay) taskData.weeklyDay = parseInt(selectedDay.value);
@@ -1759,8 +1844,18 @@ function renderModalSubtasks() {
                     }
                     taskData.customDays = customDays;
                 }
-            } 
-            // Custom fields
+            }
+
+            // 2. LÓGICA DE LABORATORIO (ENMS)
+            if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
+                taskData.type = 'event'; // Forzamos que sea evento para el calendario
+                taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
+                taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
+                taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
+                taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
+            }
+
+            // 3. CAMPOS PERSONALIZADOS GENÉRICOS
             let customization = appState.categories[cat];
             if(customization && customization.customFields) {
                 taskData.customFields = {};
@@ -1769,53 +1864,8 @@ function renderModalSubtasks() {
                     if(el) taskData.customFields[field] = el.value;
                 });
             }
-            // Subcategory custom fields
-            let subcatName = taskData.subcategory;
-            if (appState.pageData[subcatName] && appState.pageData[subcatName].customFields) {
-                if (!taskData.customFields) taskData.customFields = {};
-                appState.pageData[subcatName].customFields.forEach(field => {
-                    let el = document.getElementById('m-custom-' + field);
-                    if(el) taskData.customFields[field] = el.value;
-                });
-            }
-            let subFields = subcategoryCustomFields[subcat];
-            if(subFields) {
-                taskData.customData = {};
-                subFields.forEach(field => {
-                    let el = document.getElementById('m-custom-' + field.name);
-                    if(el) taskData.customData[field.name] = el.value;
-                });
-            }
-            function saveTask() { 
-            let title = document.getElementById('m-title').value; if(!title) return; 
-            let cat = document.getElementById('m-category').value;
-            let subcat = document.getElementById('m-subcategory').value;
-            let isRec = document.getElementById('m-recurring').checked;
-            
-            let taskData = { 
-                type: document.getElementById('m-type').value, 
-                title: title, 
-                category: cat, 
-                subcategory: subcat, 
-                date: document.getElementById('m-date').value, 
-                time: document.getElementById('m-time').value, 
-                notes: document.getElementById('m-notes').value, 
-                priority: currentModalPriority, 
-                myDay: document.getElementById('m-my-day').checked,
-                subtasks: [...currentSubtasks],
-                recurring: isRec,
-                recurrenceType: isRec ? document.getElementById('m-recurrence-type').value : null
-            }; 
 
-            // GUARDAR DATOS DE LABORATORIO
-            if(subcat === 'ENMS Labs' || subcat === 'ENMS | Laboratorio de Química') { 
-                taskData.type = 'event'; // Forzamos que sea evento/clase
-                taskData.enmsMateria = document.getElementById('m-enms-materia').value; 
-                taskData.enmsProfesor = document.getElementById('m-enms-profesor').value; 
-                taskData.enmsGrupo = document.getElementById('m-enms-grupo').value; 
-                taskData.enmsPractica = document.getElementById('m-enms-practica').value; 
-            }
-
+            // 4. GUARDADO (EDITAR O CREAR NUEVO)
             if (window.currentEditId) { 
                 let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
                 appState.tasks[index] = { ...appState.tasks[index], ...taskData }; 
@@ -1824,20 +1874,19 @@ function renderModalSubtasks() {
                 taskData.status = 'todo'; 
                 appState.tasks.push(taskData); 
             } 
-            saveToMemory(); closeTaskModal(); renderAll(); 
-       		 }
 
-            if (window.currentEditId) { 
-                let index = appState.tasks.findIndex(t => t.id === window.currentEditId); 
-                appState.tasks[index] = { ...appState.tasks[index], ...taskData }; 
-            } else { 
-                taskData.id = taskIdCounter++; 
-                taskData.status = 'todo'; 
-                appState.tasks.push(taskData); 
-            } 
-            saveToMemory(); closeTaskModal(); renderAll(); 
-            let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')) renderSubpageTasks(taskData.category, taskData.subcategory); 
+            // 5. MEMORIA Y CIERRE
+            saveToMemory(); 
+            closeTaskModal(); 
+            renderAll(); 
+
+            // Si estamos dentro de una subpágina (ventana flotante), refrescar su contenido
+            let subpageModal = document.getElementById('subpage-modal');
+            if(subpageModal && subpageModal.style.display === 'flex') {
+                renderSubpageTasks(cat, subcat);
+            }
         }
+
         function updateTaskStatus(taskId, newStatus) { let idx = appState.tasks.findIndex(t=>t.id===taskId); if(idx!==-1) { appState.tasks[idx].status = newStatus; saveToMemory(); renderAll(); let subpage = document.getElementById('subpage-view'); if(subpage && subpage.classList.contains('active')){renderSubpageTasks(appState.tasks[idx].category, appState.tasks[idx].subcategory);}}}
 
         function getNextBirthdayDate(task) {
