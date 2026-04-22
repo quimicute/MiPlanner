@@ -2475,7 +2475,6 @@ function renderDashboardModules() {
 		        tip.style.display = 'none';
 		    }
 		}
-        };
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
